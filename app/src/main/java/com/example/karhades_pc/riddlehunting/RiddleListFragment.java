@@ -1,6 +1,7 @@
 package com.example.karhades_pc.riddlehunting;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
@@ -67,10 +68,19 @@ public class RiddleListFragment extends ListFragment {
             //List item Title TextView
             TextView titleTextView = (TextView) convertView.findViewById(R.id.list_item_title_text_view);
             titleTextView.setText(riddle.getTitle());
+            Typeface typefaceBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Capture_it.ttf");
+            titleTextView.setTypeface(typefaceBold);
+
+            Typeface typefaceNormal = Typeface.createFromAsset(getActivity().getAssets(), "fonts/amatic_bold.ttf");
+
+            //List item Difficulty Label TextView
+            TextView difficultyLabelTextView = (TextView) convertView.findViewById(R.id.list_item_difficulty_label_text_view);
+            difficultyLabelTextView.setTypeface(typefaceNormal);
 
             //List item Difficulty TextView
             TextView difficultyTextView = (TextView) convertView.findViewById(R.id.list_item_difficulty_text_view);
             difficultyTextView.setText(riddle.getDifficulty());
+            difficultyTextView.setTypeface(typefaceNormal);
 
             //List item Solved CheckBox
             CheckBox solvedCheckBox = (CheckBox) convertView.findViewById(R.id.list_item_solved_check_box);
