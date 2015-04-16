@@ -6,25 +6,31 @@
 
     <!--Riddle-->
     <TextView
+        android:id="@+id/riddle_title_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="?android:listSeparatorTextViewStyle"
-        android:text="@string/riddle_title_label"/>
+        android:text="@string/riddle_title_label"
+        android:textSize="34sp"/>
 
     <TextView
         android:id="@+id/riddle_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginRight="16dp"
+        android:textSize="42sp"
+        android:text="Karhades"/>
 
     <!--Details-->
     <TextView
+        android:id="@+id/riddle_details_title_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="?android:listSeparatorTextViewStyle"
         android:text="@string/riddle_details_label"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="24dp"
+        android:textSize="34sp"/>
 
     <!--Difficulty-->
     <LinearLayout
@@ -33,14 +39,17 @@
         android:layout_marginLeft="16dp">
 
         <TextView
+            android:id="@+id/riddle_difficulty_label_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/riddle_difficulty"/>
+            android:text="@string/riddle_difficulty"
+            android:textSize="30sp"/>
 
         <TextView
             android:id="@+id/riddle_difficulty_text_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textSize="30sp"/>
 
         </LinearLayout>
 
@@ -51,15 +60,18 @@
         android:layout_marginLeft="16dp">
 
         <TextView
+            android:id="@+id/riddle_solved_label_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/riddle_solved"/>
+            android:text="@string/riddle_solved"
+            android:textSize="30sp"/>
 
         <CheckBox
             android:id="@+id/riddle_solved_check_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"/>
+
     </LinearLayout>
 
     <!--Date Solved-->
@@ -69,14 +81,17 @@
         android:layout_marginLeft="16dp">
 
         <TextView
+            android:id="@+id/riddle_date_solved_label_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/riddle_date_solved"/>
+            android:text="@string/riddle_date_solved"
+            android:textSize="30sp"/>
 
         <TextView
             android:id="@+id/date_solved_text_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textSize="30sp"/>
         </LinearLayout>
 
 </LinearLayout>

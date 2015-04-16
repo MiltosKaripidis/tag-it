@@ -1,5 +1,6 @@
 package com.example.karhades_pc.riddlehunting;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -92,20 +93,50 @@ public class RiddleFragment extends Fragment {
 
     //Initializes the Widgets
     private void initializeWidgets(View view) {
-        //Riddle Difficulty TextView
-        riddleDifficultyTextView = (TextView) view.findViewById(R.id.riddle_difficulty_text_view);
-        riddleDifficultyTextView.setText(riddle.getDifficulty());
+        //Riddle Title TextView
+        TextView riddleTitleTextView = (TextView) view.findViewById(R.id.riddle_title_text_view);
+        //Bold Font for the Riddle
+        Typeface typefaceTitle = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Capture_it.ttf");
+        riddleTitleTextView.setTypeface(typefaceTitle);
+
+        //Riddle Details Title TextView
+        TextView riddleDetailsTitleTextView = (TextView) view.findViewById(R.id.riddle_details_title_text_view);
+        riddleDetailsTitleTextView.setTypeface(typefaceTitle);
 
         //Riddle TextView
         riddleTextView = (TextView) view.findViewById(R.id.riddle_text_view);
         riddleTextView.setText(riddle.getText());
+        //Bold Font for the Riddle
+        Typeface typefaceBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/amatic_bold.ttf");
+        riddleTextView.setTypeface(typefaceBold);
+
+        //Normal Font for the rest
+        Typeface typefaceNormal = Typeface.createFromAsset(getActivity().getAssets(), "fonts/amatic_normal.ttf");
+
+        //Riddle Difficulty Label TextView
+        TextView riddleDifficultyLabel = (TextView) view.findViewById(R.id.riddle_difficulty_label_text_view);
+        riddleDifficultyLabel.setTypeface(typefaceNormal);
+
+        //Riddle Difficulty TextView
+        riddleDifficultyTextView = (TextView) view.findViewById(R.id.riddle_difficulty_text_view);
+        riddleDifficultyTextView.setText(riddle.getDifficulty());
+        riddleDifficultyTextView.setTypeface(typefaceNormal);
+
+        //Riddle Solved Label TextView
+        TextView riddleSolvedLabel = (TextView) view.findViewById(R.id.riddle_solved_label_text_view);
+        riddleSolvedLabel.setTypeface(typefaceNormal);
 
         //Riddle Solved CheckBox
         riddleSolvedCheckBox = (CheckBox) view.findViewById(R.id.riddle_solved_check_box);
         riddleSolvedCheckBox.setChecked(riddle.isSolved());
 
+        //Riddle Date Label TextView
+        TextView riddleDateSolvedLabelTextView = (TextView) view.findViewById(R.id.riddle_date_solved_label_text_view);
+        riddleDateSolvedLabelTextView.setTypeface(typefaceNormal);
+
         //Riddle Date Solved CheckBox
         riddleDateSolvedTextView = (TextView) view.findViewById(R.id.date_solved_text_view);
+        riddleDateSolvedTextView.setTypeface(typefaceNormal);
         if (riddle.getDateSolved() != null) {
             //Formats the Date into human-readable text
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, MMMM dd, yyyy (HH:mm:ss)");
