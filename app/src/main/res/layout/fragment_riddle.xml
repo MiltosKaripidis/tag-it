@@ -1,0 +1,82 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--Riddle-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:listSeparatorTextViewStyle"
+        android:text="@string/riddle_title_label"/>
+
+    <TextView
+        android:id="@+id/riddle_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
+
+    <!--Details-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:listSeparatorTextViewStyle"
+        android:text="@string/riddle_details_label"
+        android:layout_marginTop="24dp"/>
+
+    <!--Difficulty-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/riddle_difficulty"/>
+
+        <TextView
+            android:id="@+id/riddle_difficulty_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    <!--Solved-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/riddle_solved"/>
+
+        <CheckBox
+            android:id="@+id/riddle_solved_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"/>
+    </LinearLayout>
+
+    <!--Date Solved-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/riddle_date_solved"/>
+
+        <TextView
+            android:id="@+id/date_solved_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+</LinearLayout>
