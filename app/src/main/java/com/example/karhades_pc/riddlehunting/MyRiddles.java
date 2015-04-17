@@ -21,14 +21,14 @@ public class MyRiddles {
         riddles = new ArrayList<Riddle>();
 
         //Dummy Riddles
-        Riddle riddle_1 = new Riddle("Black", "The Black hole destroyed everything...", "Hard", false, "0421DC6AC82980");
-        Riddle riddle_2 = new Riddle("Red", "Red blood everywhere around you...", "Easy", false, "04BCE16AC82980");
-        Riddle riddle_3 = new Riddle("White", "White snow fell from above...", "Medium", false, "04BCE16AC82981");
-        Riddle riddle_4 = new Riddle("Blue", "White snow fell from above...", "Hard", false, "04BCE16AC82982");
-        Riddle riddle_5 = new Riddle("Green", "White snow fell from above...", "Easy", false, "04BCE16AC82983");
-        Riddle riddle_6 = new Riddle("Orange", "White snow fell from above...", "Medium", false, "04BCE16AC82984");
-        Riddle riddle_7 = new Riddle("Gray", "White snow fell from above...", "Easy", false, "04BCE16AC82985");
-        Riddle riddle_8 = new Riddle("Purple", "White snow fell from above...", "Hard", false, "04BCE16AC82986");
+        Riddle riddle_1 = new Riddle("Black", "Cras aliquet blandit vehicula. Maecenas auctor egestas eros...", "Hard", false, "0421DC6AC82980");
+        Riddle riddle_2 = new Riddle("Red", "Nulla et lacus quis erat luctus elementum. Mauris...", "Easy", false, "04BCE16AC82980");
+        Riddle riddle_3 = new Riddle("White", "Suspendisse rhoncus facilisis mi, in suscipit est fermentum...", "Medium", false, "04BCE16AC82981");
+        Riddle riddle_4 = new Riddle("Blue", "Class aptent taciti sociosqu ad litora torquent per...", "Hard", false, "04BCE16AC82982");
+        Riddle riddle_5 = new Riddle("Green", "Sed convallis diam eu mi consequat, at varius...", "Easy", false, "04BCE16AC82983");
+        Riddle riddle_6 = new Riddle("Orange", "Quisque sed nisi dignissim, ornare urna sed, tempor...", "Medium", false, "04BCE16AC82984");
+        Riddle riddle_7 = new Riddle("Gray", "Donec efficitur vitae ante a egestas. Quisque sed...", "Easy", false, "04BCE16AC82985");
+        Riddle riddle_8 = new Riddle("Purple", "Donec ornare lacus a sapien maximus, eget semper...", "Hard", false, "04BCE16AC82986");
 
         riddles.add(riddle_1);
         riddles.add(riddle_2);
