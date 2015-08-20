@@ -62,7 +62,7 @@ public class RiddleFragment extends Fragment {
         // a call to onCreateOptionsMenu.
         setHasOptionsMenu(true);
 
-        // Display the caret for an hierarchical navigation.
+        // Display the caret for an ancestral navigation.
         if(NavUtils.getParentActivityName(getActivity()) != null)
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
