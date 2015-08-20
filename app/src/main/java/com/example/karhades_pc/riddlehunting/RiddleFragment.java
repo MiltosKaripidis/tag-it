@@ -1,7 +1,6 @@
 package com.example.karhades_pc.riddlehunting;
 
 import android.graphics.Typeface;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,6 +25,7 @@ public class RiddleFragment extends Fragment {
 
     private Riddle riddle;
     private boolean nfcTagIsDiscovered;
+    private AudioPlayer audioPlayer = new AudioPlayer();
 
     private TextView riddleDifficultyTextView;
     private TextView riddleTextView;
@@ -79,7 +79,7 @@ public class RiddleFragment extends Fragment {
         riddle.setDateSolved(new Date());
 
         // Play a winning sound.
-        MediaPlayer.create(getActivity(), R.raw.cheering).start();
+        audioPlayer.play(getActivity(), R.raw.cheering);
 
         Toast.makeText(getActivity(), "Riddle " + riddle.getTitle() + " was successfully solved!", Toast.LENGTH_LONG).show();
     }
