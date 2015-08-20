@@ -12,13 +12,13 @@ public class MyRiddles {
     private static MyRiddles myRiddles;
     private Context context;
 
-    private ArrayList<Riddle> riddles;
+    private final ArrayList<Riddle> riddles;
 
     //Private constructor that gets called only once
     // by it's get(context) method.
     private MyRiddles(Context context) {
         this.context = context;
-        riddles = new ArrayList<Riddle>();
+        riddles = new ArrayList<>();
 
         //Dummy Riddles
         Riddle riddle_1 = new Riddle("Black", "Cras aliquet blandit vehicula. Maecenas auctor egestas eros...", "Hard", false, "0421DC6AC82980");

@@ -1,5 +1,6 @@
 package com.example.karhades_pc.riddlehunting;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 /**
  * Created by Karhades - PC on 4/15/2015.
@@ -41,21 +43,21 @@ public class RiddleListFragment extends ListFragment {
         startActivity(intent);
     }
 
-    //Reloads the List
+    // Reloads the List
     @Override
     public void onResume() {
         super.onResume();
         ((RiddleAdapter) getListAdapter()).notifyDataSetChanged();
     }
 
-    //Custom ArrayAdapter class
+    // Custom ArrayAdapter class
     private class RiddleAdapter extends ArrayAdapter<Riddle> {
         public RiddleAdapter(ArrayList<Riddle> riddles) {
             super(getActivity(), 0, riddles);
         }
 
-        //Creates the custom view from the layout and returns it as
-        //a single view.
+        // Creates the custom view from the layout and returns it as
+        // a single view.
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
@@ -65,24 +67,25 @@ public class RiddleListFragment extends ListFragment {
 
             Riddle riddle = getItem(position);
 
-            //List item Title TextView
+            // Custom Fonts.
+            Typeface typefaceBold = FontCache.get("fonts/Capture_it.ttf", getActivity());
+            Typeface typefaceNormal = FontCache.get("fonts/amatic_bold.ttf", getActivity());
+
+            // List item Title TextView
             TextView titleTextView = (TextView) convertView.findViewById(R.id.list_item_title_text_view);
             titleTextView.setText(riddle.getTitle());
-            Typeface typefaceBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Capture_it.ttf");
             titleTextView.setTypeface(typefaceBold);
 
-            Typeface typefaceNormal = Typeface.createFromAsset(getActivity().getAssets(), "fonts/amatic_bold.ttf");
-
-            //List item Difficulty Label TextView
+            // List item Difficulty Label TextView
             TextView difficultyLabelTextView = (TextView) convertView.findViewById(R.id.list_item_difficulty_label_text_view);
             difficultyLabelTextView.setTypeface(typefaceNormal);
 
-            //List item Difficulty TextView
+            // List item Difficulty TextView
             TextView difficultyTextView = (TextView) convertView.findViewById(R.id.list_item_difficulty_text_view);
             difficultyTextView.setText(riddle.getDifficulty());
             difficultyTextView.setTypeface(typefaceNormal);
 
-            //List item Solved CheckBox
+            // List item Solved CheckBox
             CheckBox solvedCheckBox = (CheckBox) convertView.findViewById(R.id.list_item_solved_check_box);
             solvedCheckBox.setChecked(riddle.isSolved());
 

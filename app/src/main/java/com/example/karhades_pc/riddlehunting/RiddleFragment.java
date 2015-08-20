@@ -4,12 +4,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.TypefaceSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,19 +22,21 @@ public class RiddleFragment extends Fragment {
 
     public static final String EXTRA_TAG_ID = "com.example.karhades_pc.nfctester.tag_id";
     public static final String EXTRA_NFC_TAG_DISCOVERED = "com.example.karhades_pc.nfctester.nfc_tag_discovered";
-    public static final String EXTRA_NFC_TAG_DISCOVERED_RESET = "com.example.karhades_pc.nfctester.nfc_tag_discovered_reset";
 
     private Riddle riddle;
-    private boolean nfcTagDiscovered;
+    private boolean nfcTagIsDiscovered;
 
     private TextView riddleDifficultyTextView;
     private TextView riddleTextView;
     private CheckBox riddleSolvedCheckBox;
     private TextView riddleDateSolvedTextView;
 
-    //Creates a bundle and sets the Tag ID and a boolean indicating whether the
-    //RiddleActivity was started from NFC Tag discovery. It must be called after
-    //the fragment is created and before it is added to the RiddleActivity.
+    /** It must be called after the fragment is created and before it is added to the RiddleActivity.
+     *
+     * @param tagId A String containing the Tag ID
+     * @param nfcTagDiscovered A boolean indicating whether the RiddleActivity was started from NFC Tag discovery
+     * @return A Fragment with the above arguments
+     */
     public static RiddleFragment newInstance(String tagId, boolean nfcTagDiscovered) {
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_TAG_ID, tagId);
@@ -55,35 +52,34 @@ public class RiddleFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Gets the Tag ID either from the RiddleListFragment (onListClick) or
-        //the NFC Tag Discovery.
+        // Retain the fragment through configuration change.
+        setRetainInstance(true);
+
+        // Get the Tag ID either from the RiddleListFragment (onListClick) or
+        // the NFC Tag Discovery.
         String tagId = getArguments().getString(EXTRA_TAG_ID);
+        // Check whether a NFC Tag was discovered and solve the
+        // appropriate Riddle.
+        nfcTagIsDiscovered = getArguments().getBoolean(EXTRA_NFC_TAG_DISCOVERED);
+
+        // Get the riddle through it's tag id from the arguments.
         riddle = MyRiddles.get(getActivity()).getRiddle(tagId);
 
-        //Checks whether an NFC Tag was discovered and solves the
-        //appropriate Riddle.
-        if(savedInstanceState != null) {
-            nfcTagDiscovered = savedInstanceState.getBoolean(EXTRA_NFC_TAG_DISCOVERED_RESET);
-        }
-        else {
-            nfcTagDiscovered = getArguments().getBoolean(EXTRA_NFC_TAG_DISCOVERED);
-        }
-
-        if (nfcTagDiscovered) {
-            riddle.setSolved(true);
-            riddle.setDateSolved(new Date());
-
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(riddle.getTitle());
-
-            Toast.makeText(getActivity(), "Riddle " + riddle.getTitle() + " was successfully solved!", Toast.LENGTH_LONG).show();
+        if (nfcTagIsDiscovered) {
+            solveRiddle();
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    private void solveRiddle()
+    {
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(riddle.getTitle());
 
-        outState.putBoolean(EXTRA_NFC_TAG_DISCOVERED_RESET, false);
+        riddle.setSolved(true);
+        riddle.setDateSolved(new Date());
+
+        // TODO Make a winning sound!
+
+        Toast.makeText(getActivity(), "Riddle " + riddle.getTitle() + " was successfully solved!", Toast.LENGTH_LONG).show();
     }
 
     @Nullable
@@ -96,54 +92,52 @@ public class RiddleFragment extends Fragment {
         return view;
     }
 
-    //Initializes the Widgets
+    // Initialize the Widgets and wire custom fonts to them.
     private void initializeWidgets(View view) {
-        //Riddle Title TextView
+        // Custom Fonts.
+        Typeface typefaceTitle = FontCache.get("fonts/Capture_it.ttf", getActivity());
+        Typeface typefaceBold = FontCache.get("fonts/amatic_bold.ttf", getActivity());
+        Typeface typefaceNormal = FontCache.get("fonts/amatic_normal.ttf", getActivity());
+
+        // Riddle Title TextView
         TextView riddleTitleTextView = (TextView) view.findViewById(R.id.riddle_title_text_view);
-        //Bold Font for the Riddle
-        Typeface typefaceTitle = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Capture_it.ttf");
         riddleTitleTextView.setTypeface(typefaceTitle);
 
-        //Riddle Details Title TextView
+        // Riddle Details Title TextView
         TextView riddleDetailsTitleTextView = (TextView) view.findViewById(R.id.riddle_details_title_text_view);
         riddleDetailsTitleTextView.setTypeface(typefaceTitle);
 
-        //Riddle TextView
+        // Riddle TextView
         riddleTextView = (TextView) view.findViewById(R.id.riddle_text_view);
         riddleTextView.setText(riddle.getText());
-        //Bold Font for the Riddle
-        Typeface typefaceBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/amatic_bold.ttf");
         riddleTextView.setTypeface(typefaceBold);
 
-        //Normal Font for the rest
-        Typeface typefaceNormal = Typeface.createFromAsset(getActivity().getAssets(), "fonts/amatic_normal.ttf");
-
-        //Riddle Difficulty Label TextView
+        // Riddle Difficulty Label TextView
         TextView riddleDifficultyLabel = (TextView) view.findViewById(R.id.riddle_difficulty_label_text_view);
         riddleDifficultyLabel.setTypeface(typefaceNormal);
 
-        //Riddle Difficulty TextView
+        // Riddle Difficulty TextView
         riddleDifficultyTextView = (TextView) view.findViewById(R.id.riddle_difficulty_text_view);
         riddleDifficultyTextView.setText(riddle.getDifficulty());
         riddleDifficultyTextView.setTypeface(typefaceNormal);
 
-        //Riddle Solved Label TextView
+        // Riddle Solved Label TextView
         TextView riddleSolvedLabel = (TextView) view.findViewById(R.id.riddle_solved_label_text_view);
         riddleSolvedLabel.setTypeface(typefaceNormal);
 
-        //Riddle Solved CheckBox
+        // Riddle Solved CheckBox
         riddleSolvedCheckBox = (CheckBox) view.findViewById(R.id.riddle_solved_check_box);
         riddleSolvedCheckBox.setChecked(riddle.isSolved());
 
-        //Riddle Date Label TextView
+        // Riddle Date Label TextView
         TextView riddleDateSolvedLabelTextView = (TextView) view.findViewById(R.id.riddle_date_solved_label_text_view);
         riddleDateSolvedLabelTextView.setTypeface(typefaceNormal);
 
-        //Riddle Date Solved CheckBox
+        // Riddle Date Solved CheckBox
         riddleDateSolvedTextView = (TextView) view.findViewById(R.id.date_solved_text_view);
         riddleDateSolvedTextView.setTypeface(typefaceNormal);
         if (riddle.getDateSolved() != null) {
-            //Formats the Date into human-readable text
+            // Format the Date into human-readable text
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, MMMM dd, yyyy (HH:mm:ss)");
             Date date = riddle.getDateSolved();
             String formattedDate = simpleDateFormat.format(date);

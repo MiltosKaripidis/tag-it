@@ -52,9 +52,7 @@ public class RiddlePagerActivity extends ActionBarActivity {
             @Override
             public void onPageSelected(int i) {
                 Riddle riddle = riddles.get(i);
-                if (riddle.getTitle() != null) {
-                    setTitle(riddle.getTitle());
-                }
+                setTitle(riddle.getTitle());
             }
 
             @Override

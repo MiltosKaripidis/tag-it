@@ -19,8 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:textSize="42sp"
-        android:text="Karhades"/>
+        android:textSize="42sp"/>
 
     <!--Details-->
     <TextView
@@ -36,7 +35,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp">
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp">
 
         <TextView
             android:id="@+id/riddle_difficulty_label_text_view"
@@ -57,7 +57,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp">
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp">
 
         <TextView
             android:id="@+id/riddle_solved_label_text_view"
@@ -78,7 +79,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp">
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp">
 
         <TextView
             android:id="@+id/riddle_date_solved_label_text_view"
