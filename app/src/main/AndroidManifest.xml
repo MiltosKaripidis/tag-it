@@ -12,7 +12,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/puzzle"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:logo="@mipmap/puzzle"
+        android:theme="@style/Theme.AppCompat" >
         <activity
             android:name=".RiddleListActivity">
 
@@ -51,11 +52,16 @@
         </activity>
 
         <activity
-            android:name=".RiddlePagerActivity">
+            android:name=".RiddlePagerActivity"
+            android:label="@string/app_name">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".RiddleListActivity"/>
         </activity>
 
         <activity
-            android:name=".RiddleActivity">
+            android:name=".RiddleActivity"
+            android:label="@string/app_name">
         </activity>
 
     </application>

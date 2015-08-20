@@ -9,5 +9,6 @@
     <string name="riddles_title">Riddles</string>
     <string name="riddle_difficulty">Difficulty: \</string>
     <string name="riddle_title">Riddle Title</string>
+    <string name="new_riddle">New Riddle</string>
 
 </resources>

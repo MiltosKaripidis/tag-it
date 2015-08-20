@@ -22,7 +22,7 @@ public class AudioPlayer
         mediaPlayer.start();
     }
 
-    private void stop()
+    public void stop()
     {
         if(mediaPlayer != null)
         {

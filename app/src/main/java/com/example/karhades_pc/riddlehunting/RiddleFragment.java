@@ -4,8 +4,10 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -56,6 +58,14 @@ public class RiddleFragment extends Fragment {
         // Retain the fragment through configuration change.
         setRetainInstance(true);
 
+        // Tell the FragmentManager that this fragment should receive
+        // a call to onCreateOptionsMenu.
+        setHasOptionsMenu(true);
+
+        // Display the caret for an hierarchical navigation.
+        if(NavUtils.getParentActivityName(getActivity()) != null)
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         // Get the Tag ID either from the RiddleListFragment (onListClick) or
         // the NFC Tag Discovery.
         String tagId = getArguments().getString(EXTRA_TAG_ID);
@@ -71,9 +81,25 @@ public class RiddleFragment extends Fragment {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId())
+        {
+            case android.R.id.home:
+                // If there is a parent activity, navigate to it.
+                if(NavUtils.getParentActivityName(getActivity()) != null)
+                {
+                    NavUtils.navigateUpFromSameTask(getActivity());
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void solveRiddle()
     {
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(riddle.getTitle());
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(riddle.getTitle());
 
         riddle.setSolved(true);
         riddle.setDateSolved(new Date());
