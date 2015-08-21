@@ -12,10 +12,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/puzzle"
         android:label="@string/app_name"
-        android:logo="@mipmap/puzzle"
-        android:theme="@style/Theme.AppCompat" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name=".RiddleListActivity">
+            android:name=".MenuTabActivity"
+            android:label="@string/app_name">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,16 +52,24 @@
         </activity>
 
         <activity
+            android:name=".RiddleListActivity"
+            android:label="@string/app_name">
+        </activity>
+
+        <activity
             android:name=".RiddlePagerActivity"
             android:label="@string/app_name">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RiddleListActivity"/>
+                android:value=".MenuTabActivity"/>
         </activity>
 
         <activity
             android:name=".RiddleActivity"
             android:label="@string/app_name">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MenuTabActivity"/>
         </activity>
 
     </application>

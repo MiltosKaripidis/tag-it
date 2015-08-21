@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by Karhades - PC on 4/11/2015.
  */
-public class Riddle {
+class Riddle {
     private String title;
     private String text;
     private String difficulty;

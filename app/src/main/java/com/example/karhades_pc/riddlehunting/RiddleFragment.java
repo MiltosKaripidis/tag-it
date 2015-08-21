@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +14,9 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.karhades_pc.utils.AudioPlayer;
+import com.example.karhades_pc.utils.FontCache;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,7 +38,10 @@ public class RiddleFragment extends Fragment {
     private CheckBox riddleSolvedCheckBox;
     private TextView riddleDateSolvedTextView;
 
-    /** It must be called after the fragment is created and before it is added to the RiddleActivity.
+    private Toolbar toolbar;
+
+    /**
+     * It must be called after the fragment is created and before it is added to the RiddleActivity.
      *
      * @param tagId A String containing the Tag ID
      * @param nfcTagDiscovered A boolean indicating whether the RiddleActivity was started from NFC Tag discovery
@@ -61,10 +68,6 @@ public class RiddleFragment extends Fragment {
         // Tell the FragmentManager that this fragment should receive
         // a call to onCreateOptionsMenu.
         setHasOptionsMenu(true);
-
-        // Display the caret for an ancestral navigation.
-        if(NavUtils.getParentActivityName(getActivity()) != null)
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Get the Tag ID either from the RiddleListFragment (onListClick) or
         // the NFC Tag Discovery.
@@ -99,8 +102,6 @@ public class RiddleFragment extends Fragment {
 
     private void solveRiddle()
     {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(riddle.getTitle());
-
         riddle.setSolved(true);
         riddle.setDateSolved(new Date());
 
@@ -115,12 +116,33 @@ public class RiddleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_riddle, container, false);
 
+        setUpToolbar(view);
+
         initializeWidgets(view);
 
         return view;
     }
 
-    // Initialize the Widgets and wire custom fonts to them.
+    /**
+     * Helper method for setting up the tool bar.
+     *
+     * @param view A view needed for the findViewById() method
+     */
+    private void setUpToolbar(View view)
+    {
+        toolbar = (Toolbar) view.findViewById(R.id.tool_bar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        // Display the caret for an ancestral navigation.
+        if(NavUtils.getParentActivityName(getActivity()) != null)
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(riddle.getTitle());
+    }
+
+    /**
+     * Initialize the Widgets and wire custom fonts to them.
+     *
+     * @param view A view needed for the findViewById() method
+     */
     private void initializeWidgets(View view) {
         // Custom Fonts.
         Typeface typefaceTitle = FontCache.get("fonts/Capture_it.ttf", getActivity());

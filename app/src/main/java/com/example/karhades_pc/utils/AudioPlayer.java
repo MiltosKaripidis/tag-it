@@ -1,4 +1,4 @@
-package com.example.karhades_pc.riddlehunting;
+package com.example.karhades_pc.utils;
 
 import android.content.Context;
 import android.media.MediaPlayer;

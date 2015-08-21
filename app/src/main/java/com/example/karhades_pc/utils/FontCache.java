@@ -1,4 +1,4 @@
-package com.example.karhades_pc.riddlehunting;
+package com.example.karhades_pc.utils;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -7,7 +7,7 @@ import java.util.Hashtable;
 /**
  * Created by Karhades on 18-Aug-15.
  */
-class FontCache
+public class FontCache
 {
     private static Hashtable<String, Typeface> fontCache = new Hashtable<String, Typeface>();
 

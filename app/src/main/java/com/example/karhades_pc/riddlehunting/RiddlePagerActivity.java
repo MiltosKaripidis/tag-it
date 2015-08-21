@@ -18,6 +18,7 @@ public class RiddlePagerActivity extends AppCompatActivity {
 
     private ArrayList<Riddle> riddles;
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

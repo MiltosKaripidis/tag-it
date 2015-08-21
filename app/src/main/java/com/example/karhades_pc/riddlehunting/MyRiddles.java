@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by Karhades - PC on 4/14/2015.
  */
-public class MyRiddles {
+class MyRiddles {
 
     private static MyRiddles myRiddles;
     private Context context;

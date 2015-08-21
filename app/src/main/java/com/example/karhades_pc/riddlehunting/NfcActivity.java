@@ -10,7 +10,7 @@ import android.os.Bundle;
 /**
  * Created by Karhades on 18-Aug-15.
  */
-abstract class NfcActivity extends SingleFragmentActivity
+public abstract class NfcActivity extends SingleFragmentActivity
 {
     private NfcAdapter nfcAdapter;
     private PendingIntent nfcPendingIntent;

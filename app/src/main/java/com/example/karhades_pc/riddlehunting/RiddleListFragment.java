@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,6 +14,8 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.karhades_pc.utils.FontCache;
 
 import java.util.ArrayList;
 
@@ -33,8 +33,6 @@ public class RiddleListFragment extends ListFragment {
         // Tell the FragmentManager that this fragment should receive
         // a call to onCreateOptionsMenu.
         setHasOptionsMenu(true);
-
-        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
 
         getActivity().setTitle(R.string.riddles_title);
 
