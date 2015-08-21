@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 /**
  * Created by Karhades - PC on 4/15/2015.
  */
-public class RiddleListActivity extends NfcActivity
+public class RiddleListActivity extends SingleFragmentActivity
 {
     @Override
     protected Fragment createFragment()

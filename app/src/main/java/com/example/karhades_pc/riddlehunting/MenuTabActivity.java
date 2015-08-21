@@ -1,12 +1,10 @@
 package com.example.karhades_pc.riddlehunting;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.example.karhades_pc.slidingtablayout.SlidingTabLayout;
@@ -14,10 +12,8 @@ import com.example.karhades_pc.slidingtablayout.SlidingTabLayout;
 /**
  * Created by Karhades on 20-Aug-15.
  */
-public class MenuTabActivity extends AppCompatActivity
+public class MenuTabActivity extends NfcActivity
 {
-    private NfcHandler nfcHandler;
-
     private ViewPager viewPager;
     private Toolbar toolbar;
     private SlidingTabLayout slidingTabLayout;
@@ -29,15 +25,8 @@ public class MenuTabActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_menu_tab);
 
-        setupNFC();
         setupToolbar();
         setupTabMenu();
-    }
-
-    private void setupNFC()
-    {
-        nfcHandler = new NfcHandler(getApplication(), this);
-        nfcHandler.handleIntent(getIntent());
     }
 
     private void setupToolbar()
@@ -85,26 +74,5 @@ public class MenuTabActivity extends AppCompatActivity
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         slidingTabLayout.setDistributeEvenly(true);
         slidingTabLayout.setViewPager(viewPager);
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        nfcHandler.handleIntent(intent);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        nfcHandler.disableForegroundDispatch();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        nfcHandler.enableForegroundDispatch();
     }
 }

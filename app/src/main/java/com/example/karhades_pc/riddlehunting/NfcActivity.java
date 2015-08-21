@@ -6,11 +6,12 @@ import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 /**
  * Created by Karhades on 18-Aug-15.
  */
-public abstract class NfcActivity extends SingleFragmentActivity
+public class NfcActivity extends AppCompatActivity
 {
     private NfcAdapter nfcAdapter;
     private PendingIntent nfcPendingIntent;
@@ -55,7 +56,7 @@ public abstract class NfcActivity extends SingleFragmentActivity
     {
         // Creates an intent with tag data and delivers it
         // to this activity.
-        Intent intent = new Intent(this, RiddleListActivity.class);
+        Intent intent = new Intent(this, MenuTabActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         nfcPendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
