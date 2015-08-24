@@ -1,5 +1,4 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -17,7 +16,7 @@
         android:text="@string/riddle_title_label"
         android:textSize="34sp"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginRight="10dp" />
 
     <TextView
         android:id="@+id/riddle_text_view"

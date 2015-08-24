@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <item type="id" name="view_pager"/>
+    <item type="id" name="list_view_pager"/>
 
 </resources>

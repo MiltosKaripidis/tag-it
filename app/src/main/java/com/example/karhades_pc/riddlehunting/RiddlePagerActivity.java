@@ -24,7 +24,7 @@ public class RiddlePagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         viewPager = new ViewPager(this);
-        viewPager.setId(R.id.view_pager);
+        viewPager.setId(R.id.list_view_pager);
         setContentView(viewPager);
 
         riddles = MyRiddles.get(this).getRiddles();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.karhades_pc.slidingtablayout;
+package com.example.karhades_pc.sliding_tab_layout;
 
 import android.R;
 import android.content.Context;

@@ -1,9 +1,11 @@
 package com.example.karhades_pc.riddlehunting;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.karhades_pc.floating_action_button.ActionButton;
 import com.example.karhades_pc.utils.FontCache;
 
 import java.util.ArrayList;
@@ -25,6 +28,8 @@ import java.util.ArrayList;
 public class RiddleListFragment extends ListFragment {
 
     private ArrayList<Riddle> riddles;
+
+    private ActionButton actionButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,31 @@ public class RiddleListFragment extends ListFragment {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_riddle_list, container, false);
+
+        setupFloatingActionButton(view);
+
+        return view;
+    }
+
+    private void setupFloatingActionButton(View view)
+    {
+        actionButton = (ActionButton) view.findViewById(R.id.floating_action_button);
+        actionButton.setButtonColor(getResources().getColor(R.color.colorPrimary));
+        actionButton.setButtonColorPressed(getResources().getColor(R.color.colorPrimaryDark));
+        actionButton.setImageResource(R.mipmap.puzzle);
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), "Floating action button pressed!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
+        actionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
@@ -54,13 +84,17 @@ public class RiddleListFragment extends ListFragment {
         switch (item.getItemId())
         {
             case R.id.menu_item_new_riddle:
-                Toast.makeText(getActivity(), "New Riddle", Toast.LENGTH_SHORT).show();
+                if(actionButton.isHidden())
+                    actionButton.show();
+                else
+                    actionButton.hide();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    @TargetApi(23)
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Riddle riddle = (Riddle) getListAdapter().getItem(position);

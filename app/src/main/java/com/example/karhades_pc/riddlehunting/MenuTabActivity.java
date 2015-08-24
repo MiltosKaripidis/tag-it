@@ -1,5 +1,6 @@
 package com.example.karhades_pc.riddlehunting;
 
+import android.annotation.TargetApi;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -7,7 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 
-import com.example.karhades_pc.slidingtablayout.SlidingTabLayout;
+import com.example.karhades_pc.sliding_tab_layout.SlidingTabLayout;
 
 /**
  * Created by Karhades on 20-Aug-15.
@@ -31,21 +32,24 @@ public class MenuTabActivity extends NfcActivity
 
     private void setupToolbar()
     {
-        // Set up the Toolbar.
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        // Substitute the action bar for this toolbar.
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        // Set the navigation icon for the toolbar.
+        toolbar.setNavigationIcon(R.mipmap.ic_action_menu);
     }
 
+    @TargetApi(23)
+    @SuppressWarnings("deprecation")
     private void setupTabMenu()
     {
         // Tab names.
-        final String[] tabNames = {"HOME", "MY RIDDLES", "TAB 3"};
+        final String[] tabNames = {"HOME", "MY RIDDLES", "RANKING"};
 
         // The FragmentManager is needed for the view pager.
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        viewPager = (ViewPager) findViewById(R.id.menu_view_pager);
+        viewPager = (ViewPager) findViewById(R.id.view_pager);
         viewPager.setAdapter(new FragmentPagerAdapter(fragmentManager) {
             @Override
             public Fragment getItem(int position) {
@@ -53,7 +57,7 @@ public class MenuTabActivity extends NfcActivity
                     case 0:
                         return new RiddleListFragment();
                     case 1:
-                        return new RiddleFragment().newInstance("0421DC6AC82980", false);
+                        return new RiddleListFragment();
                     case 2:
                         return new RiddleFragment().newInstance("04BCE16AC82980", false);
                 }
@@ -71,8 +75,9 @@ public class MenuTabActivity extends NfcActivity
                 return tabNames[position];
             }
         });
-        slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+        slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tab_layout);
         slidingTabLayout.setDistributeEvenly(true);
         slidingTabLayout.setViewPager(viewPager);
+        slidingTabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimaryText));
     }
 }
