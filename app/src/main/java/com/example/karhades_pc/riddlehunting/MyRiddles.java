@@ -29,7 +29,10 @@ class MyRiddles {
         Riddle riddle_6 = new Riddle("Orange", "Quisque sed nisi dignissim, ornare urna sed, tempor...", "Medium", false, "04BCE16AC82984");
         Riddle riddle_7 = new Riddle("Gray", "Donec efficitur vitae ante a egestas. Quisque sed...", "Easy", false, "04BCE16AC82985");
         Riddle riddle_8 = new Riddle("Purple", "Donec ornare lacus a sapien maximus, eget semper...", "Hard", false, "04BCE16AC82986");
-
+        Riddle riddle_9 = new Riddle("Purple", "Donec ornare lacus a sapien maximus, eget semper...", "Hard", false, "04BCE16AC82986");
+        Riddle riddle_10 = new Riddle("Purple", "Donec ornare lacus a sapien maximus, eget semper...", "Hard", false, "04BCE16AC82986");
+        Riddle riddle_11 = new Riddle("Purple", "Donec ornare lacus a sapien maximus, eget semper...", "Hard", false, "04BCE16AC82986");
+        
         riddles.add(riddle_1);
         riddles.add(riddle_2);
         riddles.add(riddle_3);
@@ -38,6 +41,9 @@ class MyRiddles {
         riddles.add(riddle_6);
         riddles.add(riddle_7);
         riddles.add(riddle_8);
+        riddles.add(riddle_9);
+        riddles.add(riddle_10);
+        riddles.add(riddle_11);
     }
 
     //Creates a Single Object for this class (Singleton)

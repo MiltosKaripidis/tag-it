@@ -1,20 +1,21 @@
 package com.example.karhades_pc.riddlehunting;
 
-import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.example.karhades_pc.sliding_tab_layout.SlidingTabLayout;
 
 /**
  * Created by Karhades on 20-Aug-15.
  */
-public class MenuTabActivity extends NfcActivity
-{
+public class MenuActivity extends NfcActivity {
     private ViewPager viewPager;
     private Toolbar toolbar;
     private SlidingTabLayout slidingTabLayout;
@@ -22,27 +23,26 @@ public class MenuTabActivity extends NfcActivity
     @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT > 10) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        }
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_menu_tab);
+        setContentView(R.layout.activity_menu);
 
         setupToolbar();
         setupTabMenu();
+        setUpNavigationDrawer();
     }
 
-    private void setupToolbar()
-    {
+    private void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         // Substitute the action bar for this toolbar.
         setSupportActionBar(toolbar);
-        // Set the navigation icon for the toolbar.
-        toolbar.setNavigationIcon(R.mipmap.ic_action_menu);
     }
 
-    @TargetApi(23)
     @SuppressWarnings("deprecation")
-    private void setupTabMenu()
-    {
+    private void setupTabMenu() {
         // Tab names.
         final String[] tabNames = {"HOME", "MY RIDDLES", "RANKING"};
 
@@ -78,6 +78,18 @@ public class MenuTabActivity extends NfcActivity
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tab_layout);
         slidingTabLayout.setDistributeEvenly(true);
         slidingTabLayout.setViewPager(viewPager);
-        slidingTabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimaryText));
+        // Slider color.
+        slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            @Override
+            public int getIndicatorColor(int position) {
+                return getResources().getColor(R.color.colorAccent);
+            }
+        });
+    }
+
+    private void setUpNavigationDrawer() {
+        NavigationDrawerFragment fragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer_fragment);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.navigation_drawer_layout);
+        fragment.setUp(drawerLayout, toolbar);
     }
 }

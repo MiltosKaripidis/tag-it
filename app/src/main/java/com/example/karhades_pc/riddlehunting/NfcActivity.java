@@ -56,7 +56,7 @@ public class NfcActivity extends AppCompatActivity
     {
         // Creates an intent with tag data and delivers it
         // to this activity.
-        Intent intent = new Intent(this, MenuTabActivity.class);
+        Intent intent = new Intent(this, MenuActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         nfcPendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -74,12 +74,14 @@ public class NfcActivity extends AppCompatActivity
 
     public void enableForegroundDispatch()
     {
-        nfcAdapter.enableForegroundDispatch(this, nfcPendingIntent, filters, null);
+        if(nfcAdapter != null)
+            nfcAdapter.enableForegroundDispatch(this, nfcPendingIntent, filters, null);
     }
 
     public void disableForegroundDispatch()
     {
-        nfcAdapter.disableForegroundDispatch(this);
+        if(nfcAdapter != null)
+            nfcAdapter.disableForegroundDispatch(this);
     }
 
     // Gets the Tag ID and updates the appropriate riddle.

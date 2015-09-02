@@ -1,6 +1,7 @@
 package com.example.karhades_pc.riddlehunting;
 
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -43,7 +44,7 @@ public class RiddleFragment extends Fragment {
     /**
      * It must be called after the fragment is created and before it is added to the RiddleActivity.
      *
-     * @param tagId A String containing the Tag ID
+     * @param tagId            A String containing the Tag ID
      * @param nfcTagDiscovered A boolean indicating whether the RiddleActivity was started from NFC Tag discovery
      * @return A Fragment with the above arguments
      */
@@ -60,6 +61,9 @@ public class RiddleFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT > 10) {
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        }
         super.onCreate(savedInstanceState);
 
         // Retain the fragment through configuration change.
@@ -86,12 +90,10 @@ public class RiddleFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 // If there is a parent activity, navigate to it.
-                if(NavUtils.getParentActivityName(getActivity()) != null)
-                {
+                if (NavUtils.getParentActivityName(getActivity()) != null) {
                     NavUtils.navigateUpFromSameTask(getActivity());
                 }
                 return true;
@@ -100,8 +102,7 @@ public class RiddleFragment extends Fragment {
         }
     }
 
-    private void solveRiddle()
-    {
+    private void solveRiddle() {
         riddle.setSolved(true);
         riddle.setDateSolved(new Date());
 
@@ -128,14 +129,13 @@ public class RiddleFragment extends Fragment {
      *
      * @param view A view needed for the findViewById() method
      */
-    private void setUpToolbar(View view)
-    {
+    private void setUpToolbar(View view) {
         toolbar = (Toolbar) view.findViewById(R.id.tool_bar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         // Display the caret for an ancestral navigation.
-        if(NavUtils.getParentActivityName(getActivity()) != null)
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(riddle.getTitle());
+        if (NavUtils.getParentActivityName(getActivity()) != null)
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(riddle.getTitle());
     }
 
     /**

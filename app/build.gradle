@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.karhades_pc.riddlehunting"
-        minSdkVersion 15
+        minSdkVersion 10
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -24,4 +24,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.0'
     compile 'com.android.support:cardview-v7:23.0.0'
     compile 'com.github.shell-software:fab:1.1.2'
+    compile 'com.android.support:recyclerview-v7:23.0.0'
+    compile 'com.android.support:support-v4:23.0.0'
 }

@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:background="@drawable/touch_effect"
+    android:clickable="true"
+    android:gravity="center">
+
+    <CheckBox
+        android:id="@+id/list_item_solved_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:focusable="false"
+        android:paddingLeft="16dp" />
+
+    <TextView
+        android:id="@+id/list_item_title_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="72dp"
+        android:text="@string/riddle_title"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/list_item_difficulty_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:paddingRight="16dp"
+        android:textSize="22sp" />
+
+</RelativeLayout>
