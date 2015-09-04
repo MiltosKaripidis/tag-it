@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -107,7 +108,8 @@ public class RiddleFragment extends Fragment {
         riddle.setDateSolved(new Date());
 
         // Play a winning sound.
-        audioPlayer.play(getActivity(), R.raw.cheering);
+        // TODO Uncomment the cheering sound.
+        //audioPlayer.play(getActivity(), R.raw.cheering);
 
         Toast.makeText(getActivity(), "Riddle " + riddle.getTitle() + " was successfully solved!", Toast.LENGTH_LONG).show();
     }
@@ -118,7 +120,6 @@ public class RiddleFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_riddle, container, false);
 
         setUpToolbar(view);
-
         initializeWidgets(view);
 
         return view;

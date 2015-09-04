@@ -1,12 +1,16 @@
 package com.example.karhades_pc.riddlehunting;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.karhades_pc.floating_action_button.ActionButton;
+import com.example.karhades_pc.nfc.NfcHandler;
 import com.example.karhades_pc.utils.FontCache;
 
 import java.util.ArrayList;
@@ -31,6 +36,8 @@ public class RiddleListFragment extends Fragment {
 
     private ActionButton actionButton;
     private RecyclerView recyclerView;
+
+    private Dialog alertDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,14 +80,54 @@ public class RiddleListFragment extends Fragment {
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "Floating action button pressed!", Toast.LENGTH_SHORT).show();
                 actionButton.setHideAnimation(ActionButton.Animations.SCALE_DOWN);
                 actionButton.hide();
                 actionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
+
+                NfcHandler.enableTagWriteMode();
+                alertDialog = onCreateDialog();
+                alertDialog.show();
+
+                NfcHandler.get().setOnTagWriteListener(new NfcHandler.TagWriteListener() {
+                    @Override
+                    public void onTagWritten(int status) {
+                        Log.d("RiddleListFragment", "onTagWritten!");
+                        alertDialog.dismiss();
+
+                        if(status == NfcHandler.TagWriteListener.STATUS_OK)
+                        {
+                            Toast.makeText(getActivity(), "Tag was written!", Toast.LENGTH_SHORT).show();
+                        }
+                        else if (status == NfcHandler.TagWriteListener.STATUS_ERROR)
+                        {
+                            Toast.makeText(getActivity(), "There was a problem!!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
         actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
         actionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
+    }
+
+    private Dialog onCreateDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle("Nfc Write Mode")
+                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+
+                    }
+                })
+                .setMessage("Touch the tag to write the information inserted.")
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+        return alertDialog.create();
     }
 
     @Override

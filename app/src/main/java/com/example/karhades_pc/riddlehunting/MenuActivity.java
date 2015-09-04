@@ -1,5 +1,6 @@
 package com.example.karhades_pc.riddlehunting;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,20 +8,21 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.example.karhades_pc.nfc.NfcHandler;
 import com.example.karhades_pc.sliding_tab_layout.SlidingTabLayout;
 
 /**
  * Created by Karhades on 20-Aug-15.
  */
-public class MenuActivity extends NfcActivity {
+public class MenuActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private Toolbar toolbar;
     private SlidingTabLayout slidingTabLayout;
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT > 10) {
@@ -33,6 +35,32 @@ public class MenuActivity extends NfcActivity {
         setupToolbar();
         setupTabMenu();
         setUpNavigationDrawer();
+        setupNFC();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        NfcHandler.get().disableForegroundDispatch();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        NfcHandler.get().handleDiscoveredTag(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        NfcHandler.get().enableForegroundDispatch();
+    }
+
+    private void setupNFC() {
+        NfcHandler.get().setupNfcHandler(this, getIntent());
     }
 
     private void setupToolbar() {
