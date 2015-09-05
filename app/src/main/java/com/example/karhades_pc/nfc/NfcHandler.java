@@ -69,6 +69,19 @@ public class NfcHandler
     private NfcHandler() {}
 
     /**
+     * If the NfcHandler object exists, it returns it, else it creates
+     * a new one.
+     *
+     * @return The NfcHandler object.
+     */
+    public static NfcHandler get()
+    {
+        if(nfcHandler == null)
+            nfcHandler = new NfcHandler();
+        return nfcHandler;
+    }
+
+    /**
      * Setup the NfcAdapter and the foreground tag dispatch system.
      *
      * @param activity The activity needed for the android system.
@@ -83,19 +96,6 @@ public class NfcHandler
         handleDiscoveredTag(intent);
 
         setupForegroundDispatch();
-    }
-
-    /**
-     * If the NfcHandler object exists, it returns it, else it creates
-     * a new one.
-     *
-     * @return The NfcHandler object.
-     */
-    public static NfcHandler get()
-    {
-        if(nfcHandler == null)
-            nfcHandler = new NfcHandler();
-        return nfcHandler;
     }
 
     /**

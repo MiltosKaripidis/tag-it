@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +32,7 @@ public class RiddleFragment extends Fragment {
 
     private Riddle riddle;
     private boolean nfcTagIsDiscovered;
-    private AudioPlayer audioPlayer = new AudioPlayer();
+    private AudioPlayer audioPlayer;
 
     private TextView riddleDifficultyTextView;
     private TextView riddleTextView;
@@ -45,9 +44,9 @@ public class RiddleFragment extends Fragment {
     /**
      * It must be called after the fragment is created and before it is added to the RiddleActivity.
      *
-     * @param tagId            A String containing the Tag ID
-     * @param nfcTagDiscovered A boolean indicating whether the RiddleActivity was started from NFC Tag discovery
-     * @return A Fragment with the above arguments
+     * @param tagId            A String containing the Tag ID.
+     * @param nfcTagDiscovered A boolean indicating whether the RiddleActivity was started from NFC Tag discovery.
+     * @return A Fragment with the above arguments.
      */
     public static RiddleFragment newInstance(String tagId, boolean nfcTagDiscovered) {
         Bundle bundle = new Bundle();
@@ -62,10 +61,11 @@ public class RiddleFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (Build.VERSION.SDK_INT > 10) {
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        }
+        enterFullScreen();
+
         super.onCreate(savedInstanceState);
+
+        setupAudioPlayer();
 
         // Retain the fragment through configuration change.
         setRetainInstance(true);
@@ -74,18 +74,44 @@ public class RiddleFragment extends Fragment {
         // a call to onCreateOptionsMenu.
         setHasOptionsMenu(true);
 
+        getRiddleFromArguments();
+        solveRiddle();
+    }
+
+    private void enterFullScreen() {
+        if (Build.VERSION.SDK_INT > 10) {
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        }
+    }
+
+    private void setupAudioPlayer() {
+        // Initialize the audio player.
+        audioPlayer = new AudioPlayer();
+    }
+
+    private void getRiddleFromArguments() {
         // Get the Tag ID either from the RiddleListFragment (onListClick) or
         // the NFC Tag Discovery.
         String tagId = getArguments().getString(EXTRA_TAG_ID);
+
+        // Get the riddle through it's tag id from the arguments.
+        riddle = MyRiddles.get(getActivity()).getRiddle(tagId);
+    }
+
+    private void solveRiddle() {
         // Check whether a NFC Tag was discovered and solve the
         // appropriate Riddle.
         nfcTagIsDiscovered = getArguments().getBoolean(EXTRA_NFC_TAG_DISCOVERED);
 
-        // Get the riddle through it's tag id from the arguments.
-        riddle = MyRiddles.get(getActivity()).getRiddle(tagId);
-
         if (nfcTagIsDiscovered) {
-            solveRiddle();
+            riddle.setSolved(true);
+            riddle.setDateSolved(new Date());
+
+            // Play a winning sound.
+            // TODO Uncomment the cheering sound.
+            //audioPlayer.play(getActivity(), R.raw.cheering);
+
+            Toast.makeText(getActivity(), "Riddle " + riddle.getTitle() + " was successfully solved!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -101,17 +127,6 @@ public class RiddleFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void solveRiddle() {
-        riddle.setSolved(true);
-        riddle.setDateSolved(new Date());
-
-        // Play a winning sound.
-        // TODO Uncomment the cheering sound.
-        //audioPlayer.play(getActivity(), R.raw.cheering);
-
-        Toast.makeText(getActivity(), "Riddle " + riddle.getTitle() + " was successfully solved!", Toast.LENGTH_LONG).show();
     }
 
     @Nullable
