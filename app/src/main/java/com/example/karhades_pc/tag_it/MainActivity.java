@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                     case 1:
                         return new TagFragment().newInstance("04BCE16AC82980", false);
                     case 2:
-                        return new TrackingGameFragment();
+                        return new CreateGameFragment();
                 }
 
                 return null;

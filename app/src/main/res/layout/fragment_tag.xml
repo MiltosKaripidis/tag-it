@@ -1,69 +1,77 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <!-- Fake status bar due to the transparent and
-        full screen default status bar.-->
-    <FrameLayout
+    <ImageView
+        android:id="@+id/image_view"
         android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:background="@color/colorPrimaryDark"
-        android:elevation="10dp" />
+        android:layout_height="280dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/illidan" />
 
-    <include
-        android:id="@+id/tool_bar"
-        layout="@layout/app_bar" />
-
-    <!--Tag-->
-    <TextView
-        android:id="@+id/riddle_title_text_view"
-        style="?android:listSeparatorTextViewStyle"
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@id/tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/tag_title_label"
-        android:textSize="34sp" />
-
-    <TextView
-        android:id="@+id/riddle_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:textSize="42sp" />
-
-    <!--Details-->
-    <TextView
-        android:id="@+id/riddle_details_title_text_view"
-        style="?android:listSeparatorTextViewStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginTop="24dp"
-        android:text="@string/tag_details_label"
-        android:textSize="34sp" />
+        android:background="@android:color/transparent"
+        android:navigationIcon="@mipmap/ic_action_menu_white"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+
+    <FrameLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_below="@+id/image_view"
+        android:background="@color/colorPrimary"
+        android:paddingLeft="16dp">
+
+        <TextView
+            android:id="@+id/riddle_details_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|left"
+            android:text="@string/tag_details_label"
+            android:textColor="@android:color/white"
+            android:textSize="34dp" />
+    </FrameLayout>
+
+    <com.example.karhades_pc.floating_action_button.ActionButton
+        android:id="@+id/full_screen_floating_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/image_view"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="-50dp"
+        android:visibility="invisible"
+        app:button_color="@color/colorAccent"
+        app:button_colorPressed="@color/colorAccentDark"
+        app:image="@mipmap/fullscreen"
+        app:rippleEffect_enabled="true" />
 
     <!--Difficulty-->
     <LinearLayout
+        android:id="@+id/difficulty_linear_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp">
+        android:layout_below="@+id/frame_layout"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="16dp">
 
         <TextView
             android:id="@+id/riddle_difficulty_label_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tag_difficulty"
-            android:textSize="30sp" />
+            android:textSize="34sp" />
 
         <TextView
             android:id="@+id/riddle_difficulty_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="30sp" />
+            android:textColor="@color/colorAccent"
+            android:textSize="34sp" />
 
     </LinearLayout>
 
@@ -71,6 +79,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/difficulty_linear_layout"
         android:layout_marginLeft="30dp">
 
         <TextView
@@ -78,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tag_solved"
-            android:textSize="30sp" />
+            android:textSize="34sp" />
 
         <CheckBox
             android:id="@+id/riddle_solved_check_box"
@@ -88,24 +97,4 @@
 
     </LinearLayout>
 
-    <!--Date Solved-->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp">
-
-        <TextView
-            android:id="@+id/riddle_date_solved_label_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tag_date_solved"
-            android:textSize="30sp" />
-
-        <TextView
-            android:id="@+id/date_solved_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30sp" />
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
