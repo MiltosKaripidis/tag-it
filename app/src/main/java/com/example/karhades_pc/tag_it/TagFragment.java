@@ -1,4 +1,4 @@
-package com.example.karhades_pc.riddlehunting;
+package com.example.karhades_pc.tag_it;
 
 import android.graphics.Typeface;
 import android.os.Build;
@@ -26,12 +26,12 @@ import java.util.Date;
 /**
  * Created by Karhades - PC on 4/14/2015.
  */
-public class RiddleFragment extends Fragment {
+public class TagFragment extends Fragment {
 
     public static final String EXTRA_TAG_ID = "com.example.karhades_pc.nfctester.tag_id";
     public static final String EXTRA_NFC_TAG_DISCOVERED = "com.example.karhades_pc.nfctester.nfc_tag_discovered";
 
-    private Riddle riddle;
+    private Tag tag;
     private boolean nfcTagIsDiscovered;
     private AudioPlayer audioPlayer;
 
@@ -50,12 +50,12 @@ public class RiddleFragment extends Fragment {
      * @param nfcTagDiscovered A boolean indicating whether it was started from NFC Tag discovery.
      * @return A Fragment with the above arguments.
      */
-    public static RiddleFragment newInstance(String tagId, boolean nfcTagDiscovered) {
+    public static TagFragment newInstance(String tagId, boolean nfcTagDiscovered) {
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_TAG_ID, tagId);
         bundle.putBoolean(EXTRA_NFC_TAG_DISCOVERED, nfcTagDiscovered);
 
-        RiddleFragment fragment = new RiddleFragment();
+        TagFragment fragment = new TagFragment();
         fragment.setArguments(bundle);
 
         return fragment;
@@ -104,28 +104,28 @@ public class RiddleFragment extends Fragment {
     }
 
     private void getRiddleFromArguments() {
-        // Get the Tag ID either from the RiddleListFragment (onListClick) or
+        // Get the Tag ID either from the TrackingGameFragment (onListClick) or
         // the NFC Tag Discovery.
         String tagId = getArguments().getString(EXTRA_TAG_ID);
 
-        // Get the riddle through it's tag id from the arguments.
-        riddle = MyRiddles.get(getActivity()).getRiddle(tagId);
+        // Get the tag through it's tag id from the arguments.
+        tag = MyTags.get(getActivity()).getRiddle(tagId);
     }
 
     private void solveRiddle() {
         // Check whether a NFC Tag was discovered and solve the
-        // appropriate Riddle.
+        // appropriate Tag.
         nfcTagIsDiscovered = getArguments().getBoolean(EXTRA_NFC_TAG_DISCOVERED);
 
         if (nfcTagIsDiscovered) {
-            riddle.setSolved(true);
-            riddle.setDateSolved(new Date());
+            tag.setSolved(true);
+            tag.setDateSolved(new Date());
 
             // Play a winning sound.
             // TODO: Uncomment the cheering sound.
             //audioPlayer.play(getActivity(), R.raw.cheering);
 
-            Toast.makeText(getActivity(), "Riddle " + riddle.getTitle() + " was successfully solved!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Tag " + tag.getTitle() + " was successfully solved!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -146,7 +146,7 @@ public class RiddleFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_riddle1, container, false);
+        View view = inflater.inflate(R.layout.fragment_tag1, container, false);
 
         setupToolbar(view);
         setupFloatingActionButton(view);
@@ -166,7 +166,7 @@ public class RiddleFragment extends Fragment {
         // Display the caret for an ancestral navigation.
         if (NavUtils.getParentActivityName(getActivity()) != null)
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(riddle.getTitle());
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tag.getTitle());
     }
 
     /**
@@ -180,47 +180,47 @@ public class RiddleFragment extends Fragment {
         Typeface typefaceBold = FontCache.get("fonts/amatic_bold.ttf", getActivity());
         Typeface typefaceNormal = FontCache.get("fonts/amatic_normal.ttf", getActivity());
 
-        // Riddle Title TextView
+        // Tag Title TextView
         //TextView riddleTitleTextView = (TextView) view.findViewById(R.id.riddle_title_text_view);
         //riddleTitleTextView.setTypeface(typefaceTitle);
 
-        // Riddle Details Title TextView
+        // Tag Details Title TextView
         TextView riddleDetailsTitleTextView = (TextView) view.findViewById(R.id.riddle_details_title_text_view);
         riddleDetailsTitleTextView.setTypeface(typefaceTitle);
 
-        // Riddle TextView
+        // Tag TextView
 //        riddleTextView = (TextView) view.findViewById(R.id.riddle_text_view);
-//        riddleTextView.setText(riddle.getText());
+//        riddleTextView.setText(tag.getText());
 //        riddleTextView.setTypeface(typefaceBold);
 
-        // Riddle Difficulty Label TextView
+        // Tag Difficulty Label TextView
         TextView riddleDifficultyLabel = (TextView) view.findViewById(R.id.riddle_difficulty_label_text_view);
         riddleDifficultyLabel.setTypeface(typefaceNormal);
 
-        // Riddle Difficulty TextView
+        // Tag Difficulty TextView
         riddleDifficultyTextView = (TextView) view.findViewById(R.id.riddle_difficulty_text_view);
-        riddleDifficultyTextView.setText(riddle.getDifficulty());
+        riddleDifficultyTextView.setText(tag.getDifficulty());
         riddleDifficultyTextView.setTypeface(typefaceNormal);
 
-        // Riddle Solved Label TextView
+        // Tag Solved Label TextView
         TextView riddleSolvedLabel = (TextView) view.findViewById(R.id.riddle_solved_label_text_view);
         riddleSolvedLabel.setTypeface(typefaceNormal);
 
-        // Riddle Solved CheckBox
+        // Tag Solved CheckBox
         riddleSolvedCheckBox = (CheckBox) view.findViewById(R.id.riddle_solved_check_box);
-        riddleSolvedCheckBox.setChecked(riddle.isSolved());
+        riddleSolvedCheckBox.setChecked(tag.isSolved());
 
-        // Riddle Date Label TextView
+        // Tag Date Label TextView
 //        TextView riddleDateSolvedLabelTextView = (TextView) view.findViewById(R.id.riddle_date_solved_label_text_view);
 //        riddleDateSolvedLabelTextView.setTypeface(typefaceNormal);
 //
-//        // Riddle Date Solved CheckBox
+//        // Tag Date Solved CheckBox
 //        riddleDateSolvedTextView = (TextView) view.findViewById(R.id.date_solved_text_view);
 //        riddleDateSolvedTextView.setTypeface(typefaceNormal);
-//        if (riddle.getDateSolved() != null) {
+//        if (tag.getDateSolved() != null) {
 //            // Format the Date into human-readable text
 //            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, MMMM dd, yyyy (HH:mm:ss)");
-//            Date date = riddle.getDateSolved();
+//            Date date = tag.getDateSolved();
 //            String formattedDate = simpleDateFormat.format(date);
 //            riddleDateSolvedTextView.setText(formattedDate);
 //        }

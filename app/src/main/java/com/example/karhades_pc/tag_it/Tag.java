@@ -1,4 +1,4 @@
-package com.example.karhades_pc.riddlehunting;
+package com.example.karhades_pc.tag_it;
 
 import java.util.Date;
 import java.util.UUID;
@@ -6,7 +6,7 @@ import java.util.UUID;
 /**
  * Created by Karhades - PC on 4/11/2015.
  */
-public class Riddle {
+public class Tag {
     private String title;
     private UUID id;
     private String text;
@@ -25,7 +25,7 @@ public class Riddle {
         this.picture = picture;
     }
 
-    public Riddle(String title, String text, String difficulty, boolean solved, String tagId) {
+    public Tag(String title, String text, String difficulty, boolean solved, String tagId) {
         this.title = title;
         this.text = text;
         this.difficulty = difficulty;

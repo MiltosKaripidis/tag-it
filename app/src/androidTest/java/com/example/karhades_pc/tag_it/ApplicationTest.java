@@ -1,4 +1,4 @@
-package com.example.karhades_pc.riddlehunting;
+package com.example.karhades_pc.tag_it;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

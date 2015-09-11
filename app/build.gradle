@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.example.karhades_pc.riddlehunting"
+        applicationId "com.example.karhades_pc.tag_it"
         minSdkVersion 10
         targetSdkVersion 23
         versionCode 1

@@ -1,4 +1,4 @@
-package com.example.karhades_pc.riddlehunting;
+package com.example.karhades_pc.tag_it;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,20 +12,20 @@ import java.util.ArrayList;
 /**
  * Created by Karhades - PC on 4/15/2015.
  */
-public class RiddlePagerActivity extends AppCompatActivity {
+public class TagPagerActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
 
     private String tagId;
     private boolean nfcDiscovered;
-    private ArrayList<Riddle> riddles;
+    private ArrayList<Tag> tags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Get the riddles from MyRiddles.
-        riddles = MyRiddles.get(this).getRiddles();
+        // Get the tags from MyTags.
+        tags = MyTags.get(this).getTags();
 
         getIntentExtras();
 
@@ -35,12 +35,12 @@ public class RiddlePagerActivity extends AppCompatActivity {
     }
 
     private void getIntentExtras() {
-        // Gets the Tag ID either from the onListClick() of RiddleListFragment
+        // Gets the Tag ID either from the onListClick() of TrackingGameFragment
         // or the startActivityFromNfc() of NfcHandler.
-        tagId = getIntent().getStringExtra(RiddleFragment.EXTRA_TAG_ID);
+        tagId = getIntent().getStringExtra(TagFragment.EXTRA_TAG_ID);
 
         // Get a boolean value whether the intent was sent from NfcHandler.
-        nfcDiscovered = getIntent().getBooleanExtra(RiddleFragment.EXTRA_NFC_TAG_DISCOVERED, false);
+        nfcDiscovered = getIntent().getBooleanExtra(TagFragment.EXTRA_NFC_TAG_DISCOVERED, false);
     }
 
     @SuppressWarnings("deprecation")
@@ -53,16 +53,16 @@ public class RiddlePagerActivity extends AppCompatActivity {
         viewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
             @Override
             public Fragment getItem(int i) {
-                Riddle riddle = riddles.get(i);
+                Tag tag = tags.get(i);
 
-                Fragment fragment = RiddleFragment.newInstance(riddle.getTagId(), nfcDiscovered);
+                Fragment fragment = TagFragment.newInstance(tag.getTagId(), nfcDiscovered);
                 nfcDiscovered = false;
                 return fragment;
             }
 
             @Override
             public int getCount() {
-                return riddles.size();
+                return tags.size();
             }
         });
 
@@ -74,8 +74,8 @@ public class RiddlePagerActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int i) {
-                Riddle riddle = riddles.get(i);
-                setTitle(riddle.getTitle());
+                Tag tag = tags.get(i);
+                setTitle(tag.getTitle());
             }
 
             @Override
@@ -84,8 +84,8 @@ public class RiddlePagerActivity extends AppCompatActivity {
             }
         });
 
-        for (int i = 0; i < riddles.size(); i++) {
-            if (riddles.get(i).getTagId().equals(tagId)) {
+        for (int i = 0; i < tags.size(); i++) {
+            if (tags.get(i).getTagId().equals(tagId)) {
                 viewPager.setCurrentItem(i);
                 break;
             }

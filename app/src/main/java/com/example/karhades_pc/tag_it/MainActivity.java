@@ -1,4 +1,4 @@
-package com.example.karhades_pc.riddlehunting;
+package com.example.karhades_pc.tag_it;
 
 import android.content.Intent;
 import android.os.Build;
@@ -18,7 +18,7 @@ import com.example.karhades_pc.sliding_tab_layout.SlidingTabLayout;
 /**
  * Created by Karhades on 20-Aug-15.
  */
-public class MenuActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private Toolbar toolbar;
     private SlidingTabLayout slidingTabLayout;
@@ -30,7 +30,7 @@ public class MenuActivity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_menu);
+        setContentView(R.layout.activity_main);
 
         setupToolbar();
         setupTabMenu();
@@ -72,7 +72,7 @@ public class MenuActivity extends AppCompatActivity {
     @SuppressWarnings("deprecation")
     private void setupTabMenu() {
         // Tab names.
-        final String[] tabNames = {"CURRENT", "SHARE", "CREATE"};
+        final String[] tabNames = {"TRACKING", "SHARE", "CREATE"};
 
         // The FragmentManager is needed for the view pager.
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -83,11 +83,11 @@ public class MenuActivity extends AppCompatActivity {
             public Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        return new RiddleListFragment();
+                        return new TrackingGameFragment();
                     case 1:
-                        return new RiddleFragment().newInstance("04BCE16AC82980", false);
+                        return new TagFragment().newInstance("04BCE16AC82980", false);
                     case 2:
-                        return new RiddleListFragment();
+                        return new TrackingGameFragment();
                 }
 
                 return null;

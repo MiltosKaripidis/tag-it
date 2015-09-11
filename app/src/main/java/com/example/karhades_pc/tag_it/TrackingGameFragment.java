@@ -1,4 +1,4 @@
-package com.example.karhades_pc.riddlehunting;
+package com.example.karhades_pc.tag_it;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -31,9 +31,9 @@ import java.util.ArrayList;
 /**
  * Created by Karhades - PC on 4/15/2015.
  */
-public class RiddleListFragment extends Fragment {
+public class TrackingGameFragment extends Fragment {
 
-    private ArrayList<Riddle> riddles;
+    private ArrayList<Tag> tags;
 
     private ActionButton actionButton;
     private RecyclerView recyclerView;
@@ -43,7 +43,7 @@ public class RiddleListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        riddles = MyRiddles.get(getActivity()).getRiddles();
+        tags = MyTags.get(getActivity()).getTags();
 
         // Tell the FragmentManager that this fragment should receive
         // a call to onCreateOptionsMenu.
@@ -70,7 +70,7 @@ public class RiddleListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_riddle_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_tracking_game, container, false);
 
         setupRecyclerView(view);
         setupFloatingActionButton(view);
@@ -109,7 +109,7 @@ public class RiddleListFragment extends Fragment {
                 NfcHandler.get().setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
                     @Override
                     public void onTagWritten(int status) {
-                        Log.d("RiddleListFragment", "onTagWritten!");
+                        Log.d("TrackingGameFragment", "onTagWritten!");
                         alertDialog.dismiss();
 
                         if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
@@ -152,7 +152,7 @@ public class RiddleListFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        // Refresh the Riddle list.
+        // Refresh the Tag list.
         recyclerView.getAdapter().notifyDataSetChanged();
 
         // Floating Action Button animation on show after a period of time.
@@ -170,7 +170,7 @@ public class RiddleListFragment extends Fragment {
     }
 
     private class RiddleHolder extends RecyclerView.ViewHolder {
-        private Riddle riddle;
+        private Tag tag;
         private ImageView imageView;
         private TextView titleTextView;
         private TextView difficultyLabelTextView;
@@ -182,8 +182,8 @@ public class RiddleListFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), RiddlePagerActivity.class);
-                    intent.putExtra(RiddleFragment.EXTRA_TAG_ID, riddle.getTagId());
+                    Intent intent = new Intent(getActivity(), TagPagerActivity.class);
+                    intent.putExtra(TagFragment.EXTRA_TAG_ID, tag.getTagId());
                     startActivity(intent);
                 }
             });
@@ -195,44 +195,44 @@ public class RiddleListFragment extends Fragment {
             solvedCheckBox = (CheckBox) view.findViewById(R.id.list_item_solved_check_box);
         }
 
-        public void bindRiddle(Riddle riddle) {
+        public void bindRiddle(Tag tag) {
             // Custom Fonts.
             Typeface typefaceBold = FontCache.get("fonts/Capture_it.ttf", getActivity());
             Typeface typefaceNormal = FontCache.get("fonts/amatic_bold.ttf", getActivity());
 
-            this.riddle = riddle;
+            this.tag = tag;
 
 
-            titleTextView.setText(riddle.getTitle());
+            titleTextView.setText(tag.getTitle());
             titleTextView.setTypeface(typefaceBold);
 
             //difficultyLabelTextView.setTypeface(typefaceNormal);
 
-            difficultyTextView.setText(riddle.getDifficulty());
+            difficultyTextView.setText(tag.getDifficulty());
             difficultyTextView.setTypeface(typefaceNormal);
             difficultyTextView.setTextColor(getResources().getColor(R.color.colorAccent));
 
-            solvedCheckBox.setChecked(riddle.isSolved());
+            solvedCheckBox.setChecked(tag.isSolved());
         }
     }
 
     private class RiddleAdapter extends RecyclerView.Adapter<RiddleHolder> {
         @Override
         public RiddleHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_riddle2, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_tag2, viewGroup, false);
 
             return new RiddleHolder(view);
         }
 
         @Override
         public void onBindViewHolder(RiddleHolder riddleHolder, int i) {
-            Riddle riddle = riddles.get(i);
-            riddleHolder.bindRiddle(riddle);
+            Tag tag = tags.get(i);
+            riddleHolder.bindRiddle(tag);
         }
 
         @Override
         public int getItemCount() {
-            return riddles.size();
+            return tags.size();
         }
     }
 }

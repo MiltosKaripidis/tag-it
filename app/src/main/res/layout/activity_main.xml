@@ -39,7 +39,7 @@
 
     <fragment
         android:id="@+id/navigation_drawer_fragment"
-        android:name="com.example.karhades_pc.riddlehunting.NavigationDrawerFragment"
+        android:name="com.example.karhades_pc.tag_it.NavigationDrawerFragment"
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"

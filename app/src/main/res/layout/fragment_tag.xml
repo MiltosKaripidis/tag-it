@@ -15,7 +15,7 @@
         android:id="@+id/tool_bar"
         layout="@layout/app_bar" />
 
-    <!--Riddle-->
+    <!--Tag-->
     <TextView
         android:id="@+id/riddle_title_text_view"
         style="?android:listSeparatorTextViewStyle"
@@ -24,7 +24,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:text="@string/riddle_title_label"
+        android:text="@string/tag_title_label"
         android:textSize="34sp" />
 
     <TextView
@@ -43,7 +43,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="24dp"
-        android:text="@string/riddle_details_label"
+        android:text="@string/tag_details_label"
         android:textSize="34sp" />
 
     <!--Difficulty-->
@@ -56,7 +56,7 @@
             android:id="@+id/riddle_difficulty_label_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/riddle_difficulty"
+            android:text="@string/tag_difficulty"
             android:textSize="30sp" />
 
         <TextView
@@ -77,7 +77,7 @@
             android:id="@+id/riddle_solved_label_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/riddle_solved"
+            android:text="@string/tag_solved"
             android:textSize="30sp" />
 
         <CheckBox
@@ -98,7 +98,7 @@
             android:id="@+id/riddle_date_solved_label_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/riddle_date_solved"
+            android:text="@string/tag_date_solved"
             android:textSize="30sp" />
 
         <TextView

@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|left"
-            android:text="@string/riddle_details_label"
+            android:text="@string/tag_details_label"
             android:textColor="@android:color/white"
             android:textSize="34dp" />
     </FrameLayout>
@@ -63,7 +63,7 @@
             android:id="@+id/riddle_difficulty_label_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/riddle_difficulty"
+            android:text="@string/tag_difficulty"
             android:textSize="34sp" />
 
         <TextView
@@ -86,7 +86,7 @@
             android:id="@+id/riddle_solved_label_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/riddle_solved"
+            android:text="@string/tag_solved"
             android:textSize="34sp" />
 
         <CheckBox
