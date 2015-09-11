@@ -3,6 +3,7 @@ package com.example.karhades_pc.riddlehunting;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
@@ -16,10 +17,10 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.karhades_pc.floating_action_button.ActionButton;
 import com.example.karhades_pc.utils.AudioPlayer;
 import com.example.karhades_pc.utils.FontCache;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -40,12 +41,13 @@ public class RiddleFragment extends Fragment {
     private TextView riddleDateSolvedTextView;
 
     private Toolbar toolbar;
+    private ActionButton actionButton;
 
     /**
-     * It must be called after the fragment is created and before it is added to the RiddleActivity.
+     * It must be called after the fragment is created and before it is added to the hosting activity.
      *
      * @param tagId            A String containing the Tag ID.
-     * @param nfcTagDiscovered A boolean indicating whether the RiddleActivity was started from NFC Tag discovery.
+     * @param nfcTagDiscovered A boolean indicating whether it was started from NFC Tag discovery.
      * @return A Fragment with the above arguments.
      */
     public static RiddleFragment newInstance(String tagId, boolean nfcTagDiscovered) {
@@ -89,6 +91,18 @@ public class RiddleFragment extends Fragment {
         audioPlayer = new AudioPlayer();
     }
 
+    private void setupFloatingActionButton(View view) {
+        actionButton = (ActionButton) view.findViewById(R.id.full_screen_floating_action_button);
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Full Screen!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        actionButton.setHideAnimation(ActionButton.Animations.SCALE_DOWN);
+        actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
+    }
+
     private void getRiddleFromArguments() {
         // Get the Tag ID either from the RiddleListFragment (onListClick) or
         // the NFC Tag Discovery.
@@ -108,7 +122,7 @@ public class RiddleFragment extends Fragment {
             riddle.setDateSolved(new Date());
 
             // Play a winning sound.
-            // TODO Uncomment the cheering sound.
+            // TODO: Uncomment the cheering sound.
             //audioPlayer.play(getActivity(), R.raw.cheering);
 
             Toast.makeText(getActivity(), "Riddle " + riddle.getTitle() + " was successfully solved!", Toast.LENGTH_LONG).show();
@@ -132,9 +146,10 @@ public class RiddleFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_riddle, container, false);
+        View view = inflater.inflate(R.layout.fragment_riddle1, container, false);
 
-        setUpToolbar(view);
+        setupToolbar(view);
+        setupFloatingActionButton(view);
         initializeWidgets(view);
 
         return view;
@@ -145,7 +160,7 @@ public class RiddleFragment extends Fragment {
      *
      * @param view A view needed for the findViewById() method
      */
-    private void setUpToolbar(View view) {
+    private void setupToolbar(View view) {
         toolbar = (Toolbar) view.findViewById(R.id.tool_bar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         // Display the caret for an ancestral navigation.
@@ -166,17 +181,17 @@ public class RiddleFragment extends Fragment {
         Typeface typefaceNormal = FontCache.get("fonts/amatic_normal.ttf", getActivity());
 
         // Riddle Title TextView
-        TextView riddleTitleTextView = (TextView) view.findViewById(R.id.riddle_title_text_view);
-        riddleTitleTextView.setTypeface(typefaceTitle);
+        //TextView riddleTitleTextView = (TextView) view.findViewById(R.id.riddle_title_text_view);
+        //riddleTitleTextView.setTypeface(typefaceTitle);
 
         // Riddle Details Title TextView
         TextView riddleDetailsTitleTextView = (TextView) view.findViewById(R.id.riddle_details_title_text_view);
         riddleDetailsTitleTextView.setTypeface(typefaceTitle);
 
         // Riddle TextView
-        riddleTextView = (TextView) view.findViewById(R.id.riddle_text_view);
-        riddleTextView.setText(riddle.getText());
-        riddleTextView.setTypeface(typefaceBold);
+//        riddleTextView = (TextView) view.findViewById(R.id.riddle_text_view);
+//        riddleTextView.setText(riddle.getText());
+//        riddleTextView.setTypeface(typefaceBold);
 
         // Riddle Difficulty Label TextView
         TextView riddleDifficultyLabel = (TextView) view.findViewById(R.id.riddle_difficulty_label_text_view);
@@ -196,18 +211,34 @@ public class RiddleFragment extends Fragment {
         riddleSolvedCheckBox.setChecked(riddle.isSolved());
 
         // Riddle Date Label TextView
-        TextView riddleDateSolvedLabelTextView = (TextView) view.findViewById(R.id.riddle_date_solved_label_text_view);
-        riddleDateSolvedLabelTextView.setTypeface(typefaceNormal);
+//        TextView riddleDateSolvedLabelTextView = (TextView) view.findViewById(R.id.riddle_date_solved_label_text_view);
+//        riddleDateSolvedLabelTextView.setTypeface(typefaceNormal);
+//
+//        // Riddle Date Solved CheckBox
+//        riddleDateSolvedTextView = (TextView) view.findViewById(R.id.date_solved_text_view);
+//        riddleDateSolvedTextView.setTypeface(typefaceNormal);
+//        if (riddle.getDateSolved() != null) {
+//            // Format the Date into human-readable text
+//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, MMMM dd, yyyy (HH:mm:ss)");
+//            Date date = riddle.getDateSolved();
+//            String formattedDate = simpleDateFormat.format(date);
+//            riddleDateSolvedTextView.setText(formattedDate);
+//        }
+    }
 
-        // Riddle Date Solved CheckBox
-        riddleDateSolvedTextView = (TextView) view.findViewById(R.id.date_solved_text_view);
-        riddleDateSolvedTextView.setTypeface(typefaceNormal);
-        if (riddle.getDateSolved() != null) {
-            // Format the Date into human-readable text
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, MMMM dd, yyyy (HH:mm:ss)");
-            Date date = riddle.getDateSolved();
-            String formattedDate = simpleDateFormat.format(date);
-            riddleDateSolvedTextView.setText(formattedDate);
-        }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Floating Action Button animation on show after a period of time.
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (actionButton.isHidden()) {
+                    actionButton.show();
+                }
+            }
+        }, 750);
     }
 }

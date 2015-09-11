@@ -1,17 +1,29 @@
 package com.example.karhades_pc.riddlehunting;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by Karhades - PC on 4/11/2015.
  */
 public class Riddle {
     private String title;
+    private UUID id;
     private String text;
     private String difficulty;
     private boolean solved;
     private String tagId;
     private Date dateSolved;
+
+    private int picture;
+
+    public int getPicture() {
+        return picture;
+    }
+
+    public void setPicture(int picture) {
+        this.picture = picture;
+    }
 
     public Riddle(String title, String text, String difficulty, boolean solved, String tagId) {
         this.title = title;

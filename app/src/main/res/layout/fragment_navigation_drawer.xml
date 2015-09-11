@@ -2,12 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.karhades_pc.riddlehunting.NavigationDrawerFragment"
-    android:background="#000000">
+    android:background="#000000"
+    tools:context="com.example.karhades_pc.riddlehunting.NavigationDrawerFragment">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="210dp"
-        android:src="@drawable/illidan"/>
+        android:src="@drawable/illidan" />
 
 </FrameLayout>
