@@ -16,18 +16,38 @@ public class RiddlePagerActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
 
+    private String tagId;
+    private boolean nfcDiscovered;
     private ArrayList<Riddle> riddles;
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Get the riddles from MyRiddles.
+        riddles = MyRiddles.get(this).getRiddles();
+
+        getIntentExtras();
+
+        setupViewPager();
+
+        setContentView(viewPager);
+    }
+
+    private void getIntentExtras() {
+        // Gets the Tag ID either from the onListClick() of RiddleListFragment
+        // or the startActivityFromNfc() of NfcHandler.
+        tagId = getIntent().getStringExtra(RiddleFragment.EXTRA_TAG_ID);
+
+        // Get a boolean value whether the intent was sent from NfcHandler.
+        nfcDiscovered = getIntent().getBooleanExtra(RiddleFragment.EXTRA_NFC_TAG_DISCOVERED, false);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void setupViewPager() {
+
         viewPager = new ViewPager(this);
         viewPager.setId(R.id.list_view_pager);
-        setContentView(viewPager);
-
-        riddles = MyRiddles.get(this).getRiddles();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         viewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
@@ -35,7 +55,9 @@ public class RiddlePagerActivity extends AppCompatActivity {
             public Fragment getItem(int i) {
                 Riddle riddle = riddles.get(i);
 
-                return RiddleFragment.newInstance(riddle.getTagId(), false);
+                Fragment fragment = RiddleFragment.newInstance(riddle.getTagId(), nfcDiscovered);
+                nfcDiscovered = false;
+                return fragment;
             }
 
             @Override
@@ -61,8 +83,6 @@ public class RiddlePagerActivity extends AppCompatActivity {
                 //EMPTY
             }
         });
-
-        String tagId = getIntent().getStringExtra(RiddleFragment.EXTRA_TAG_ID);
 
         for (int i = 0; i < riddles.size(); i++) {
             if (riddles.get(i).getTagId().equals(tagId)) {

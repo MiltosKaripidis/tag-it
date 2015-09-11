@@ -21,7 +21,7 @@ public class MyRiddles {
         riddles = new ArrayList<>();
 
         // Dummy Riddles
-        Riddle riddle_1 = new Riddle("Black", "Cras aliquet blandit vehicula. Maecenas auctor egestas eros...", "Hard", false, "0421DC6AC82980");
+        Riddle riddle_1 = new Riddle("Black", "Cras aliquet blandit vehicula. Maecenas auctor egestas eros...", "Hard", false, "04D11AD2C03480");
         Riddle riddle_2 = new Riddle("Red", "Nulla et lacus quis erat luctus elementum. Mauris...", "Easy", false, "04BCE16AC82980");
         Riddle riddle_3 = new Riddle("White", "Suspendisse rhoncus facilisis mi, in suscipit est fermentum...", "Medium", false, "04DC1BD2C03480");
         Riddle riddle_4 = new Riddle("Blue", "Class aptent taciti sociosqu ad litora torquent per...", "Hard", false, "04BCE16AC82982");

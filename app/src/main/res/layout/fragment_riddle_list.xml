@@ -7,7 +7,7 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="8dp" />
+        android:scrollbars="vertical" />
 
     <com.example.karhades_pc.floating_action_button.ActionButton
         android:id="@+id/floating_action_button"

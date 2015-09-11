@@ -5,19 +5,19 @@
     android:clickable="true"
     android:gravity="center">
 
-    <CheckBox
-        android:id="@+id/list_item_solved_check_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:focusable="false"
-        android:paddingLeft="16dp" />
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:src="@drawable/illidan" />
+
 
     <TextView
         android:id="@+id/list_item_title_text_view"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="72dp"
+        android:layout_marginLeft="72dp"
         android:text="@string/riddle_title"
         android:textSize="24sp" />
 
@@ -25,8 +25,17 @@
         android:id="@+id/list_item_difficulty_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:paddingRight="16dp"
+        android:layout_below="@+id/list_item_title_text_view"
+        android:layout_marginLeft="72dp"
         android:textSize="22sp" />
+
+    <CheckBox
+        android:id="@+id/list_item_solved_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:enabled="false"
+        android:focusable="false" />
 
 </RelativeLayout>

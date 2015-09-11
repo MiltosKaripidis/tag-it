@@ -72,7 +72,7 @@ public class MenuActivity extends AppCompatActivity {
     @SuppressWarnings("deprecation")
     private void setupTabMenu() {
         // Tab names.
-        final String[] tabNames = {"HOME", "MY RIDDLES", "RANKING"};
+        final String[] tabNames = {"CURRENT", "SHARE", "CREATE"};
 
         // The FragmentManager is needed for the view pager.
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -85,9 +85,9 @@ public class MenuActivity extends AppCompatActivity {
                     case 0:
                         return new RiddleListFragment();
                     case 1:
-                        return new RiddleListFragment();
-                    case 2:
                         return new RiddleFragment().newInstance("04BCE16AC82980", false);
+                    case 2:
+                        return new RiddleListFragment();
                 }
 
                 return null;

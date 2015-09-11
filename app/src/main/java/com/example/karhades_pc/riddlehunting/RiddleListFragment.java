@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,12 +37,13 @@ public class RiddleListFragment extends Fragment {
 
     private ActionButton actionButton;
     private RecyclerView recyclerView;
-
     private Dialog alertDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        riddles = MyRiddles.get(getActivity()).getRiddles();
 
         // Tell the FragmentManager that this fragment should receive
         // a call to onCreateOptionsMenu.
@@ -49,13 +51,36 @@ public class RiddleListFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.fragment_riddle_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_new_riddle:
+                Toast.makeText(getActivity(), "Add menu button was pressed!", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_riddle_list, container, false);
 
-        riddles = MyRiddles.get(getActivity()).getRiddles();
+        setupRecyclerView(view);
+        setupFloatingActionButton(view);
 
+        return view;
+    }
+
+    private void setupRecyclerView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         recyclerView.setAdapter(new RiddleAdapter());
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -69,10 +94,6 @@ public class RiddleListFragment extends Fragment {
                     actionButton.show();
             }
         });
-
-        setupFloatingActionButton(view);
-
-        return view;
     }
 
     private void setupFloatingActionButton(View view) {
@@ -84,26 +105,23 @@ public class RiddleListFragment extends Fragment {
                 actionButton.hide();
                 actionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
 
-                NfcHandler.enableTagWriteMode();
-                alertDialog = onCreateDialog();
-                alertDialog.show();
-
-                NfcHandler.get().setOnTagWriteListener(new NfcHandler.TagWriteListener() {
+                NfcHandler.get().enableTagWriteMode();
+                NfcHandler.get().setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
                     @Override
                     public void onTagWritten(int status) {
                         Log.d("RiddleListFragment", "onTagWritten!");
                         alertDialog.dismiss();
 
-                        if(status == NfcHandler.TagWriteListener.STATUS_OK)
-                        {
-                            Toast.makeText(getActivity(), "Tag was written!", Toast.LENGTH_SHORT).show();
-                        }
-                        else if (status == NfcHandler.TagWriteListener.STATUS_ERROR)
-                        {
-                            Toast.makeText(getActivity(), "There was a problem!!", Toast.LENGTH_SHORT).show();
+                        if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
+                            Toast.makeText(getActivity(), "Tag was successfully written!", Toast.LENGTH_SHORT).show();
+                        } else if (status == NfcHandler.OnTagWriteListener.STATUS_ERROR) {
+                            Toast.makeText(getActivity(), "Could not write to tag!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+
+                alertDialog = onCreateDialog();
+                alertDialog.show();
             }
         });
         actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
@@ -116,14 +134,14 @@ public class RiddleListFragment extends Fragment {
                 .setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
-
+                        NfcHandler.get().disableTagWriteMode();
                     }
                 })
                 .setMessage("Touch the tag to write the information inserted.")
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        NfcHandler.get().disableTagWriteMode();
                     }
                 });
 
@@ -151,29 +169,9 @@ public class RiddleListFragment extends Fragment {
         }, 750);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        inflater.inflate(R.menu.fragment_riddle_list, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_item_new_riddle:
-                if (actionButton.isHidden())
-                    actionButton.show();
-                else
-                    actionButton.hide();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private class RiddleHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class RiddleHolder extends RecyclerView.ViewHolder {
         private Riddle riddle;
+        private ImageView imageView;
         private TextView titleTextView;
         private TextView difficultyLabelTextView;
         private TextView difficultyTextView;
@@ -181,8 +179,16 @@ public class RiddleListFragment extends Fragment {
 
         public RiddleHolder(View view) {
             super(view);
-            view.setOnClickListener(this);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), RiddlePagerActivity.class);
+                    intent.putExtra(RiddleFragment.EXTRA_TAG_ID, riddle.getTagId());
+                    startActivity(intent);
+                }
+            });
 
+            imageView = (ImageView) view.findViewById(R.id.image_view);
             titleTextView = (TextView) view.findViewById(R.id.list_item_title_text_view);
             difficultyLabelTextView = (TextView) view.findViewById(R.id.list_item_difficulty_label_text_view);
             difficultyTextView = (TextView) view.findViewById(R.id.list_item_difficulty_text_view);
@@ -195,10 +201,12 @@ public class RiddleListFragment extends Fragment {
             Typeface typefaceNormal = FontCache.get("fonts/amatic_bold.ttf", getActivity());
 
             this.riddle = riddle;
+
+
             titleTextView.setText(riddle.getTitle());
             titleTextView.setTypeface(typefaceBold);
 
-            difficultyLabelTextView.setTypeface(typefaceNormal);
+            //difficultyLabelTextView.setTypeface(typefaceNormal);
 
             difficultyTextView.setText(riddle.getDifficulty());
             difficultyTextView.setTypeface(typefaceNormal);
@@ -206,19 +214,12 @@ public class RiddleListFragment extends Fragment {
 
             solvedCheckBox.setChecked(riddle.isSolved());
         }
-
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(getActivity(), RiddlePagerActivity.class);
-            intent.putExtra(RiddleFragment.EXTRA_TAG_ID, riddle.getTagId());
-            startActivity(intent);
-        }
     }
 
     private class RiddleAdapter extends RecyclerView.Adapter<RiddleHolder> {
         @Override
         public RiddleHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_riddle, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_riddle2, viewGroup, false);
 
             return new RiddleHolder(view);
         }
