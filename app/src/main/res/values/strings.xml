@@ -8,8 +8,8 @@
     <string name="tag_date_solved">Date Solved: \</string>
     <string name="tags_title">Tags</string>
     <string name="tag_difficulty">Difficulty: \</string>
-    <string name="tag_title">Riddle Title</string>
-    <string name="new_tag">New Riddle</string>
+    <string name="tag_title">Tag Title</string>
+    <string name="track">Track</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 

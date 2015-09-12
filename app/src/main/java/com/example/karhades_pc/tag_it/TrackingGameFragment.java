@@ -2,6 +2,7 @@ package com.example.karhades_pc.tag_it;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -35,8 +36,6 @@ public class TrackingGameFragment extends Fragment {
 
         tags = MyTags.get(getActivity()).getTags();
 
-        // Tell the FragmentManager that this fragment should receive
-        // a call to onCreateOptionsMenu.
         setHasOptionsMenu(true);
     }
 
@@ -44,13 +43,13 @@ public class TrackingGameFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        inflater.inflate(R.menu.fragment_riddle_list, menu);
+        inflater.inflate(R.menu.fragment_create_game, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_item_new_riddle:
+            case R.id.menu_item_track:
                 Toast.makeText(getActivity(), "Add menu button was pressed!", Toast.LENGTH_SHORT).show();
                 return true;
             default:
@@ -112,13 +111,12 @@ public class TrackingGameFragment extends Fragment {
 
             this.tag = tag;
 
-
             titleTextView.setText(tag.getTitle());
             titleTextView.setTypeface(typefaceBold);
 
             difficultyTextView.setText(tag.getDifficulty());
             difficultyTextView.setTypeface(typefaceNormal);
-            difficultyTextView.setTextColor(getResources().getColor(R.color.colorAccent));
+            difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
 
             solvedCheckBox.setChecked(tag.isSolved());
         }
@@ -127,7 +125,11 @@ public class TrackingGameFragment extends Fragment {
     private class RiddleAdapter extends RecyclerView.Adapter<RiddleHolder> {
         @Override
         public RiddleHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_tracking_game_fragment, viewGroup, false);
+            View view;
+            if(Build.VERSION.SDK_INT < 21)
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_pre_lollipop, viewGroup, false);
+            else
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_tracking_game_fragment, viewGroup, false);
 
             return new RiddleHolder(view);
         }

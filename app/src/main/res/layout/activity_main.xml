@@ -16,7 +16,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="24dp"
-            android:background="@color/colorPrimaryDark"
+            android:background="@color/primary_dark"
             android:elevation="10dp" />
 
         <include
@@ -27,7 +27,7 @@
             android:id="@+id/sliding_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
+            android:background="@color/primary"
             android:elevation="10dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 

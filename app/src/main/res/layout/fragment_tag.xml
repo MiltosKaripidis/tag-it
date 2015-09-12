@@ -7,7 +7,7 @@
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="280dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:src="@drawable/illidan" />
 
     <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_below="@+id/image_view"
-        android:background="@color/colorPrimary"
+        android:background="@color/primary"
         android:paddingLeft="16dp">
 
         <TextView
@@ -45,8 +45,8 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="-50dp"
         android:visibility="invisible"
-        app:button_color="@color/colorAccent"
-        app:button_colorPressed="@color/colorAccentDark"
+        app:button_color="@color/accent"
+        app:button_colorPressed="@color/accent_dark"
         app:image="@mipmap/fullscreen"
         app:rippleEffect_enabled="true" />
 
@@ -70,7 +70,7 @@
             android:id="@+id/riddle_difficulty_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/accent"
             android:textSize="34sp" />
 
     </LinearLayout>

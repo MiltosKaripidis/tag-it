@@ -4,8 +4,8 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/menu_item_new_riddle"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="@string/new_tag"
-        app:showAsAction="ifRoom|withText" />
+        android:id="@+id/menu_item_track"
+        android:icon="@mipmap/navigation"
+        android:title="@string/track"
+        app:showAsAction="always" />
 </menu>

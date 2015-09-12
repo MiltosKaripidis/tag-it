@@ -89,6 +89,9 @@ public class NfcHandler {
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
 
+        if (nfcAdapter == null)
+            return;
+
         setupAndroidBeam();
         setupForegroundDispatch();
         handleDiscoveredTag(intent);

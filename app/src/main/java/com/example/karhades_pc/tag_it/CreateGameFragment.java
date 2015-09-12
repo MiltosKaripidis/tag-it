@@ -4,13 +4,13 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,14 +53,14 @@ public class CreateGameFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        inflater.inflate(R.menu.fragment_riddle_list, menu);
+        inflater.inflate(R.menu.fragment_create_game, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_item_new_riddle:
-                Toast.makeText(getActivity(), "Add menu button was pressed!", Toast.LENGTH_SHORT).show();
+            case R.id.menu_item_track:
+                Toast.makeText(getActivity(), "Track menu button was pressed!", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -69,7 +69,7 @@ public class CreateGameFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tracking_game, container, false);
+        View view = inflater.inflate(R.layout.fragment_create_game, container, false);
 
         setupRecyclerView(view);
         setupFloatingActionButton(view);
@@ -79,7 +79,7 @@ public class CreateGameFragment extends Fragment {
 
     private void setupRecyclerView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         recyclerView.setAdapter(new RiddleAdapter());
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -87,10 +87,11 @@ public class CreateGameFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
                 // If scrolling down (dy > 0). The faster the scrolling
                 // the bigger the dy.
-                if (dy > 0)
+                if (dy > 0) {
                     actionButton.hide();
-                else if (dy < -15)
+                } else if (dy < -15) {
                     actionButton.show();
+                }
             }
         });
     }
@@ -104,23 +105,26 @@ public class CreateGameFragment extends Fragment {
                 actionButton.hide();
                 actionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
 
-                NfcHandler.get().enableTagWriteMode();
-                NfcHandler.get().setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
-                    @Override
-                    public void onTagWritten(int status) {
-                        Log.d("TrackingGameFragment", "onTagWritten!");
-                        alertDialog.dismiss();
+                tags.add(new Tag("Red", "Nulla et lacus quis erat luctus elementum. Mauris...", "Easy", false, "04BCE16AC82980"));
+                recyclerView.getAdapter().notifyItemInserted(tags.size() - 1);
 
-                        if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
-                            Toast.makeText(getActivity(), "Tag was successfully written!", Toast.LENGTH_SHORT).show();
-                        } else if (status == NfcHandler.OnTagWriteListener.STATUS_ERROR) {
-                            Toast.makeText(getActivity(), "Could not write to tag!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+//                NfcHandler.get().enableTagWriteMode();
+//                NfcHandler.get().setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
+//                    @Override
+//                    public void onTagWritten(int status) {
+//                        Log.d("CreateGameFragment", "onTagWritten!");
+//                        alertDialog.dismiss();
+//
+//                        if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
+//                            Toast.makeText(getActivity(), "Tag was successfully written!", Toast.LENGTH_SHORT).show();
+//                        } else if (status == NfcHandler.OnTagWriteListener.STATUS_ERROR) {
+//                            Toast.makeText(getActivity(), "Could not write to tag!", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
 
-                alertDialog = onCreateDialog();
-                alertDialog.show();
+//                alertDialog = onCreateDialog();
+//                alertDialog.show();
             }
         });
         actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
@@ -134,6 +138,9 @@ public class CreateGameFragment extends Fragment {
                     @Override
                     public void onCancel(DialogInterface dialog) {
                         NfcHandler.get().disableTagWriteMode();
+                        actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
+                        actionButton.show();
+                        actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
                     }
                 })
                 .setMessage("Touch the tag to write the information inserted.")
@@ -141,6 +148,9 @@ public class CreateGameFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         NfcHandler.get().disableTagWriteMode();
+                        actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
+                        actionButton.show();
+                        actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
                     }
                 });
 
@@ -203,14 +213,18 @@ public class CreateGameFragment extends Fragment {
 
             difficultyTextView.setText(tag.getDifficulty());
             difficultyTextView.setTypeface(typefaceNormal);
-            difficultyTextView.setTextColor(getResources().getColor(R.color.colorAccent));
+            difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
         }
     }
 
     private class RiddleAdapter extends RecyclerView.Adapter<RiddleHolder> {
         @Override
         public RiddleHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_create_game_fragment, viewGroup, false);
+            View view;
+            if(Build.VERSION.SDK_INT < 21)
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_pre_lollipop, viewGroup, false);
+            else
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_create_game_fragment, viewGroup, false);
 
             return new RiddleHolder(view);
         }

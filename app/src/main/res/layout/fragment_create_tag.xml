@@ -1,6 +1,129 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/illidan" />
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@android:color/transparent"
+        android:navigationIcon="@mipmap/ic_action_menu_white"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+
+    <FrameLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_below="@+id/image_view"
+        android:background="@color/primary"
+        android:paddingLeft="16dp">
+
+        <TextView
+            android:id="@+id/riddle_details_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|left"
+            android:text="@string/tag_details_label"
+            android:textColor="@android:color/white"
+            android:textSize="34dp" />
+    </FrameLayout>
+
+    <!--<com.example.karhades_pc.floating_action_button.ActionButton-->
+        <!--android:id="@+id/full_screen_floating_action_button"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignBottom="@+id/image_view"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_marginBottom="-50dp"-->
+        <!--android:visibility="invisible"-->
+        <!--app:button_color="@color/accent"-->
+        <!--app:button_colorPressed="@color/accent_dark"-->
+        <!--app:image="@mipmap/fullscreen"-->
+        <!--app:rippleEffect_enabled="true" />-->
+
+    <!--Difficulty-->
+    <LinearLayout
+        android:id="@+id/difficulty_linear_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frame_layout"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/riddle_difficulty_label_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tag_difficulty"
+            android:textSize="34sp" />
+
+        <TextView
+            android:id="@+id/riddle_difficulty_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/accent"
+            android:textSize="34sp" />
+
+    </LinearLayout>
+
+    <!--Solved-->
+    <LinearLayout
+        android:id="@+id/tag_solved_linear_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/difficulty_linear_layout"
+        android:layout_marginLeft="30dp">
+
+        <TextView
+            android:id="@+id/riddle_solved_label_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tag_solved"
+            android:textSize="34sp" />
+
+        <CheckBox
+            android:id="@+id/riddle_solved_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="64dp"
+        android:layout_marginRight="16dp">
+
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/raised_button"
+            android:text="CANCEL"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/tag_it_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/raised_button"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="Tag it!"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+</RelativeLayout>
