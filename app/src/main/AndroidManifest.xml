@@ -24,7 +24,7 @@
 
             <!-- The android system searches for these filters-->
             <!-- and matches with the appropriate one that-->
-            <!-- corresponds to the tag-->
+            <!-- corresponds to the nfcTag-->
 
             <!-- NDEF_DISCOVERED-->
             <intent-filter>
@@ -32,19 +32,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- Custom URI: kar://karhades-->
                 <data android:mimeType="application/com.example.karhades_pc.nfchandler" />
-            </intent-filter>
-
-            <!--TECH_DISCOVERED-->
-            <intent-filter>
-                <action android:name="android.nfc.action.TECH_DISCOVERED" />
-            </intent-filter>
-            <meta-data
-                android:name="android.nfc.action.TECH_DISCOVERED"
-                android:resource="@xml/nfc_tech_filter" />
-
-            <!--TAG_DISCOVERED-->
-            <intent-filter>
-                <action android:name="android.nfc.action.TAG_DISCOVERED" />
             </intent-filter>
 
         </activity>
@@ -63,6 +50,19 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.karhades_pc.tag_it.MainActivity" />
+
+            <!--TECH_DISCOVERED-->
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
+
+            <!--TAG_DISCOVERED-->
+            <intent-filter>
+                <action android:name="android.nfc.action.TAG_DISCOVERED" />
+            </intent-filter>
         </activity>
 
     </application>

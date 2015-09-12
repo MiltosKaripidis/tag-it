@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private SlidingTabLayout slidingTabLayout;
 
+    private NfcHandler nfcHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT > 10) {
@@ -42,29 +44,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        NfcHandler.get().disableForegroundDispatch();
+        nfcHandler.disableForegroundDispatch();
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        NfcHandler.get().handleDiscoveredTag(intent);
+        nfcHandler.handleDiscoveredTag(intent);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        NfcHandler.get().enableForegroundDispatch();
+        nfcHandler.enableForegroundDispatch();
     }
 
     private void setupNFC() {
-        NfcHandler.get().setupNfcHandler(this, getIntent());
+        nfcHandler = new NfcHandler();
+        nfcHandler.setupNfcHandler(this);
     }
 
     private void setupToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        toolbar = (Toolbar) findViewById(R.id.create_tag_tool_bar);
         // Substitute the action bar for this toolbar.
         setSupportActionBar(toolbar);
     }
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         return new TrackingGameFragment();
                     case 1:
-                        return new TagFragment().newInstance("04BCE16AC82980", false);
+                        return new TrackingTagFragment().newInstance("04BCE16AC82980", false);
                     case 2:
                         return new CreateGameFragment();
                 }

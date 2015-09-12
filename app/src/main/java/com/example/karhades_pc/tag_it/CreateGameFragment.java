@@ -1,14 +1,11 @@
 package com.example.karhades_pc.tag_it;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.karhades_pc.floating_action_button.ActionButton;
-import com.example.karhades_pc.nfc.NfcHandler;
 import com.example.karhades_pc.utils.FontCache;
 
 import java.util.ArrayList;
@@ -32,17 +28,16 @@ import java.util.ArrayList;
  */
 public class CreateGameFragment extends Fragment {
 
-    private ArrayList<Tag> tags;
+    private ArrayList<NfcTag> nfcTags;
 
     private ActionButton actionButton;
     private RecyclerView recyclerView;
-    private Dialog alertDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        tags = MyTags.get(getActivity()).getTags();
+        nfcTags = MyTags.get(getActivity()).getNfcTags();
 
         // Tell the FragmentManager that this fragment should receive
         // a call to onCreateOptionsMenu.
@@ -101,69 +96,30 @@ public class CreateGameFragment extends Fragment {
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                actionButton.setHideAnimation(ActionButton.Animations.SCALE_DOWN);
-                actionButton.hide();
-                actionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
+//                actionButton.setHideAnimation(ActionButton.Animations.SCALE_DOWN);
+//                actionButton.hide();
+//                actionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
 
-                tags.add(new Tag("Red", "Nulla et lacus quis erat luctus elementum. Mauris...", "Easy", false, "04BCE16AC82980"));
-                recyclerView.getAdapter().notifyItemInserted(tags.size() - 1);
-
-//                NfcHandler.get().enableTagWriteMode();
-//                NfcHandler.get().setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
-//                    @Override
-//                    public void onTagWritten(int status) {
-//                        Log.d("CreateGameFragment", "onTagWritten!");
-//                        alertDialog.dismiss();
-//
-//                        if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
-//                            Toast.makeText(getActivity(), "Tag was successfully written!", Toast.LENGTH_SHORT).show();
-//                        } else if (status == NfcHandler.OnTagWriteListener.STATUS_ERROR) {
-//                            Toast.makeText(getActivity(), "Could not write to tag!", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
-
-//                alertDialog = onCreateDialog();
-//                alertDialog.show();
+                Intent intent = new Intent(getActivity(), CreateTagActivity.class);
+                startActivity(intent);
             }
         });
         actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
         actionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
     }
 
-    private Dialog onCreateDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        alertDialog.setTitle("Nfc Write Mode")
-                .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        NfcHandler.get().disableTagWriteMode();
-                        actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
-                        actionButton.show();
-                        actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
-                    }
-                })
-                .setMessage("Touch the tag to write the information inserted.")
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        NfcHandler.get().disableTagWriteMode();
-                        actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
-                        actionButton.show();
-                        actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
-                    }
-                });
-
-        return alertDialog.create();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
 
-        // Refresh the Tag list.
+        // Refresh the NfcTag list.
         recyclerView.getAdapter().notifyDataSetChanged();
 
+        startupAnimation();
+    }
+
+    private void startupAnimation()
+    {
         // Floating Action Button animation on show after a period of time.
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -179,7 +135,7 @@ public class CreateGameFragment extends Fragment {
     }
 
     private class RiddleHolder extends RecyclerView.ViewHolder {
-        private Tag tag;
+        private NfcTag nfcTag;
         private ImageView imageView;
         private TextView titleTextView;
         private TextView difficultyTextView;
@@ -190,7 +146,7 @@ public class CreateGameFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), CreateTagActivity.class);
-                    intent.putExtra(TagFragment.EXTRA_TAG_ID, tag.getTagId());
+                    intent.putExtra(CreateTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
                     startActivity(intent);
                 }
             });
@@ -200,18 +156,18 @@ public class CreateGameFragment extends Fragment {
             difficultyTextView = (TextView) view.findViewById(R.id.list_item_difficulty_text_view);
         }
 
-        public void bindRiddle(Tag tag) {
+        public void bindRiddle(NfcTag nfcTag) {
             // Custom Fonts.
             Typeface typefaceBold = FontCache.get("fonts/Capture_it.ttf", getActivity());
             Typeface typefaceNormal = FontCache.get("fonts/amatic_bold.ttf", getActivity());
 
-            this.tag = tag;
+            this.nfcTag = nfcTag;
 
 
-            titleTextView.setText(tag.getTitle());
+            titleTextView.setText(nfcTag.getTitle());
             titleTextView.setTypeface(typefaceBold);
 
-            difficultyTextView.setText(tag.getDifficulty());
+            difficultyTextView.setText(nfcTag.getDifficulty());
             difficultyTextView.setTypeface(typefaceNormal);
             difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
         }
@@ -231,13 +187,13 @@ public class CreateGameFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(RiddleHolder riddleHolder, int i) {
-            Tag tag = tags.get(i);
-            riddleHolder.bindRiddle(tag);
+            NfcTag nfcTag = nfcTags.get(i);
+            riddleHolder.bindRiddle(nfcTag);
         }
 
         @Override
         public int getItemCount() {
-            return tags.size();
+            return nfcTags.size();
         }
     }
 }

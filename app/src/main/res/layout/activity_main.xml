@@ -20,7 +20,7 @@
             android:elevation="10dp" />
 
         <include
-            android:id="@+id/tool_bar"
+            android:id="@+id/create_tag_tool_bar"
             layout="@layout/app_bar" />
 
         <com.example.karhades_pc.sliding_tab_layout.SlidingTabLayout

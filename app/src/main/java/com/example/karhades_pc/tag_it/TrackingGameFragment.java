@@ -27,14 +27,14 @@ import java.util.ArrayList;
  */
 public class TrackingGameFragment extends Fragment {
 
-    private ArrayList<Tag> tags;
+    private ArrayList<NfcTag> nfcTags;
     private RecyclerView recyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        tags = MyTags.get(getActivity()).getTags();
+        nfcTags = MyTags.get(getActivity()).getNfcTags();
 
         setHasOptionsMenu(true);
     }
@@ -76,12 +76,12 @@ public class TrackingGameFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        // Refresh the Tag list.
+        // Refresh the NfcTag list.
         recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     private class RiddleHolder extends RecyclerView.ViewHolder {
-        private Tag tag;
+        private NfcTag nfcTag;
         private ImageView imageView;
         private TextView titleTextView;
         private TextView difficultyTextView;
@@ -93,7 +93,7 @@ public class TrackingGameFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), TagPagerActivity.class);
-                    intent.putExtra(TagFragment.EXTRA_TAG_ID, tag.getTagId());
+                    intent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
                     startActivity(intent);
                 }
             });
@@ -104,21 +104,21 @@ public class TrackingGameFragment extends Fragment {
             solvedCheckBox = (CheckBox) view.findViewById(R.id.list_item_solved_check_box);
         }
 
-        public void bindRiddle(Tag tag) {
+        public void bindRiddle(NfcTag nfcTag) {
             // Custom Fonts.
             Typeface typefaceBold = FontCache.get("fonts/Capture_it.ttf", getActivity());
             Typeface typefaceNormal = FontCache.get("fonts/amatic_bold.ttf", getActivity());
 
-            this.tag = tag;
+            this.nfcTag = nfcTag;
 
-            titleTextView.setText(tag.getTitle());
+            titleTextView.setText(nfcTag.getTitle());
             titleTextView.setTypeface(typefaceBold);
 
-            difficultyTextView.setText(tag.getDifficulty());
+            difficultyTextView.setText(nfcTag.getDifficulty());
             difficultyTextView.setTypeface(typefaceNormal);
             difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
 
-            solvedCheckBox.setChecked(tag.isSolved());
+            solvedCheckBox.setChecked(nfcTag.isSolved());
         }
     }
 
@@ -136,13 +136,13 @@ public class TrackingGameFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(RiddleHolder riddleHolder, int i) {
-            Tag tag = tags.get(i);
-            riddleHolder.bindRiddle(tag);
+            NfcTag nfcTag = nfcTags.get(i);
+            riddleHolder.bindRiddle(nfcTag);
         }
 
         @Override
         public int getItemCount() {
-            return tags.size();
+            return nfcTags.size();
         }
     }
 }

@@ -18,14 +18,14 @@ public class TagPagerActivity extends AppCompatActivity {
 
     private String tagId;
     private boolean nfcDiscovered;
-    private ArrayList<Tag> tags;
+    private ArrayList<NfcTag> nfcTags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Get the tags from MyTags.
-        tags = MyTags.get(this).getTags();
+        // Get the nfcTags from MyTags.
+        nfcTags = MyTags.get(this).getNfcTags();
 
         getIntentExtras();
 
@@ -35,12 +35,12 @@ public class TagPagerActivity extends AppCompatActivity {
     }
 
     private void getIntentExtras() {
-        // Gets the Tag ID either from the onListClick() of TrackingGameFragment
+        // Gets the NfcTag ID either from the onListClick() of TrackingGameFragment
         // or the startActivityFromNfc() of NfcHandler.
-        tagId = getIntent().getStringExtra(TagFragment.EXTRA_TAG_ID);
+        tagId = getIntent().getStringExtra(TrackingTagFragment.EXTRA_TAG_ID);
 
         // Get a boolean value whether the intent was sent from NfcHandler.
-        nfcDiscovered = getIntent().getBooleanExtra(TagFragment.EXTRA_NFC_TAG_DISCOVERED, false);
+        nfcDiscovered = getIntent().getBooleanExtra(TrackingTagFragment.EXTRA_NFC_TAG_DISCOVERED, false);
     }
 
     @SuppressWarnings("deprecation")
@@ -53,16 +53,16 @@ public class TagPagerActivity extends AppCompatActivity {
         viewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
             @Override
             public Fragment getItem(int i) {
-                Tag tag = tags.get(i);
+                NfcTag nfcTag = nfcTags.get(i);
 
-                Fragment fragment = TagFragment.newInstance(tag.getTagId(), nfcDiscovered);
+                Fragment fragment = TrackingTagFragment.newInstance(nfcTag.getTagId(), nfcDiscovered);
                 nfcDiscovered = false;
                 return fragment;
             }
 
             @Override
             public int getCount() {
-                return tags.size();
+                return nfcTags.size();
             }
         });
 
@@ -74,8 +74,8 @@ public class TagPagerActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int i) {
-                Tag tag = tags.get(i);
-                setTitle(tag.getTitle());
+                NfcTag nfcTag = nfcTags.get(i);
+                setTitle(nfcTag.getTitle());
             }
 
             @Override
@@ -84,8 +84,8 @@ public class TagPagerActivity extends AppCompatActivity {
             }
         });
 
-        for (int i = 0; i < tags.size(); i++) {
-            if (tags.get(i).getTagId().equals(tagId)) {
+        for (int i = 0; i < nfcTags.size(); i++) {
+            if (nfcTags.get(i).getTagId().equals(tagId)) {
                 viewPager.setCurrentItem(i);
                 break;
             }

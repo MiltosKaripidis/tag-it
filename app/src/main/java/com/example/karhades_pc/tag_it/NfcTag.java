@@ -6,7 +6,7 @@ import java.util.UUID;
 /**
  * Created by Karhades - PC on 4/11/2015.
  */
-public class Tag {
+public class NfcTag {
     private String title;
     private UUID id;
     private String text;
@@ -25,7 +25,7 @@ public class Tag {
         this.picture = picture;
     }
 
-    public Tag(String title, String text, String difficulty, boolean solved, String tagId) {
+    public NfcTag(String title, String text, String difficulty, boolean solved, String tagId) {
         this.title = title;
         this.text = text;
         this.difficulty = difficulty;

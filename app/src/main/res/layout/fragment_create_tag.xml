@@ -10,13 +10,12 @@
         android:scaleType="centerCrop"
         android:src="@drawable/illidan" />
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@id/tool_bar"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/create_tag_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:background="@android:color/transparent"
-        android:navigationIcon="@mipmap/ic_action_menu_white"
         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
     <FrameLayout
@@ -34,21 +33,21 @@
             android:layout_gravity="center|left"
             android:text="@string/tag_details_label"
             android:textColor="@android:color/white"
-            android:textSize="34dp" />
+            android:textSize="24sp" />
     </FrameLayout>
 
-    <!--<com.example.karhades_pc.floating_action_button.ActionButton-->
-        <!--android:id="@+id/full_screen_floating_action_button"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignBottom="@+id/image_view"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_marginBottom="-50dp"-->
-        <!--android:visibility="invisible"-->
-        <!--app:button_color="@color/accent"-->
-        <!--app:button_colorPressed="@color/accent_dark"-->
-        <!--app:image="@mipmap/fullscreen"-->
-        <!--app:rippleEffect_enabled="true" />-->
+    <com.example.karhades_pc.floating_action_button.ActionButton
+        android:id="@+id/full_screen_floating_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/image_view"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="-50dp"
+        android:visibility="invisible"
+        app:button_color="@color/accent"
+        app:button_colorPressed="@color/accent_dark"
+        app:image="@mipmap/camera"
+        app:rippleEffect_enabled="true" />
 
     <!--Difficulty-->
     <LinearLayout
@@ -57,47 +56,24 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/frame_layout"
         android:layout_marginLeft="30dp"
-        android:layout_marginTop="16dp">
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="14dp">
 
         <TextView
             android:id="@+id/riddle_difficulty_label_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tag_difficulty"
-            android:textSize="34sp" />
+            android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/riddle_difficulty_text_view"
+        <Spinner
+            android:id="@+id/spinner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/accent"
-            android:textSize="34sp" />
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
-    <!--Solved-->
-    <LinearLayout
-        android:id="@+id/tag_solved_linear_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/difficulty_linear_layout"
-        android:layout_marginLeft="30dp">
-
-        <TextView
-            android:id="@+id/riddle_solved_label_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tag_solved"
-            android:textSize="34sp" />
-
-        <CheckBox
-            android:id="@+id/riddle_solved_check_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:enabled="false" />
-
-    </LinearLayout>
-
+    <!-- Buttons-->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -110,9 +86,9 @@
             android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/raised_button"
+            android:background="@drawable/raised_button_secondary"
             android:text="CANCEL"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/black" />
 
         <Button
             android:id="@+id/tag_it_button"

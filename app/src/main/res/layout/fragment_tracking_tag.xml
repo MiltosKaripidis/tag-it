@@ -10,13 +10,12 @@
         android:scaleType="fitXY"
         android:src="@drawable/illidan" />
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@id/tool_bar"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tracking_tag_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:background="@android:color/transparent"
-        android:navigationIcon="@mipmap/ic_action_menu_white"
         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
     <FrameLayout

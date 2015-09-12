@@ -26,12 +26,12 @@ import java.util.Date;
 /**
  * Created by Karhades - PC on 4/14/2015.
  */
-public class TagFragment extends Fragment {
+public class TrackingTagFragment extends Fragment {
 
     public static final String EXTRA_TAG_ID = "com.example.karhades_pc.nfctester.tag_id";
     public static final String EXTRA_NFC_TAG_DISCOVERED = "com.example.karhades_pc.nfctester.nfc_tag_discovered";
 
-    private Tag tag;
+    private NfcTag nfcTag;
     private boolean nfcTagIsDiscovered;
     private AudioPlayer audioPlayer;
 
@@ -46,16 +46,16 @@ public class TagFragment extends Fragment {
     /**
      * It must be called after the fragment is created and before it is added to the hosting activity.
      *
-     * @param tagId            A String containing the Tag ID.
-     * @param nfcTagDiscovered A boolean indicating whether it was started from NFC Tag discovery.
+     * @param tagId            A String containing the NfcTag ID.
+     * @param nfcTagDiscovered A boolean indicating whether it was started from NFC NfcTag discovery.
      * @return A Fragment with the above arguments.
      */
-    public static TagFragment newInstance(String tagId, boolean nfcTagDiscovered) {
+    public static TrackingTagFragment newInstance(String tagId, boolean nfcTagDiscovered) {
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_TAG_ID, tagId);
         bundle.putBoolean(EXTRA_NFC_TAG_DISCOVERED, nfcTagDiscovered);
 
-        TagFragment fragment = new TagFragment();
+        TrackingTagFragment fragment = new TrackingTagFragment();
         fragment.setArguments(bundle);
 
         return fragment;
@@ -104,28 +104,28 @@ public class TagFragment extends Fragment {
     }
 
     private void getRiddleFromArguments() {
-        // Get the Tag ID either from the TrackingGameFragment (onListClick) or
-        // the NFC Tag Discovery.
+        // Get the NfcTag ID either from the TrackingGameFragment (onListClick) or
+        // the NFC NfcTag Discovery.
         String tagId = getArguments().getString(EXTRA_TAG_ID);
 
-        // Get the tag through it's tag id from the arguments.
-        tag = MyTags.get(getActivity()).getRiddle(tagId);
+        // Get the nfcTag through it's nfcTag id from the arguments.
+        nfcTag = MyTags.get(getActivity()).getTag(tagId);
     }
 
     private void solveRiddle() {
-        // Check whether a NFC Tag was discovered and solve the
-        // appropriate Tag.
+        // Check whether a NFC NfcTag was discovered and solve the
+        // appropriate NfcTag.
         nfcTagIsDiscovered = getArguments().getBoolean(EXTRA_NFC_TAG_DISCOVERED);
 
         if (nfcTagIsDiscovered) {
-            tag.setSolved(true);
-            tag.setDateSolved(new Date());
+            nfcTag.setSolved(true);
+            nfcTag.setDateSolved(new Date());
 
             // Play a winning sound.
             // TODO: Uncomment the cheering sound.
             //audioPlayer.play(getActivity(), R.raw.cheering);
 
-            Toast.makeText(getActivity(), "Tag " + tag.getTitle() + " was successfully solved!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "NfcTag " + nfcTag.getTitle() + " was successfully solved!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -146,7 +146,7 @@ public class TagFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tag, container, false);
+        View view = inflater.inflate(R.layout.fragment_tracking_tag, container, false);
 
         setupToolbar(view);
         setupFloatingActionButton(view);
@@ -161,12 +161,12 @@ public class TagFragment extends Fragment {
      * @param view A view needed for the findViewById() method
      */
     private void setupToolbar(View view) {
-        toolbar = (Toolbar) view.findViewById(R.id.tool_bar);
+        toolbar = (Toolbar) view.findViewById(R.id.tracking_tag_tool_bar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         // Display the caret for an ancestral navigation.
         if (NavUtils.getParentActivityName(getActivity()) != null)
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tag.getTitle());
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(nfcTag.getTitle());
     }
 
     /**
@@ -180,47 +180,47 @@ public class TagFragment extends Fragment {
         Typeface typefaceBold = FontCache.get("fonts/amatic_bold.ttf", getActivity());
         Typeface typefaceNormal = FontCache.get("fonts/amatic_normal.ttf", getActivity());
 
-        // Tag Title TextView
+        // NfcTag Title TextView
         //TextView riddleTitleTextView = (TextView) view.findViewById(R.id.riddle_title_text_view);
         //riddleTitleTextView.setTypeface(typefaceTitle);
 
-        // Tag Details Title TextView
+        // NfcTag Details Title TextView
         TextView riddleDetailsTitleTextView = (TextView) view.findViewById(R.id.riddle_details_title_text_view);
         riddleDetailsTitleTextView.setTypeface(typefaceTitle);
 
-        // Tag TextView
+        // NfcTag TextView
 //        riddleTextView = (TextView) view.findViewById(R.id.riddle_text_view);
-//        riddleTextView.setText(tag.getText());
+//        riddleTextView.setText(nfcTag.getText());
 //        riddleTextView.setTypeface(typefaceBold);
 
-        // Tag Difficulty Label TextView
+        // NfcTag Difficulty Label TextView
         TextView riddleDifficultyLabel = (TextView) view.findViewById(R.id.riddle_difficulty_label_text_view);
         riddleDifficultyLabel.setTypeface(typefaceNormal);
 
-        // Tag Difficulty TextView
+        // NfcTag Difficulty TextView
         riddleDifficultyTextView = (TextView) view.findViewById(R.id.riddle_difficulty_text_view);
-        riddleDifficultyTextView.setText(tag.getDifficulty());
+        riddleDifficultyTextView.setText(nfcTag.getDifficulty());
         riddleDifficultyTextView.setTypeface(typefaceNormal);
 
-        // Tag Solved Label TextView
+        // NfcTag Solved Label TextView
         TextView riddleSolvedLabel = (TextView) view.findViewById(R.id.riddle_solved_label_text_view);
         riddleSolvedLabel.setTypeface(typefaceNormal);
 
-        // Tag Solved CheckBox
+        // NfcTag Solved CheckBox
         riddleSolvedCheckBox = (CheckBox) view.findViewById(R.id.riddle_solved_check_box);
-        riddleSolvedCheckBox.setChecked(tag.isSolved());
+        riddleSolvedCheckBox.setChecked(nfcTag.isSolved());
 
-        // Tag Date Label TextView
+        // NfcTag Date Label TextView
 //        TextView riddleDateSolvedLabelTextView = (TextView) view.findViewById(R.id.riddle_date_solved_label_text_view);
 //        riddleDateSolvedLabelTextView.setTypeface(typefaceNormal);
 //
-//        // Tag Date Solved CheckBox
+//        // NfcTag Date Solved CheckBox
 //        riddleDateSolvedTextView = (TextView) view.findViewById(R.id.date_solved_text_view);
 //        riddleDateSolvedTextView.setTypeface(typefaceNormal);
-//        if (tag.getDateSolved() != null) {
+//        if (nfcTag.getDateSolved() != null) {
 //            // Format the Date into human-readable text
 //            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, MMMM dd, yyyy (HH:mm:ss)");
-//            Date date = tag.getDateSolved();
+//            Date date = nfcTag.getDateSolved();
 //            String formattedDate = simpleDateFormat.format(date);
 //            riddleDateSolvedTextView.setText(formattedDate);
 //        }
@@ -230,13 +230,20 @@ public class TagFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        startupAnimation();
+    }
+
+    private void startupAnimation()
+    {
         // Floating Action Button animation on show after a period of time.
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (actionButton.isHidden()) {
+                    actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
                     actionButton.show();
+                    actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
                 }
             }
         }, 750);

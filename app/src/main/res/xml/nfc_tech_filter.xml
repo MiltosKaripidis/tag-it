@@ -13,7 +13,7 @@
         <tech>android.nfc.tech.Ndef</tech>
     </tech-list>
 
-    <!-- All the tag technologies. The tech-list must have the exact number
+    <!-- All the nfcTag technologies. The tech-list must have the exact number
     of technologies to match-->
     <!--<tech_list>-->
         <!--<tech>android.nfc.tech.IsoDep</tech>-->
