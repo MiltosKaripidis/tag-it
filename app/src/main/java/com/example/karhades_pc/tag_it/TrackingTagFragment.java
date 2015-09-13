@@ -1,12 +1,12 @@
 package com.example.karhades_pc.tag_it;
 
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -18,10 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.karhades_pc.floating_action_button.ActionButton;
-import com.example.karhades_pc.utils.AudioPlayer;
 import com.example.karhades_pc.utils.FontCache;
-
-import java.util.Date;
 
 /**
  * Created by Karhades - PC on 4/14/2015.
@@ -29,11 +26,9 @@ import java.util.Date;
 public class TrackingTagFragment extends Fragment {
 
     public static final String EXTRA_TAG_ID = "com.example.karhades_pc.nfctester.tag_id";
-    public static final String EXTRA_NFC_TAG_DISCOVERED = "com.example.karhades_pc.nfctester.nfc_tag_discovered";
 
     private NfcTag nfcTag;
     private boolean nfcTagIsDiscovered;
-    private AudioPlayer audioPlayer;
 
     private TextView riddleDifficultyTextView;
     private TextView riddleTextView;
@@ -46,14 +41,12 @@ public class TrackingTagFragment extends Fragment {
     /**
      * It must be called after the fragment is created and before it is added to the hosting activity.
      *
-     * @param tagId            A String containing the NfcTag ID.
-     * @param nfcTagDiscovered A boolean indicating whether it was started from NFC NfcTag discovery.
+     * @param tagId A String containing the NfcTag ID.
      * @return A Fragment with the above arguments.
      */
-    public static TrackingTagFragment newInstance(String tagId, boolean nfcTagDiscovered) {
+    public static TrackingTagFragment newInstance(String tagId) {
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_TAG_ID, tagId);
-        bundle.putBoolean(EXTRA_NFC_TAG_DISCOVERED, nfcTagDiscovered);
 
         TrackingTagFragment fragment = new TrackingTagFragment();
         fragment.setArguments(bundle);
@@ -63,11 +56,7 @@ public class TrackingTagFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        enterFullScreen();
-
         super.onCreate(savedInstanceState);
-
-        setupAudioPlayer();
 
         // Retain the fragment through configuration change.
         setRetainInstance(true);
@@ -76,57 +65,51 @@ public class TrackingTagFragment extends Fragment {
         // a call to onCreateOptionsMenu.
         setHasOptionsMenu(true);
 
-        getRiddleFromArguments();
-        solveRiddle();
+        getFragmentArguments();
     }
 
-    private void enterFullScreen() {
-        if (Build.VERSION.SDK_INT > 10) {
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        updateUI();
+        startupAnimation();
     }
 
-    private void setupAudioPlayer() {
-        // Initialize the audio player.
-        audioPlayer = new AudioPlayer();
+    private void updateUI() {
+        riddleDifficultyTextView.setText(nfcTag.getDifficulty());
+        riddleSolvedCheckBox.setChecked(nfcTag.isSolved());
+//        riddleTextView.setText(nfcTag.getText());
+//        if (nfcTag.getDateSolved() != null) {
+//            // Format the Date into human-readable text
+//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, MMMM dd, yyyy (HH:mm:ss)");
+//            Date date = nfcTag.getDateSolved();
+//            String formattedDate = simpleDateFormat.format(date);
+//            riddleDateSolvedTextView.setText(formattedDate);
     }
 
-    private void setupFloatingActionButton(View view) {
-        actionButton = (ActionButton) view.findViewById(R.id.full_screen_floating_action_button);
-        actionButton.setOnClickListener(new View.OnClickListener() {
+    private void startupAnimation() {
+        // Floating Action Button animation on show after a period of time.
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "Full Screen!", Toast.LENGTH_SHORT).show();
+            public void run() {
+                if (actionButton.isHidden()) {
+                    actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
+                    actionButton.show();
+                    actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
+                }
             }
-        });
-        actionButton.setHideAnimation(ActionButton.Animations.SCALE_DOWN);
-        actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
+        }, 750);
     }
 
-    private void getRiddleFromArguments() {
-        // Get the NfcTag ID either from the TrackingGameFragment (onListClick) or
-        // the NFC NfcTag Discovery.
+    private void getFragmentArguments() {
+        // Get the tag ID either from the TrackingGameFragment (onListClick) or
+        // the NFC tag Discovery.
         String tagId = getArguments().getString(EXTRA_TAG_ID);
 
-        // Get the nfcTag through it's nfcTag id from the arguments.
+        // Get the nfcTag through it's tag id from the arguments.
         nfcTag = MyTags.get(getActivity()).getTag(tagId);
-    }
-
-    private void solveRiddle() {
-        // Check whether a NFC NfcTag was discovered and solve the
-        // appropriate NfcTag.
-        nfcTagIsDiscovered = getArguments().getBoolean(EXTRA_NFC_TAG_DISCOVERED);
-
-        if (nfcTagIsDiscovered) {
-            nfcTag.setSolved(true);
-            nfcTag.setDateSolved(new Date());
-
-            // Play a winning sound.
-            // TODO: Uncomment the cheering sound.
-            //audioPlayer.play(getActivity(), R.raw.cheering);
-
-            Toast.makeText(getActivity(), "NfcTag " + nfcTag.getTitle() + " was successfully solved!", Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override
@@ -163,10 +146,28 @@ public class TrackingTagFragment extends Fragment {
     private void setupToolbar(View view) {
         toolbar = (Toolbar) view.findViewById(R.id.tracking_tag_tool_bar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        // Display the caret for an ancestral navigation.
-        if (NavUtils.getParentActivityName(getActivity()) != null)
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(nfcTag.getTitle());
+
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+
+        if (actionBar != null) {
+            // Display the caret for an ancestral navigation.
+            if (NavUtils.getParentActivityName(getActivity()) != null)
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            if (nfcTag != null)
+                actionBar.setTitle(nfcTag.getTitle());
+        }
+    }
+
+    private void setupFloatingActionButton(View view) {
+        actionButton = (ActionButton) view.findViewById(R.id.full_screen_floating_action_button);
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Full Screen!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        actionButton.setHideAnimation(ActionButton.Animations.SCALE_DOWN);
+        actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
     }
 
     /**
@@ -190,7 +191,6 @@ public class TrackingTagFragment extends Fragment {
 
         // NfcTag TextView
 //        riddleTextView = (TextView) view.findViewById(R.id.riddle_text_view);
-//        riddleTextView.setText(nfcTag.getText());
 //        riddleTextView.setTypeface(typefaceBold);
 
         // NfcTag Difficulty Label TextView
@@ -199,7 +199,6 @@ public class TrackingTagFragment extends Fragment {
 
         // NfcTag Difficulty TextView
         riddleDifficultyTextView = (TextView) view.findViewById(R.id.riddle_difficulty_text_view);
-        riddleDifficultyTextView.setText(nfcTag.getDifficulty());
         riddleDifficultyTextView.setTypeface(typefaceNormal);
 
         // NfcTag Solved Label TextView
@@ -208,7 +207,6 @@ public class TrackingTagFragment extends Fragment {
 
         // NfcTag Solved CheckBox
         riddleSolvedCheckBox = (CheckBox) view.findViewById(R.id.riddle_solved_check_box);
-        riddleSolvedCheckBox.setChecked(nfcTag.isSolved());
 
         // NfcTag Date Label TextView
 //        TextView riddleDateSolvedLabelTextView = (TextView) view.findViewById(R.id.riddle_date_solved_label_text_view);
@@ -217,35 +215,5 @@ public class TrackingTagFragment extends Fragment {
 //        // NfcTag Date Solved CheckBox
 //        riddleDateSolvedTextView = (TextView) view.findViewById(R.id.date_solved_text_view);
 //        riddleDateSolvedTextView.setTypeface(typefaceNormal);
-//        if (nfcTag.getDateSolved() != null) {
-//            // Format the Date into human-readable text
-//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, MMMM dd, yyyy (HH:mm:ss)");
-//            Date date = nfcTag.getDateSolved();
-//            String formattedDate = simpleDateFormat.format(date);
-//            riddleDateSolvedTextView.setText(formattedDate);
-//        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        startupAnimation();
-    }
-
-    private void startupAnimation()
-    {
-        // Floating Action Button animation on show after a period of time.
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (actionButton.isHidden()) {
-                    actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
-                    actionButton.show();
-                    actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
-                }
-            }
-        }, 750);
     }
 }

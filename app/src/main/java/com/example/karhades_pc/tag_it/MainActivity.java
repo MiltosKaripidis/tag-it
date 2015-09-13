@@ -1,7 +1,6 @@
 package com.example.karhades_pc.tag_it;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,7 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.example.karhades_pc.nfc.NfcHandler;
 import com.example.karhades_pc.sliding_tab_layout.SlidingTabLayout;
@@ -27,9 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (Build.VERSION.SDK_INT > 10) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        }
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -51,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        nfcHandler.handleDiscoveredTag(intent);
+        nfcHandler.resolveIntent(intent);
     }
 
     @Override
@@ -88,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         return new TrackingGameFragment();
                     case 1:
-                        return new TrackingTagFragment().newInstance("04BCE16AC82980", false);
+                        return TrackingTagFragment.newInstance("04BCE16AC82980");
                     case 2:
                         return new CreateGameFragment();
                 }

@@ -1,11 +1,14 @@
 package com.example.karhades_pc.tag_it;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+
+import com.example.karhades_pc.nfc.NfcHandler;
 
 import java.util.ArrayList;
 
@@ -17,8 +20,9 @@ public class TagPagerActivity extends AppCompatActivity {
     private ViewPager viewPager;
 
     private String tagId;
-    private boolean nfcDiscovered;
     private ArrayList<NfcTag> nfcTags;
+
+    private NfcHandler nfcHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,20 +31,54 @@ public class TagPagerActivity extends AppCompatActivity {
         // Get the nfcTags from MyTags.
         nfcTags = MyTags.get(this).getNfcTags();
 
-        getIntentExtras();
+        getIntentExtras(getIntent());
 
         setupViewPager();
 
         setContentView(viewPager);
+
+        nfcHandler = new NfcHandler();
+        nfcHandler.setupNfcHandler(this);
     }
 
-    private void getIntentExtras() {
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        nfcHandler.disableForegroundDispatch();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        nfcHandler.enableForegroundDispatch();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        nfcHandler.resolveIntent(intent);
+        setCurrentTagPage(intent);
+    }
+
+    private void setCurrentTagPage(Intent intent) {
+        getIntentExtras(intent);
+        NfcTag nfcTag = MyTags.get(this).getTag(tagId);
+        int position = MyTags.get(this).getNfcTags().indexOf(nfcTag);
+        if (position != -1) {
+            // Solve the Nfc Tag.
+            MyTags.get(this).solveNfcTag(tagId);
+
+            viewPager.setCurrentItem(position);
+        }
+    }
+
+    private void getIntentExtras(Intent intent) {
         // Gets the NfcTag ID either from the onListClick() of TrackingGameFragment
         // or the startActivityFromNfc() of NfcHandler.
-        tagId = getIntent().getStringExtra(TrackingTagFragment.EXTRA_TAG_ID);
-
-        // Get a boolean value whether the intent was sent from NfcHandler.
-        nfcDiscovered = getIntent().getBooleanExtra(TrackingTagFragment.EXTRA_NFC_TAG_DISCOVERED, false);
+        tagId = intent.getStringExtra(TrackingTagFragment.EXTRA_TAG_ID);
     }
 
     @SuppressWarnings("deprecation")
@@ -55,8 +93,7 @@ public class TagPagerActivity extends AppCompatActivity {
             public Fragment getItem(int i) {
                 NfcTag nfcTag = nfcTags.get(i);
 
-                Fragment fragment = TrackingTagFragment.newInstance(nfcTag.getTagId(), nfcDiscovered);
-                nfcDiscovered = false;
+                Fragment fragment = TrackingTagFragment.newInstance(nfcTag.getTagId());
                 return fragment;
             }
 
@@ -69,7 +106,7 @@ public class TagPagerActivity extends AppCompatActivity {
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
-                //EMPTY
+                // DO NOTHING
             }
 
             @Override
@@ -80,7 +117,7 @@ public class TagPagerActivity extends AppCompatActivity {
 
             @Override
             public void onPageScrollStateChanged(int i) {
-                //EMPTY
+                // DO NOTHING
             }
         });
 

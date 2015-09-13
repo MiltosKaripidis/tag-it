@@ -1,6 +1,9 @@
 package com.example.karhades_pc.tag_it;
 
 import android.content.Context;
+import android.widget.Toast;
+
+import com.example.karhades_pc.utils.AudioPlayer;
 
 import java.util.ArrayList;
 
@@ -13,12 +16,14 @@ public class MyTags {
     private Context context;
 
     private final ArrayList<NfcTag> nfcTags;
+    private AudioPlayer audioPlayer;
 
     // Private constructor that gets called only once
     // by it's get(context) method.
     private MyTags(Context context) {
         this.context = context;
         nfcTags = new ArrayList<>();
+        setupAudioPlayer();
 
         // Dummy Riddles
         NfcTag nfcTag_1 = new NfcTag("Black", "Cras aliquet blandit vehicula. Maecenas auctor egestas eros...", "Hard", false, "04D11AD2C03480");
@@ -32,7 +37,7 @@ public class MyTags {
 //        NfcTag tag_9 = new NfcTag("Purple", "Donec ornare lacus a sapien maximus, eget semper...", "Hard", false, "04BCE16AC82986");
 //        NfcTag tag_10 = new NfcTag("Purple", "Donec ornare lacus a sapien maximus, eget semper...", "Hard", false, "04BCE16AC82986");
 //        NfcTag tag_11 = new NfcTag("Purple", "Donec ornare lacus a sapien maximus, eget semper...", "Hard", false, "04BCE16AC82986");
-        
+
         nfcTags.add(nfcTag_1);
         nfcTags.add(nfcTag_2);
         nfcTags.add(nfcTag_3);
@@ -44,6 +49,11 @@ public class MyTags {
 //        nfcTags.add(tag_9);
 //        nfcTags.add(tag_10);
 //        nfcTags.add(tag_11);
+    }
+
+    private void setupAudioPlayer() {
+        // Initialize the audio player.
+        audioPlayer = new AudioPlayer();
     }
 
     // Creates a Single Object for this class (Singleton)
@@ -68,5 +78,14 @@ public class MyTags {
             }
         }
         return null;
+    }
+
+    public void solveNfcTag(String tagId) {
+        NfcTag nfcTag = getTag(tagId);
+        nfcTag.setSolved(true);
+        Toast.makeText(context, "NfcTag " + nfcTag.getTitle() + " was successfully solved!", Toast.LENGTH_SHORT).show();
+        // Play a winning sound.
+        // TODO: Uncomment the cheering sound.
+        //audioPlayer.play(context, R.raw.cheering);
     }
 }

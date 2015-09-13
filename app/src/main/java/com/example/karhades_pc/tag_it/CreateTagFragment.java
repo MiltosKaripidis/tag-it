@@ -1,14 +1,12 @@
 package com.example.karhades_pc.tag_it;
 
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -83,13 +81,18 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void setupToolbar(View view) {
-        toolbar = (android.support.v7.widget.Toolbar) view.findViewById(R.id.create_tag_tool_bar);
+        toolbar = (Toolbar) view.findViewById(R.id.create_tag_tool_bar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        // Display the caret for an ancestral navigation.
-        if (NavUtils.getParentActivityName(getActivity()) != null)
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if (nfcTag != null)
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(nfcTag.getTitle());
+
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+
+        if (actionBar != null) {
+            // Display the caret for an ancestral navigation.
+            if (NavUtils.getParentActivityName(getActivity()) != null)
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            if (nfcTag != null)
+                actionBar.setTitle(nfcTag.getTitle());
+        }
     }
 
     private void setupFloatingActionButton(View view) {
@@ -135,12 +138,17 @@ public class CreateTagFragment extends Fragment {
         });
         if (nfcTag != null) {
             int position = 0;
-            if (nfcTag.getDifficulty().equals("Easy"))
-                position = 0;
-            else if (nfcTag.getDifficulty().equals("Medium"))
-                position = 1;
-            else if (nfcTag.getDifficulty().equals("Hard"))
-                position = 2;
+            switch (nfcTag.getDifficulty()) {
+                case "Easy":
+                    position = 0;
+                    break;
+                case "Medium":
+                    position = 1;
+                    break;
+                case "Hard":
+                    position = 2;
+                    break;
+            }
 
             difficultySpinner.setSelection(position);
         }
@@ -152,7 +160,8 @@ public class CreateTagFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 NfcHandler.enableTagWriteMode();
-                ((CreateTagActivity)getActivity()).nfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
+                NfcHandler nfcHandler = ((CreateTagActivity) getActivity()).nfcHandler;
+                nfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
                     @Override
                     public void onTagWritten(int status) {
                         Log.d("CreateTagFragment", "onTagWritten!");

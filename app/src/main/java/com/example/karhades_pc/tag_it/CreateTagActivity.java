@@ -43,6 +43,6 @@ public class CreateTagActivity extends SingleFragmentActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        nfcHandler.handleDiscoveredTag(intent);
+        nfcHandler.resolveIntent(intent);
     }
 }
