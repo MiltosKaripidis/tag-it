@@ -152,6 +152,11 @@ public class NfcHandler {
             nfcAdapter.disableForegroundDispatch(activity);
     }
 
+    /**
+     * Listen for a NDEF tag discovery that needs to be read.
+     *
+     * @param intent The NFC intent to resolve the tag discovery type.
+     */
     public void enableNfcReadTag(Intent intent) {
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
@@ -221,6 +226,11 @@ public class NfcHandler {
         }
     }
 
+    /**
+     * TODO: Pending documentation.
+     *
+     * @param intent The NFC intent to resolve the tag discovery type.
+     */
     public void enableNfcAndroidBeam(Intent intent) {
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
 
@@ -232,6 +242,11 @@ public class NfcHandler {
         }
     }
 
+    /**
+     * TODO: Pending documentation.
+     *
+     * @param intent The intent to resolve the raw data.
+     */
     private void readFromBeam(Intent intent) {
         Log.d(TAG, "readFromBeam called!");
         Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
@@ -243,6 +258,11 @@ public class NfcHandler {
         Toast.makeText(activity, "Payload: " + payload, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Listen for a tag discovery that needs to be written.
+     *
+     * @param intent The NFC intent to resolve the tag discovery type.
+     */
     public void enableNfcWriteTag(Intent intent) {
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())
                 || NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())
