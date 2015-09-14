@@ -159,7 +159,7 @@ public class CreateTagFragment extends Fragment {
         tagItButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NfcHandler.enableTagWriteMode();
+                NfcHandler.toggleTagWriteMode(true);
                 NfcHandler nfcHandler = ((CreateTagActivity) getActivity()).nfcHandler;
                 nfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
                     @Override
@@ -188,14 +188,14 @@ public class CreateTagFragment extends Fragment {
                 .setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
-                        NfcHandler.disableTagWriteMode();
+                        NfcHandler.toggleTagWriteMode(false);
                     }
                 })
                 .setMessage("Touch the nfc tag to write the information inserted.")
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        NfcHandler.disableTagWriteMode();
+                        NfcHandler.toggleTagWriteMode(false);
                     }
                 });
 

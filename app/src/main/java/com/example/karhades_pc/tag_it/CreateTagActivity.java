@@ -21,6 +21,11 @@ public class CreateTagActivity extends SingleFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setupNfcHandler();
+    }
+
+    private void setupNfcHandler()
+    {
         nfcHandler = new NfcHandler();
         nfcHandler.setupNfcHandler(this);
     }
@@ -43,6 +48,6 @@ public class CreateTagActivity extends SingleFragmentActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        nfcHandler.resolveIntent(intent);
+        nfcHandler.enableNfcWriteTag(intent);
     }
 }

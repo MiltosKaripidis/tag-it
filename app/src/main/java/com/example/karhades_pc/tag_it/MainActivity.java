@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        nfcHandler.resolveIntent(intent);
+        nfcHandler.enableNfcReadTag(intent);
     }
 
     @Override
@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupNFC() {
         nfcHandler = new NfcHandler();
         nfcHandler.setupNfcHandler(this);
+        nfcHandler.enableNfcReadTag(getIntent());
     }
 
     private void setupToolbar() {

@@ -37,6 +37,7 @@ public class NfcHandler {
     private Activity activity;
 
     private static boolean writeMode = false;
+
     private OnTagWriteListener onTagWriteListener;
 
     /**
@@ -75,7 +76,6 @@ public class NfcHandler {
 
         setupForegroundDispatch();
         setupAndroidBeam();
-        resolveIntent(activity.getIntent());
     }
 
     @TargetApi(16)
@@ -132,12 +132,8 @@ public class NfcHandler {
     /**
      * Indicate that the application is ready to write to a nfc tag.
      */
-    public static void enableTagWriteMode() {
-        writeMode = true;
-    }
-
-    public static void disableTagWriteMode() {
-        writeMode = false;
+    public static void toggleTagWriteMode(boolean value) {
+        writeMode = value;
     }
 
     /**
@@ -156,47 +152,15 @@ public class NfcHandler {
             nfcAdapter.disableForegroundDispatch(activity);
     }
 
-    /**
-     * Handle the newly discovered tag to either read from it or write to it.
-     *
-     * @param intent The intent to specify the tag discovery method.
-     */
-    public void resolveIntent(Intent intent) {
-        Log.d(TAG, "Intent action: " + intent.getAction());
-
-        if (writeMode && (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())
-                || NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())
-                || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction()))) {
-            Log.d(TAG, "Write Mode");
-
+    public void enableNfcReadTag(Intent intent) {
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            writeToTag(tag);
-        } else if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
-            Log.d(TAG, "Read Mode");
-
-            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            // Android beam.
-            if (tag.getTechList()[0].equals("android.nfc.tech.Ndef")) {
-                readFromBeam(intent);
-            }
             // NFC tag.
-            else {
-                readFromTag(tag);
-            }
+            readFromTag(tag);
         } else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction()) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
             Toast.makeText(activity, "Nfc tag not registered!", Toast.LENGTH_SHORT).show();
         }
-    }
 
-    private void readFromBeam(Intent intent) {
-        Log.d(TAG, "readFromBeam called!");
-        Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
-                NfcAdapter.EXTRA_NDEF_MESSAGES);
-        // only one message sent during the beam
-        NdefMessage msg = (NdefMessage) rawMsgs[0];
-
-        String payload = new String(msg.getRecords()[0].getPayload());
-        Toast.makeText(activity, "Payload: " + payload, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -205,7 +169,7 @@ public class NfcHandler {
      * @param tag The tag that will be read.
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void readFromTag(android.nfc.Tag tag) {
+    private void readFromTag(Tag tag) {
         Log.d(TAG, "readFromTag called!");
         try {
             Ndef ndef = Ndef.get(tag);
@@ -219,17 +183,13 @@ public class NfcHandler {
             String payload = new String(ndefRecord.getPayload());
             Log.d(TAG, "Payload: " + payload);
 
-            if (!mimeType.equals(MIME_TYPE)) {
-                Toast.makeText(activity, "Nfc NfcTag not registered!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (payload.equals("tag")) {
+            if (mimeType.equals(MIME_TYPE) && payload.equals("tag")) {
                 String tagId = ByteArrayToHexString(tag.getId());
-
                 Log.d(TAG, "NfcTag ID: " + tagId);
 
+                // Start the solved activity.
                 startActivityFromNFC(tagId);
+
                 // Solve the Nfc Tag.
                 MyTags.get(activity).solveNfcTag(tagId);
             } else {
@@ -261,13 +221,50 @@ public class NfcHandler {
         }
     }
 
+    public void enableNfcAndroidBeam(Intent intent) {
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+
+            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            // Android beam.
+            if (tag.getTechList()[0].equals("android.nfc.tech.Ndef")) {
+                readFromBeam(intent);
+            }
+        }
+    }
+
+    private void readFromBeam(Intent intent) {
+        Log.d(TAG, "readFromBeam called!");
+        Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
+                NfcAdapter.EXTRA_NDEF_MESSAGES);
+        // only one message sent during the beam
+        NdefMessage msg = (NdefMessage) rawMsgs[0];
+
+        String payload = new String(msg.getRecords()[0].getPayload());
+        Toast.makeText(activity, "Payload: " + payload, Toast.LENGTH_SHORT).show();
+    }
+
+    public void enableNfcWriteTag(Intent intent) {
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())
+                || NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())
+                || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
+            if (writeMode) {
+                Log.d(TAG, "Write Mode");
+
+                Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+                writeToTag(tag);
+            } else {
+                Toast.makeText(activity, "Press the \"TAG IT!\" button to write! ", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     /**
      * Write to the specified tag the MIME type and a payload.
      *
      * @param tag The tag that will be written.
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void writeToTag(android.nfc.Tag tag) {
+    private void writeToTag(Tag tag) {
         byte[] payload = "tag".getBytes();
 
         NdefRecord ndefRecord = NdefRecord.createMime(MIME_TYPE, payload);

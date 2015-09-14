@@ -59,7 +59,7 @@ public class TagPagerActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        nfcHandler.resolveIntent(intent);
+        nfcHandler.enableNfcReadTag(intent);
         setCurrentTagPage(intent);
     }
 
