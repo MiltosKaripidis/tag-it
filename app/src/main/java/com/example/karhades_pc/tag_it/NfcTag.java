@@ -25,11 +25,10 @@ public class NfcTag {
         this.picture = picture;
     }
 
-    public NfcTag(String title, String text, String difficulty, boolean solved, String tagId) {
+    public NfcTag(String title, String text, String difficulty, String tagId) {
         this.title = title;
         this.text = text;
         this.difficulty = difficulty;
-        this.solved = solved;
         this.tagId = tagId;
     }
 

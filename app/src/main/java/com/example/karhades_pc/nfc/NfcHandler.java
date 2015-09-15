@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.example.karhades_pc.tag_it.MyTags;
 import com.example.karhades_pc.tag_it.NfcTag;
-import com.example.karhades_pc.tag_it.TagPagerActivity;
+import com.example.karhades_pc.tag_it.TrackingTagPagerActivity;
 import com.example.karhades_pc.tag_it.TrackingTagFragment;
 
 /**
@@ -48,7 +48,7 @@ public class NfcHandler {
         int STATUS_OK = 0;
         int STATUS_ERROR = 1;
 
-        void onTagWritten(int status);
+        void onTagWritten(int status, String tagId);
     }
 
     /**
@@ -206,7 +206,7 @@ public class NfcHandler {
     }
 
     /**
-     * Start the TagPagerActivity that will pass the tag id to
+     * Start the TrackingTagPagerActivity that will pass the tag id to
      * the TrackingTagFragment.
      *
      * @param tagId The tag id to open the appropriate NfcTag.
@@ -217,7 +217,7 @@ public class NfcHandler {
         if (nfcTag != null) {
             // Create an Intent and send the extra discovered NfcTag ID and
             // another extra to indicate that it's from the NFC discovery.
-            Intent intentTagId = new Intent(activity, TagPagerActivity.class);
+            Intent intentTagId = new Intent(activity, TrackingTagPagerActivity.class);
             intentTagId.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             intentTagId.putExtra(TrackingTagFragment.EXTRA_TAG_ID, tagId);
             activity.startActivity(intentTagId);
@@ -296,11 +296,13 @@ public class NfcHandler {
             ndef.connect();
             ndef.writeNdefMessage(ndefMessage);
 
+            String tagId = ByteArrayToHexString(tag.getId());
+
             Log.d(TAG, "Write to tag was successful!");
-            onTagWriteListener.onTagWritten(OnTagWriteListener.STATUS_OK);
+            onTagWriteListener.onTagWritten(OnTagWriteListener.STATUS_OK, tagId);
         } catch (Exception e) {
             Log.e(TAG, "Error when writing NdefMessage to NfcTag. " + e.getMessage());
-            onTagWriteListener.onTagWritten(OnTagWriteListener.STATUS_ERROR);
+            onTagWriteListener.onTagWritten(OnTagWriteListener.STATUS_ERROR, null);
         } finally {
             writeMode = false;
         }

@@ -3,5 +3,5 @@
     android:layout_height="wrap_content"
     android:background="@color/primary"
     android:elevation="10dp"
-    android:navigationIcon="@mipmap/ic_action_menu_white"
+    android:navigationIcon="@mipmap/hamburger_menu"
     android:theme="@style/ThemeOverlay.AppCompat.Dark" />

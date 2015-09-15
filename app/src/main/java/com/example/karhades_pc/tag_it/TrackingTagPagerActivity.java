@@ -15,7 +15,7 @@ import java.util.ArrayList;
 /**
  * Created by Karhades - PC on 4/15/2015.
  */
-public class TagPagerActivity extends AppCompatActivity {
+public class TrackingTagPagerActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
 
@@ -27,6 +27,7 @@ public class TagPagerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_tracking_tag_pager);
 
         // Get the nfcTags from MyTags.
         nfcTags = MyTags.get(this).getNfcTags();
@@ -34,8 +35,6 @@ public class TagPagerActivity extends AppCompatActivity {
         getIntentExtras(getIntent());
 
         setupViewPager();
-
-        setContentView(viewPager);
 
         nfcHandler = new NfcHandler();
         nfcHandler.setupNfcHandler(this);
@@ -83,9 +82,7 @@ public class TagPagerActivity extends AppCompatActivity {
 
     @SuppressWarnings("deprecation")
     private void setupViewPager() {
-
-        viewPager = new ViewPager(this);
-        viewPager.setId(R.id.list_view_pager);
+        viewPager = (ViewPager) findViewById(R.id.view_pager);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         viewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
@@ -93,8 +90,7 @@ public class TagPagerActivity extends AppCompatActivity {
             public Fragment getItem(int i) {
                 NfcTag nfcTag = nfcTags.get(i);
 
-                Fragment fragment = TrackingTagFragment.newInstance(nfcTag.getTagId());
-                return fragment;
+                return TrackingTagFragment.newInstance(nfcTag.getTagId());
             }
 
             @Override

@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.example.karhades_pc.nfc.NfcHandler;
 import com.example.karhades_pc.sliding_tab_layout.SlidingTabLayout;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private SlidingTabLayout slidingTabLayout;
 
     private NfcHandler nfcHandler;
+    private int pagePosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        nfcHandler.enableNfcReadTag(intent);
+        if (pagePosition == 0) {
+            nfcHandler.enableNfcReadTag(intent);
+        } else if (pagePosition == 1) {
+            Toast.makeText(this, "Share game tab!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Click the + button or overwrite an existing NFC tag.", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -110,6 +118,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public int getIndicatorColor(int position) {
                 return getResources().getColor(R.color.accent);
+            }
+        });
+        slidingTabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                pagePosition = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
     }

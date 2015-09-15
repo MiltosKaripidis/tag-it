@@ -43,8 +43,8 @@ public class CreateTagFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String tagId = getActivity().getIntent().getStringExtra(EXTRA_TAG_ID);
-        nfcTag = MyTags.get(getActivity()).getTag(tagId);
+        String currentTagId = getActivity().getIntent().getStringExtra(EXTRA_TAG_ID);
+        nfcTag = MyTags.get(getActivity()).getTag(currentTagId);
     }
 
     @Override
@@ -159,17 +159,36 @@ public class CreateTagFragment extends Fragment {
         tagItButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Enter write mode.
                 NfcHandler.toggleTagWriteMode(true);
-                NfcHandler nfcHandler = ((CreateTagActivity) getActivity()).nfcHandler;
+                // Listen for a tag written event.
+                final NfcHandler nfcHandler = ((CreateTagActivity) getActivity()).nfcHandler;
                 nfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
                     @Override
-                    public void onTagWritten(int status) {
+                    public void onTagWritten(int status, String tagId) {
                         Log.d("CreateTagFragment", "onTagWritten!");
+
                         alertDialog.dismiss();
 
                         if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
                             Toast.makeText(getActivity(), "Nfc Tag was successfully written!", Toast.LENGTH_SHORT).show();
-                            MyTags.get(getActivity()).getNfcTags().add(new NfcTag("Red", "Nulla et lacus quis erat luctus elementum. Mauris...", difficulty, false, "04BCE16AC82980"));
+
+                            // Overwrite the existing tag.
+                            if (nfcTag != null) {
+                                NfcTag currentNfcTag = MyTags.get(getActivity()).getTag(nfcTag.getTagId());
+                                currentNfcTag.setDifficulty(difficulty);
+                                currentNfcTag.setTagId(tagId);
+                            }
+                            // Create a new tag.
+                            else {
+                                int number = MyTags.get(getActivity()).getNfcTags().size() + 1;
+                                NfcTag newNfcTag = new NfcTag("Tag " + number, "Nulla et lacus quis erat luctus elementum. Mauris...", difficulty, tagId);
+                                MyTags.get(getActivity()).getNfcTags().add(newNfcTag);
+                            }
+
+                            // Close the activity.
+                            getActivity().finish();
+
                         } else if (status == NfcHandler.OnTagWriteListener.STATUS_ERROR) {
                             Toast.makeText(getActivity(), "Could not write to nfc tag!", Toast.LENGTH_SHORT).show();
                         }

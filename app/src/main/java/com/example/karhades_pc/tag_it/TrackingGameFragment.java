@@ -92,7 +92,7 @@ public class TrackingGameFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), TagPagerActivity.class);
+                    Intent intent = new Intent(getActivity(), TrackingTagPagerActivity.class);
                     intent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
                     startActivity(intent);
                 }
