@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         // The FragmentManager is needed for the view pager.
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
+        viewPager = (ViewPager) findViewById(R.id.main_view_pager);
         viewPager.setAdapter(new FragmentPagerAdapter(fragmentManager) {
             @Override
             public Fragment getItem(int position) {

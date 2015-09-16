@@ -10,7 +10,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,7 @@ import com.example.karhades_pc.nfc.NfcHandler;
  * Created by Karhades on 11-Sep-15.
  */
 public class CreateTagFragment extends Fragment {
-    public static final String EXTRA_TAG_ID = "com.example.karhades_pc.nfctester.tag_id";
+    public static final String EXTRA_TAG_ID = "com.example.karhades_pc.create_tag_fragment.tag_id";
 
     private Button cancelButton;
     private Button tagItButton;
@@ -39,12 +38,35 @@ public class CreateTagFragment extends Fragment {
     private NfcTag nfcTag;
     private String difficulty;
 
+    /**
+     * It must be called after the fragment is created and before it is added to the hosting activity.
+     *
+     * @param tagId A String containing the NfcTag ID.
+     * @return A Fragment with the above arguments.
+     */
+    public static CreateTagFragment newInstance(String tagId) {
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_TAG_ID, tagId);
+
+        CreateTagFragment createTagFragment = new CreateTagFragment();
+        createTagFragment.setArguments(bundle);
+
+        return createTagFragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String currentTagId = getActivity().getIntent().getStringExtra(EXTRA_TAG_ID);
-        nfcTag = MyTags.get(getActivity()).getTag(currentTagId);
+        getFragmentArguments();
+    }
+
+    private void getFragmentArguments() {
+        // Get the tag ID from the CreateGameFragment (onListClick).
+        String tagId = getArguments().getString(EXTRA_TAG_ID);
+
+        // Get the nfcTag through it's tag id from the arguments.
+        nfcTag = MyTags.get(getActivity()).getTag(tagId);
     }
 
     @Override
@@ -161,18 +183,20 @@ public class CreateTagFragment extends Fragment {
             public void onClick(View v) {
                 // Enter write mode.
                 NfcHandler.toggleTagWriteMode(true);
+                NfcHandler nfcHandler;
+
+                if (nfcTag != null)
+                    nfcHandler = ((CreateTagPagerActivity) getActivity()).nfcHandler;
+                else
+                    nfcHandler = ((CreateTagActivity) getActivity()).nfcHandler;
+
                 // Listen for a tag written event.
-                final NfcHandler nfcHandler = ((CreateTagActivity) getActivity()).nfcHandler;
                 nfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
                     @Override
                     public void onTagWritten(int status, String tagId) {
-                        Log.d("CreateTagFragment", "onTagWritten!");
-
                         alertDialog.dismiss();
 
                         if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
-                            Toast.makeText(getActivity(), "Nfc Tag was successfully written!", Toast.LENGTH_SHORT).show();
-
                             // Overwrite the existing tag.
                             if (nfcTag != null) {
                                 NfcTag currentNfcTag = MyTags.get(getActivity()).getTag(nfcTag.getTagId());
@@ -185,6 +209,8 @@ public class CreateTagFragment extends Fragment {
                                 NfcTag newNfcTag = new NfcTag("Tag " + number, "Nulla et lacus quis erat luctus elementum. Mauris...", difficulty, tagId);
                                 MyTags.get(getActivity()).getNfcTags().add(newNfcTag);
                             }
+
+                            Toast.makeText(getActivity(), "Nfc Tag was successfully written!", Toast.LENGTH_SHORT).show();
 
                             // Close the activity.
                             getActivity().finish();

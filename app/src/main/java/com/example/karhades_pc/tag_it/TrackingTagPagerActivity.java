@@ -33,9 +33,12 @@ public class TrackingTagPagerActivity extends AppCompatActivity {
         nfcTags = MyTags.get(this).getNfcTags();
 
         getIntentExtras(getIntent());
-
         setupViewPager();
+        setupNFC();
+    }
 
+    private void setupNFC()
+    {
         nfcHandler = new NfcHandler();
         nfcHandler.setupNfcHandler(this);
     }
@@ -82,7 +85,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity {
 
     @SuppressWarnings("deprecation")
     private void setupViewPager() {
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
+        viewPager = (ViewPager) findViewById(R.id.tracking_tag_pager_view_pager);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         viewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
@@ -117,6 +120,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity {
             }
         });
 
+        // Change to the appropriate page when started.
         for (int i = 0; i < nfcTags.size(); i++) {
             if (nfcTags.get(i).getTagId().equals(tagId)) {
                 viewPager.setCurrentItem(i);

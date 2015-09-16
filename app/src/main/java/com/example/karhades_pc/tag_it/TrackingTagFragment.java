@@ -25,7 +25,7 @@ import com.example.karhades_pc.utils.FontCache;
  */
 public class TrackingTagFragment extends Fragment {
 
-    public static final String EXTRA_TAG_ID = "com.example.karhades_pc.nfctester.tag_id";
+    public static final String EXTRA_TAG_ID = "com.example.karhades_pc.tracking_tag_fragment.tag_id";
 
     private NfcTag nfcTag;
     private boolean nfcTagIsDiscovered;

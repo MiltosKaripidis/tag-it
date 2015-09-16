@@ -145,7 +145,7 @@ public class CreateGameFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), CreateTagActivity.class);
+                    Intent intent = new Intent(getActivity(), CreateTagPagerActivity.class);
                     intent.putExtra(CreateTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
                     startActivity(intent);
                 }

@@ -14,7 +14,7 @@ public class CreateTagActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-        return new CreateTagFragment();
+        return CreateTagFragment.newInstance(null);
     }
 
     @Override
