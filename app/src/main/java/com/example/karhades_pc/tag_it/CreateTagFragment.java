@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,7 +27,7 @@ import com.example.karhades_pc.nfc.NfcHandler;
  * Created by Karhades on 11-Sep-15.
  */
 public class CreateTagFragment extends Fragment {
-    public static final String EXTRA_TAG_ID = "com.example.karhades_pc.create_tag_fragment.tag_id";
+    public static final String EXTRA_TAG_ID = "com.example.karhades_pc.tag_id";
 
     private Button cancelButton;
     private Button tagItButton;
@@ -39,6 +40,7 @@ public class CreateTagFragment extends Fragment {
     private String difficulty;
 
     /**
+     * Return a CreateTagFragment with tagId as its argument.
      * It must be called after the fragment is created and before it is added to the hosting activity.
      *
      * @param tagId A String containing the NfcTag ID.
@@ -58,15 +60,14 @@ public class CreateTagFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Retain the fragment through configuration change.
+        setRetainInstance(true);
+
+        // Tell the FragmentManager that this fragment should receive
+        // a call to onCreateOptionsMenu.
+        setHasOptionsMenu(true);
+
         getFragmentArguments();
-    }
-
-    private void getFragmentArguments() {
-        // Get the tag ID from the CreateGameFragment (onListClick).
-        String tagId = getArguments().getString(EXTRA_TAG_ID);
-
-        // Get the nfcTag through it's tag id from the arguments.
-        nfcTag = MyTags.get(getActivity()).getTag(tagId);
     }
 
     @Override
@@ -91,6 +92,28 @@ public class CreateTagFragment extends Fragment {
         }, 750);
     }
 
+    private void getFragmentArguments() {
+        // Get the tag ID from the CreateGameFragment (onListClick).
+        String tagId = getArguments().getString(EXTRA_TAG_ID);
+
+        // Get the nfcTag through it's tag id from the arguments.
+        nfcTag = MyTags.get(getActivity()).getTag(tagId);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // If there is a parent activity, navigate to it.
+                if (NavUtils.getParentActivityName(getActivity()) != null) {
+                    NavUtils.navigateUpFromSameTask(getActivity());
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_tag, container, false);
@@ -104,9 +127,15 @@ public class CreateTagFragment extends Fragment {
 
     private void setupToolbar(View view) {
         toolbar = (Toolbar) view.findViewById(R.id.create_tag_tool_bar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        // Retrieve an AppCompatActivity hosting activity to get the supported actionbar.
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+
+        // Set the toolbar as the new actionbar.
+        activity.setSupportActionBar(toolbar);
+
+        // Get the action bar.
+        ActionBar actionBar = activity.getSupportActionBar();
 
         if (actionBar != null) {
             // Display the caret for an ancestral navigation.
@@ -131,7 +160,14 @@ public class CreateTagFragment extends Fragment {
 
     private void initializeWidgets(View view) {
         setupSpinner(view);
-        setupTagItButton(view);
+
+        tagItButton = (Button) view.findViewById(R.id.tag_it_button);
+        tagItButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setupNfcWriteCallback();
+            }
+        });
 
         cancelButton = (Button) view.findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -158,6 +194,7 @@ public class CreateTagFragment extends Fragment {
                 // NOT IMPLEMENTED
             }
         });
+
         if (nfcTag != null) {
             int position = 0;
             switch (nfcTag.getDifficulty()) {
@@ -176,55 +213,43 @@ public class CreateTagFragment extends Fragment {
         }
     }
 
-    private void setupTagItButton(View view) {
-        tagItButton = (Button) view.findViewById(R.id.tag_it_button);
-        tagItButton.setOnClickListener(new View.OnClickListener() {
+    private void setupNfcWriteCallback() {
+        // Enter write mode.
+        NfcHandler.toggleTagWriteMode(true);
+
+        // Listen for a tag written event.
+        NfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
             @Override
-            public void onClick(View v) {
-                // Enter write mode.
-                NfcHandler.toggleTagWriteMode(true);
-                NfcHandler nfcHandler;
+            public void onTagWritten(int status, String tagId) {
+                alertDialog.dismiss();
 
-                if (nfcTag != null)
-                    nfcHandler = ((CreateTagPagerActivity) getActivity()).nfcHandler;
-                else
-                    nfcHandler = ((CreateTagActivity) getActivity()).nfcHandler;
-
-                // Listen for a tag written event.
-                nfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
-                    @Override
-                    public void onTagWritten(int status, String tagId) {
-                        alertDialog.dismiss();
-
-                        if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
-                            // Overwrite the existing tag.
-                            if (nfcTag != null) {
-                                NfcTag currentNfcTag = MyTags.get(getActivity()).getTag(nfcTag.getTagId());
-                                currentNfcTag.setDifficulty(difficulty);
-                                currentNfcTag.setTagId(tagId);
-                            }
-                            // Create a new tag.
-                            else {
-                                int number = MyTags.get(getActivity()).getNfcTags().size() + 1;
-                                NfcTag newNfcTag = new NfcTag("Tag " + number, "Nulla et lacus quis erat luctus elementum. Mauris...", difficulty, tagId);
-                                MyTags.get(getActivity()).getNfcTags().add(newNfcTag);
-                            }
-
-                            Toast.makeText(getActivity(), "Nfc Tag was successfully written!", Toast.LENGTH_SHORT).show();
-
-                            // Close the activity.
-                            getActivity().finish();
-
-                        } else if (status == NfcHandler.OnTagWriteListener.STATUS_ERROR) {
-                            Toast.makeText(getActivity(), "Could not write to nfc tag!", Toast.LENGTH_SHORT).show();
-                        }
+                if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
+                    // Overwrite the existing tag.
+                    if (nfcTag != null) {
+                        NfcTag currentNfcTag = MyTags.get(getActivity()).getTag(nfcTag.getTagId());
+                        currentNfcTag.setDifficulty(difficulty);
+                        currentNfcTag.setTagId(tagId);
                     }
-                });
+                    // Create a new tag.
+                    else {
+                        int number = MyTags.get(getActivity()).getNfcTags().size() + 1;
+                        NfcTag newNfcTag = new NfcTag("Tag " + number, "Nulla et lacus quis erat luctus elementum. Mauris...", difficulty, tagId);
+                        MyTags.get(getActivity()).getNfcTags().add(newNfcTag);
+                    }
 
-                alertDialog = onCreateDialog();
-                alertDialog.show();
+                    Toast.makeText(getActivity(), "Nfc Tag was successfully written!", Toast.LENGTH_SHORT).show();
+
+                    // Close the activity.
+                    getActivity().finish();
+
+                } else if (status == NfcHandler.OnTagWriteListener.STATUS_ERROR) {
+                    Toast.makeText(getActivity(), "Could not write to nfc tag!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+        alertDialog = onCreateDialog();
+        alertDialog.show();
     }
 
     private Dialog onCreateDialog() {
