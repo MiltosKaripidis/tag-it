@@ -24,21 +24,19 @@ import com.example.karhades_pc.utils.FontCache;
  * Created by Karhades - PC on 4/14/2015.
  */
 public class TrackingTagFragment extends Fragment {
-
-    public static final String EXTRA_TAG_ID = "com.example.karhades_pc.tracking_tag_fragment.tag_id";
-
-    private NfcTag nfcTag;
-    private boolean nfcTagIsDiscovered;
+    public static final String EXTRA_TAG_ID = "com.example.karhades_pc.tag_id";
 
     private TextView riddleDifficultyTextView;
     private TextView riddleTextView;
     private CheckBox riddleSolvedCheckBox;
     private TextView riddleDateSolvedTextView;
-
     private Toolbar toolbar;
     private ActionButton actionButton;
 
+    private NfcTag nfcTag;
+
     /**
+     * Return a TrackingTagFragment with tagId as its argument.
      * It must be called after the fragment is created and before it is added to the hosting activity.
      *
      * @param tagId A String containing the NfcTag ID.
@@ -145,9 +143,15 @@ public class TrackingTagFragment extends Fragment {
      */
     private void setupToolbar(View view) {
         toolbar = (Toolbar) view.findViewById(R.id.tracking_tag_tool_bar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        // Retrieve an AppCompatActivity hosting activity to get the supported actionbar.
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+
+        // Set the toolbar as the new actionbar.
+        activity.setSupportActionBar(toolbar);
+
+        // Get the action bar.
+        ActionBar actionBar = activity.getSupportActionBar();
 
         if (actionBar != null) {
             // Display the caret for an ancestral navigation.

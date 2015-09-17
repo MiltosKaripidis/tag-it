@@ -38,7 +38,7 @@ public class NfcHandler {
 
     private static boolean writeMode = false;
 
-    private OnTagWriteListener onTagWriteListener;
+    private static OnTagWriteListener onTagWriteListener;
 
     /**
      * interface for the onTagWritten callback method
@@ -54,10 +54,10 @@ public class NfcHandler {
     /**
      * Setter method for the callback.
      *
-     * @param onTagWriteListener The listener for the callback.
+     * @param newOnTagWriteListener The listener for the callback.
      */
-    public void setOnTagWriteListener(OnTagWriteListener onTagWriteListener) {
-        this.onTagWriteListener = onTagWriteListener;
+    public static void setOnTagWriteListener(OnTagWriteListener newOnTagWriteListener) {
+        onTagWriteListener = newOnTagWriteListener;
     }
 
     /**

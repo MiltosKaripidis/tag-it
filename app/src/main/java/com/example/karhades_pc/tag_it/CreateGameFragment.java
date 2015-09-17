@@ -100,6 +100,7 @@ public class CreateGameFragment extends Fragment {
 //                actionButton.hide();
 //                actionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
 
+                // Start CreateTagActivity.
                 Intent intent = new Intent(getActivity(), CreateTagActivity.class);
                 startActivity(intent);
             }
@@ -145,6 +146,7 @@ public class CreateGameFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // Start CreateTagPagerActivity.
                     Intent intent = new Intent(getActivity(), CreateTagPagerActivity.class);
                     intent.putExtra(CreateTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
                     startActivity(intent);
@@ -162,7 +164,6 @@ public class CreateGameFragment extends Fragment {
             Typeface typefaceNormal = FontCache.get("fonts/amatic_bold.ttf", getActivity());
 
             this.nfcTag = nfcTag;
-
 
             titleTextView.setText(nfcTag.getTitle());
             titleTextView.setTypeface(typefaceBold);
