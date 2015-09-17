@@ -20,8 +20,8 @@ import android.widget.Toast;
 
 import com.example.karhades_pc.tag_it.MyTags;
 import com.example.karhades_pc.tag_it.NfcTag;
-import com.example.karhades_pc.tag_it.TrackingTagPagerActivity;
 import com.example.karhades_pc.tag_it.TrackingTagFragment;
+import com.example.karhades_pc.tag_it.TrackingTagPagerActivity;
 
 /**
  * Created by Karhades on 18-Aug-15.
@@ -58,11 +58,6 @@ public class NfcHandler {
      */
     public static void setOnTagWriteListener(OnTagWriteListener newOnTagWriteListener) {
         onTagWriteListener = newOnTagWriteListener;
-    }
-
-    public static void removeOnTagWriteListener()
-    {
-        onTagWriteListener = null;
     }
 
     /**
@@ -310,6 +305,7 @@ public class NfcHandler {
             onTagWriteListener.onTagWritten(OnTagWriteListener.STATUS_ERROR, null);
         } finally {
             writeMode = false;
+            onTagWriteListener = null;
         }
     }
 

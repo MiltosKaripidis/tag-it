@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -33,7 +35,7 @@ public class CreateTagFragment extends Fragment {
     private Button tagItButton;
     private Spinner difficultySpinner;
     private ActionButton actionButton;
-    private Dialog alertDialog;
+    private TagItDialogFragment dialogFragment;
     private Toolbar toolbar;
 
     private NfcTag nfcTag;
@@ -221,7 +223,7 @@ public class CreateTagFragment extends Fragment {
         NfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
             @Override
             public void onTagWritten(int status, String tagId) {
-                alertDialog.dismiss();
+                dialogFragment.dismiss();
 
                 if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
                     // Overwrite the existing tag.
@@ -248,30 +250,30 @@ public class CreateTagFragment extends Fragment {
             }
         });
 
-        // Remove the event listener.
-        NfcHandler.removeOnTagWriteListener();
-
-        alertDialog = onCreateDialog();
-        alertDialog.show();
+        dialogFragment = new TagItDialogFragment();
+        dialogFragment.show(getActivity().getSupportFragmentManager(), "write");
     }
 
-    private Dialog onCreateDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        alertDialog.setTitle("Nfc Write Mode")
-                .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        NfcHandler.toggleTagWriteMode(false);
-                    }
-                })
-                .setMessage("Touch the nfc tag to write the information inserted.")
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        NfcHandler.toggleTagWriteMode(false);
-                    }
-                });
+    public static class TagItDialogFragment extends DialogFragment {
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle("Nfc Write Mode")
+                    .setMessage("Touch the nfc tag to write the information inserted.")
+                    .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            NfcHandler.toggleTagWriteMode(false);
+                        }
+                    }).create();
+        }
 
-        return alertDialog.create();
+        @Override
+        public void onCancel(DialogInterface dialog) {
+            super.onCancel(dialog);
+
+            NfcHandler.toggleTagWriteMode(false);
+        }
     }
 }
