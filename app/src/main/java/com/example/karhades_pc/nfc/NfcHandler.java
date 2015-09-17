@@ -60,6 +60,11 @@ public class NfcHandler {
         onTagWriteListener = newOnTagWriteListener;
     }
 
+    public static void removeOnTagWriteListener()
+    {
+        onTagWriteListener = null;
+    }
+
     /**
      * Setup the NfcAdapter, the foreground tag dispatch system and
      * the Android Beam.

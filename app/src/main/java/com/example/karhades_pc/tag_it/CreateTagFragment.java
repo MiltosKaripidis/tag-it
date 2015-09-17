@@ -217,7 +217,7 @@ public class CreateTagFragment extends Fragment {
         // Enter write mode.
         NfcHandler.toggleTagWriteMode(true);
 
-        // Listen for a tag written event.
+        // Wire a listener for a on tag written event.
         NfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
             @Override
             public void onTagWritten(int status, String tagId) {
@@ -247,6 +247,9 @@ public class CreateTagFragment extends Fragment {
                 }
             }
         });
+
+        // Remove the event listener.
+        NfcHandler.removeOnTagWriteListener();
 
         alertDialog = onCreateDialog();
         alertDialog.show();
