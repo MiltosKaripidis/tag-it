@@ -73,6 +73,14 @@ public class CreateTagFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+
+        // Save the tags to a file.
+        MyTags.get(getActivity()).saveTags();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
@@ -99,7 +107,7 @@ public class CreateTagFragment extends Fragment {
         String tagId = getArguments().getString(EXTRA_TAG_ID);
 
         // Get the nfcTag through it's tag id from the arguments.
-        nfcTag = MyTags.get(getActivity()).getTag(tagId);
+        nfcTag = MyTags.get(getActivity()).getNfcTag(tagId);
     }
 
     @Override
@@ -228,7 +236,7 @@ public class CreateTagFragment extends Fragment {
                 if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
                     // Overwrite the existing tag.
                     if (nfcTag != null) {
-                        NfcTag currentNfcTag = MyTags.get(getActivity()).getTag(nfcTag.getTagId());
+                        NfcTag currentNfcTag = MyTags.get(getActivity()).getNfcTag(nfcTag.getTagId());
                         currentNfcTag.setDifficulty(difficulty);
                         currentNfcTag.setTagId(tagId);
                     }

@@ -212,7 +212,7 @@ public class NfcHandler {
      * @param tagId The tag id to open the appropriate NfcTag.
      */
     private void startActivityFromNFC(String tagId) {
-        NfcTag nfcTag = MyTags.get(activity).getTag(tagId);
+        NfcTag nfcTag = MyTags.get(activity).getNfcTag(tagId);
 
         if (nfcTag != null) {
             // Create an Intent and send the extra discovered NfcTag ID and

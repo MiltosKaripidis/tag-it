@@ -67,7 +67,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity {
 
     private void setCurrentTagPage(Intent intent) {
         getIntentExtras(intent);
-        NfcTag nfcTag = MyTags.get(this).getTag(tagId);
+        NfcTag nfcTag = MyTags.get(this).getNfcTag(tagId);
         int position = MyTags.get(this).getNfcTags().indexOf(nfcTag);
         if (position != -1) {
             // Solve the Nfc Tag.

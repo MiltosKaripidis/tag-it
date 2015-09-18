@@ -107,7 +107,7 @@ public class TrackingTagFragment extends Fragment {
         String tagId = getArguments().getString(EXTRA_TAG_ID);
 
         // Get the nfcTag through it's tag id from the arguments.
-        nfcTag = MyTags.get(getActivity()).getTag(tagId);
+        nfcTag = MyTags.get(getActivity()).getNfcTag(tagId);
     }
 
     @Override
