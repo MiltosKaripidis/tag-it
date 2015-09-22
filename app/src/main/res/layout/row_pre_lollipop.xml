@@ -8,7 +8,7 @@
     android:paddingRight="16dp">
 
     <CheckBox
-        android:id="@+id/list_item_solved_check_box"
+        android:id="@+id/row_tracking_solved_check_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -17,19 +17,19 @@
         android:focusable="false" />
 
     <TextView
-        android:id="@+id/list_item_title_text_view"
+        android:id="@+id/row_create_title_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/list_item_solved_check_box"
+        android:layout_toLeftOf="@id/row_tracking_solved_check_box"
         android:text="@string/tag_title"
         android:textSize="24sp" />
 
     <TextView
-        android:id="@+id/list_item_difficulty_text_view"
+        android:id="@+id/row_create_difficulty_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/list_item_title_text_view"
-        android:layout_toLeftOf="@id/list_item_solved_check_box"
+        android:layout_below="@id/row_create_title_text_view"
+        android:layout_toLeftOf="@id/row_tracking_solved_check_box"
         android:text="HARD"
         android:textSize="22sp" />
 

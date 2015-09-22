@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/image_view"
+        android:id="@+id/row_create_image_view"
         android:layout_width="match_parent"
         android:layout_height="280dp"
         android:scaleType="fitXY"
@@ -22,7 +22,7 @@
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_below="@+id/image_view"
+        android:layout_below="@+id/row_create_image_view"
         android:background="@color/primary"
         android:paddingLeft="16dp">
 
@@ -40,7 +40,7 @@
         android:id="@+id/full_screen_floating_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/image_view"
+        android:layout_alignBottom="@+id/row_create_image_view"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="-50dp"
         android:visibility="invisible"

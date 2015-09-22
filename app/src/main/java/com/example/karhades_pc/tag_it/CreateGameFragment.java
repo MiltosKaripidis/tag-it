@@ -8,13 +8,13 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -149,6 +149,7 @@ public class CreateGameFragment extends Fragment {
         private ImageView imageView;
         private TextView titleTextView;
         private TextView difficultyTextView;
+        private ImageButton moreImageButton;
 
         public RiddleHolder(View view) {
             super(view);
@@ -162,12 +163,13 @@ public class CreateGameFragment extends Fragment {
                 }
             });
 
-            imageView = (ImageView) view.findViewById(R.id.image_view);
-            titleTextView = (TextView) view.findViewById(R.id.list_item_title_text_view);
-            difficultyTextView = (TextView) view.findViewById(R.id.list_item_difficulty_text_view);
+            imageView = (ImageView) view.findViewById(R.id.row_create_image_view);
+            titleTextView = (TextView) view.findViewById(R.id.row_create_title_text_view);
+            difficultyTextView = (TextView) view.findViewById(R.id.row_create_difficulty_text_view);
+            moreImageButton = (ImageButton) view.findViewById(R.id.row_create_more_image_view);
         }
 
-        public void bindRiddle(NfcTag nfcTag) {
+        public void bindRiddle(final NfcTag nfcTag) {
             // Custom Fonts.
             Typeface typefaceBold = FontCache.get("fonts/Capture_it.ttf", getActivity());
             Typeface typefaceNormal = FontCache.get("fonts/amatic_bold.ttf", getActivity());
@@ -180,6 +182,13 @@ public class CreateGameFragment extends Fragment {
             difficultyTextView.setText(nfcTag.getDifficulty());
             difficultyTextView.setTypeface(typefaceNormal);
             difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
+
+            moreImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getActivity(), "More button on " + nfcTag.getTitle(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 

@@ -98,10 +98,10 @@ public class TrackingGameFragment extends Fragment {
                 }
             });
 
-            imageView = (ImageView) view.findViewById(R.id.image_view);
-            titleTextView = (TextView) view.findViewById(R.id.list_item_title_text_view);
-            difficultyTextView = (TextView) view.findViewById(R.id.list_item_difficulty_text_view);
-            solvedCheckBox = (CheckBox) view.findViewById(R.id.list_item_solved_check_box);
+            imageView = (ImageView) view.findViewById(R.id.row_tracking_image_view);
+            titleTextView = (TextView) view.findViewById(R.id.row_tracking_title_text_view);
+            difficultyTextView = (TextView) view.findViewById(R.id.row_tracking_difficulty_text_view);
+            solvedCheckBox = (CheckBox) view.findViewById(R.id.row_tracking_solved_check_box);
         }
 
         public void bindRiddle(NfcTag nfcTag) {

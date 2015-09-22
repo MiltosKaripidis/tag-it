@@ -17,40 +17,40 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/image_view"
+            android:id="@+id/row_tracking_image_view"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:scaleType="centerCrop"
             android:src="@drawable/illidan" />
 
         <TextView
-            android:id="@+id/list_item_title_text_view"
+            android:id="@+id/row_tracking_title_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/image_view"
+            android:layout_below="@id/row_tracking_image_view"
             android:paddingLeft="8dp"
             android:paddingTop="8dp"
             android:text="@string/tag_title"
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/list_item_difficulty_text_view"
+            android:id="@+id/row_tracking_difficulty_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/list_item_title_text_view"
+            android:layout_below="@+id/row_tracking_title_text_view"
             android:paddingBottom="8dp"
             android:paddingLeft="8dp"
             android:text="HARD"
             android:textSize="20sp" />
 
         <CheckBox
-            android:id="@+id/list_item_solved_check_box"
+            android:id="@+id/row_tracking_solved_check_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/image_view"
+            android:layout_below="@id/row_tracking_image_view"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:button="@drawable/solved_check_box"
             android:enabled="false" />
 
