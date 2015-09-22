@@ -26,9 +26,9 @@ import com.example.karhades_pc.utils.FontCache;
 public class TrackingTagFragment extends Fragment {
     public static final String EXTRA_TAG_ID = "com.example.karhades_pc.tag_id";
 
-    private TextView riddleDifficultyTextView;
+    private TextView tagDifficultyTextView;
     private TextView riddleTextView;
-    private CheckBox riddleSolvedCheckBox;
+    private CheckBox tagSolvedCheckBox;
     private TextView riddleDateSolvedTextView;
     private Toolbar toolbar;
     private ActionButton actionButton;
@@ -75,8 +75,8 @@ public class TrackingTagFragment extends Fragment {
     }
 
     private void updateUI() {
-        riddleDifficultyTextView.setText(nfcTag.getDifficulty());
-        riddleSolvedCheckBox.setChecked(nfcTag.isSolved());
+        tagDifficultyTextView.setText(nfcTag.getDifficulty());
+        tagSolvedCheckBox.setChecked(nfcTag.isSolved());
 //        riddleTextView.setText(nfcTag.getText());
 //        if (nfcTag.getDateSolved() != null) {
 //            // Format the Date into human-readable text
@@ -202,15 +202,15 @@ public class TrackingTagFragment extends Fragment {
         riddleDifficultyLabel.setTypeface(typefaceNormal);
 
         // NfcTag Difficulty TextView
-        riddleDifficultyTextView = (TextView) view.findViewById(R.id.riddle_difficulty_text_view);
-        riddleDifficultyTextView.setTypeface(typefaceNormal);
+        tagDifficultyTextView = (TextView) view.findViewById(R.id.riddle_difficulty_text_view);
+        tagDifficultyTextView.setTypeface(typefaceNormal);
 
         // NfcTag Solved Label TextView
         TextView riddleSolvedLabel = (TextView) view.findViewById(R.id.riddle_solved_label_text_view);
         riddleSolvedLabel.setTypeface(typefaceNormal);
 
         // NfcTag Solved CheckBox
-        riddleSolvedCheckBox = (CheckBox) view.findViewById(R.id.riddle_solved_check_box);
+        tagSolvedCheckBox = (CheckBox) view.findViewById(R.id.riddle_solved_check_box);
 
         // NfcTag Date Label TextView
 //        TextView riddleDateSolvedLabelTextView = (TextView) view.findViewById(R.id.riddle_date_solved_label_text_view);

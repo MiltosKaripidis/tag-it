@@ -92,7 +92,9 @@
             android:id="@+id/riddle_solved_check_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:enabled="false" />
+            android:layout_marginLeft="8dp"
+            android:enabled="false"
+            android:button="@drawable/solved_check_box"/>
 
     </LinearLayout>
 

@@ -37,6 +37,7 @@ public class MyTags {
 
         try {
             nfcTags = serializer.loadTags();
+            Log.d(TAG, "Nfc Tags were loaded!");
         } catch (Exception e) {
             nfcTags = new ArrayList<>();
             Log.e(TAG, "Error loading tags: ", e);

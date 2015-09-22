@@ -73,14 +73,6 @@ public class CreateTagFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-
-        // Save the tags to a file.
-        MyTags.get(getActivity()).saveTags();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
 
@@ -238,6 +230,8 @@ public class CreateTagFragment extends Fragment {
                     if (nfcTag != null) {
                         NfcTag currentNfcTag = MyTags.get(getActivity()).getNfcTag(nfcTag.getTagId());
                         currentNfcTag.setDifficulty(difficulty);
+                        // TODO: Remove this statement.
+                        currentNfcTag.setSolved(false);
                         currentNfcTag.setTagId(tagId);
                     }
                     // Create a new tag.

@@ -1,4 +1,20 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="?attr/colorControlHighlight">
-    <item android:drawable="@drawable/raised_button_secondary_properties" />
+    <item>
+        <inset xmlns:android="http://schemas.android.com/apk/res/android"
+            android:insetBottom="6dp"
+            android:insetLeft="4dp"
+            android:insetRight="4dp"
+            android:insetTop="6dp">
+            <shape android:shape="rectangle">
+                <corners android:radius="2dp" />
+                <solid android:color="@android:color/white" />
+                <padding
+                    android:bottom="4dp"
+                    android:left="8dp"
+                    android:right="8dp"
+                    android:top="4dp" />
+            </shape>
+        </inset>
+    </item>
 </ripple>

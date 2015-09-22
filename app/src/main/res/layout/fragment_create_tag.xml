@@ -86,7 +86,7 @@
         <Button
             android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:background="@drawable/raised_button_secondary"
             android:text="CANCEL"
             android:textColor="@android:color/black" />
@@ -94,7 +94,7 @@
         <Button
             android:id="@+id/tag_it_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:background="@drawable/raised_button"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"

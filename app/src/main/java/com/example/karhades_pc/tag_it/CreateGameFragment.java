@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -107,6 +108,14 @@ public class CreateGameFragment extends Fragment {
         });
         actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
         actionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // Save the tags to a file.
+        MyTags.get(getActivity()).saveTags();
     }
 
     @Override
