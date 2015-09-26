@@ -41,8 +41,8 @@ public class NfcHandler {
     private static OnTagWriteListener onTagWriteListener;
 
     /**
-     * interface for the onTagWritten callback method
-     * which is called when the tag had data written to it.
+     * Interface definition for a callback to be invoked when
+     * the tag had data written to it.
      */
     public interface OnTagWriteListener {
         int STATUS_OK = 0;
@@ -52,9 +52,9 @@ public class NfcHandler {
     }
 
     /**
-     * Setter method for the callback.
+     * Register a callback to be invoked when the tag had data written to it.
      *
-     * @param newOnTagWriteListener The listener for the callback.
+     * @param newOnTagWriteListener The callback that will run.
      */
     public static void setOnTagWriteListener(OnTagWriteListener newOnTagWriteListener) {
         onTagWriteListener = newOnTagWriteListener;

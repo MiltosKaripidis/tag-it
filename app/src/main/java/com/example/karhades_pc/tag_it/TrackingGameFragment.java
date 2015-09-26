@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ public class TrackingGameFragment extends Fragment {
 
     private ArrayList<NfcTag> nfcTags;
     private RecyclerView recyclerView;
+    private LinearLayout emptyLinearLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,15 +63,36 @@ public class TrackingGameFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tracking_game, container, false);
 
+        emptyLinearLayout = (LinearLayout) view.findViewById(R.id.tracking_empty_linear_layout);
+
         setupRecyclerView(view);
+
+        // Listen for list changes to hide or show widgets.
+        MyTags.get(getActivity()).setOnListChangeListener(new MyTags.onListChangeListener() {
+            @Override
+            public void onListChanged() {
+                hideRecyclerViewIfEmpty();
+            }
+        });
+        hideRecyclerViewIfEmpty();
 
         return view;
     }
 
     private void setupRecyclerView(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.tracking_recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         recyclerView.setAdapter(new RiddleAdapter());
+    }
+
+    private void hideRecyclerViewIfEmpty() {
+        if (nfcTags.size() == 0) {
+            recyclerView.setVisibility(View.INVISIBLE);
+            emptyLinearLayout.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyLinearLayout.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -126,7 +149,7 @@ public class TrackingGameFragment extends Fragment {
         @Override
         public RiddleHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View view;
-            if(Build.VERSION.SDK_INT < 21)
+            if (Build.VERSION.SDK_INT < 21)
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_pre_lollipop, viewGroup, false);
             else
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_tracking_game_fragment, viewGroup, false);

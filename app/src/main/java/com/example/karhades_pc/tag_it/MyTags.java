@@ -125,4 +125,46 @@ public class MyTags {
         // TODO: Uncomment the cheering sound.
         //audioPlayer.play(context, R.raw.cheering);
     }
+
+    /**
+     * Add a new Nfc Tag to the list.
+     *
+     * @param nfcTag The NfcTag to add.
+     */
+    public void addNfcTag(NfcTag nfcTag) {
+        Log.d(TAG, "NfcTag inserted!");
+        nfcTags.add(nfcTag);
+        onListChangeListener.onListChanged();
+    }
+
+    /**
+     * Remove the specified NfcTag from the list.
+     *
+     * @param nfcTag The NfcTag to remove.
+     */
+    public void deleteNfcTag(NfcTag nfcTag) {
+        Log.d(TAG, "NfcTag deleted!");
+        nfcTags.remove(nfcTag);
+        onListChangeListener.onListChanged();
+    }
+
+    private onListChangeListener onListChangeListener;
+
+    /**
+     * Register a callback to be invoked when the list changes.
+     *
+     * @param onListChangeListener The callback that will run.
+     */
+    public void setOnListChangeListener(onListChangeListener onListChangeListener) {
+        this.onListChangeListener = onListChangeListener;
+    }
+
+    /**
+     * Interface definition for a callback to be invoked
+     * when the list changes.
+     *
+     */
+    public interface onListChangeListener {
+        void onListChanged();
+    }
 }

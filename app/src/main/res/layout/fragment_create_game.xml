@@ -1,23 +1,64 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/recycler_view"
+        android:id="@+id/create_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="48dp"
         android:scrollbars="vertical" />
+
+    <LinearLayout
+        android:id="@+id/create_empty_linear_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="No NFC Tags."
+            android:textSize="24sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableRight="@mipmap/add_black"
+                android:text="Tap "
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" to add one."
+                android:textSize="24sp" />
+        </LinearLayout>
+    </LinearLayout>
 
     <com.example.karhades_pc.floating_action_button.ActionButton
         android:id="@+id/floating_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="36dp"
         android:visibility="invisible"
         app:button_color="@color/accent"
         app:button_colorPressed="@color/accent_dark"
-        app:image="@mipmap/plus_icon"
+        app:image="@mipmap/add"
         app:rippleEffect_enabled="true" />
-</FrameLayout>
+</RelativeLayout>

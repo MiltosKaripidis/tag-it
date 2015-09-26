@@ -237,8 +237,9 @@ public class CreateTagFragment extends Fragment {
                     // Create a new tag.
                     else {
                         int number = MyTags.get(getActivity()).getNfcTags().size() + 1;
+                        // TODO: Edit the creation of the tag.
                         NfcTag newNfcTag = new NfcTag("Tag " + number, "Nulla et lacus quis erat luctus elementum. Mauris...", difficulty, tagId);
-                        MyTags.get(getActivity()).getNfcTags().add(newNfcTag);
+                        MyTags.get(getActivity()).addNfcTag(newNfcTag);
                     }
 
                     Toast.makeText(getActivity(), "Nfc Tag was successfully written!", Toast.LENGTH_SHORT).show();
