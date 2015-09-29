@@ -37,26 +37,6 @@ public class TrackingGameFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         nfcTags = MyTags.get(getActivity()).getNfcTags();
-
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        inflater.inflate(R.menu.fragment_create_game, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_item_track:
-                Toast.makeText(getActivity(), "Add menu button was pressed!", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override

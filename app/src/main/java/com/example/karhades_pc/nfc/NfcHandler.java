@@ -305,7 +305,9 @@ public class NfcHandler {
             onTagWriteListener.onTagWritten(OnTagWriteListener.STATUS_ERROR, null);
         } finally {
             writeMode = false;
-            onTagWriteListener = null;
+            if (onTagWriteListener != null) {
+                onTagWriteListener = null;
+            }
         }
     }
 

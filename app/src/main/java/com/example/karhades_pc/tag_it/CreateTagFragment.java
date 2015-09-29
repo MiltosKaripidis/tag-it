@@ -1,7 +1,9 @@
 package com.example.karhades_pc.tag_it;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -233,6 +235,13 @@ public class CreateTagFragment extends Fragment {
                         // TODO: Remove this statement.
                         currentNfcTag.setSolved(false);
                         currentNfcTag.setTagId(tagId);
+
+                        // Get the Nfc Tag's position to inform the RecyclerView.Adapter.
+                        int position = MyTags.get(getActivity()).getNfcTags().indexOf(currentNfcTag);
+                        // Set result for REQUEST_EDIT and set the position as an intent extra.
+                        Intent intent = new Intent();
+                        intent.putExtra(CreateGameFragment.EXTRA_POSITION, position);
+                        getActivity().setResult(Activity.RESULT_OK, intent);
                     }
                     // Create a new tag.
                     else {
@@ -240,6 +249,9 @@ public class CreateTagFragment extends Fragment {
                         // TODO: Edit the creation of the tag.
                         NfcTag newNfcTag = new NfcTag("Tag " + number, "Nulla et lacus quis erat luctus elementum. Mauris...", difficulty, tagId);
                         MyTags.get(getActivity()).addNfcTag(newNfcTag);
+
+                        // Set result for REQUEST_NEW.
+                        getActivity().setResult(Activity.RESULT_OK);
                     }
 
                     Toast.makeText(getActivity(), "Nfc Tag was successfully written!", Toast.LENGTH_SHORT).show();

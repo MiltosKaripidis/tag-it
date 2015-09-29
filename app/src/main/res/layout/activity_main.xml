@@ -14,14 +14,30 @@
         <!-- Fake status bar due to the transparent and
         full screen default status bar.-->
         <FrameLayout
+            android:id="@+id/main_status_bar"
             android:layout_width="match_parent"
             android:layout_height="24dp"
             android:background="@color/primary_dark"
             android:elevation="10dp" />
 
-        <include
-            android:id="@+id/create_tag_tool_bar"
-            layout="@layout/app_bar" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="10dp">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/main_tool_bar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:background="@color/primary"
+                android:navigationIcon="@mipmap/hamburger_menu"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+
+            <ViewStub
+                android:id="@+id/view_stub"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize" />
+        </FrameLayout>
 
         <com.example.karhades_pc.sliding_tab_layout.SlidingTabLayout
             android:id="@+id/sliding_tab_layout"

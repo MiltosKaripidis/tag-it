@@ -1,5 +1,6 @@
 package com.example.karhades_pc.tag_it;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,13 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -38,6 +33,11 @@ import java.util.ArrayList;
  */
 public class CreateGameFragment extends Fragment {
 
+    private static final int REQUEST_NEW = 0;
+    private static final int REQUEST_EDIT = 1;
+
+    public static final String EXTRA_POSITION = "com.example.karhades_pc.tag_it.position";
+
     private ArrayList<NfcTag> nfcTags;
 
     private ActionButton actionButton;
@@ -49,27 +49,18 @@ public class CreateGameFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         nfcTags = MyTags.get(getActivity()).getNfcTags();
-
-        // Tell the FragmentManager that this fragment should receive
-        // a call to onCreateOptionsMenu.
-        setHasOptionsMenu(true);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        inflater.inflate(R.menu.fragment_create_game, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_item_track:
-                Toast.makeText(getActivity(), "Track menu button was pressed!", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_NEW) {
+            if (resultCode == Activity.RESULT_OK) {
+                recyclerView.getAdapter().notifyItemInserted(nfcTags.size());
+            }
+        } else if (requestCode == REQUEST_EDIT) {
+            if (resultCode == Activity.RESULT_OK) {
+                recyclerView.getAdapter().notifyItemChanged(data.getIntExtra(EXTRA_POSITION, -1));
+            }
         }
     }
 
@@ -125,7 +116,7 @@ public class CreateGameFragment extends Fragment {
 
                 // Start CreateTagActivity.
                 Intent intent = new Intent(getActivity(), CreateTagActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 0);
             }
         });
         actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
@@ -143,19 +134,8 @@ public class CreateGameFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-
-        // Save the tags to a file.
-        MyTags.get(getActivity()).saveTags();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-
-        // Refresh the NfcTag list.
-        recyclerView.getAdapter().notifyItemInserted(nfcTags.size());
 
         startupAnimation();
     }
@@ -182,7 +162,7 @@ public class CreateGameFragment extends Fragment {
         // Create new views (invoked by the layout manager).
         @Override
         public RiddleHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            Log.d("CreateGameFragment", "onCreateViewHolder called");
+            //Log.d("CreateGameFragment", "onCreateViewHolder called");
             View view;
             if (Build.VERSION.SDK_INT < 21)
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_pre_lollipop, viewGroup, false);
@@ -195,7 +175,7 @@ public class CreateGameFragment extends Fragment {
         // Replace the contents of a view (invoked by the layout manager).
         @Override
         public void onBindViewHolder(RiddleHolder riddleHolder, int position) {
-            Log.d("CreateGameFragment", "onBindViewHolder called " + position);
+            //Log.d("CreateGameFragment", "onBindViewHolder called " + position);
             NfcTag nfcTag = nfcTags.get(position);
             riddleHolder.bindRiddle(nfcTag);
         }
@@ -216,7 +196,7 @@ public class CreateGameFragment extends Fragment {
         private TextView difficultyTextView;
         private ImageButton moreImageButton;
 
-        public RiddleHolder(View view) {
+        public RiddleHolder(final View view) {
             super(view);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -224,17 +204,24 @@ public class CreateGameFragment extends Fragment {
                     // Start CreateTagPagerActivity.
                     Intent intent = new Intent(getActivity(), CreateTagPagerActivity.class);
                     intent.putExtra(CreateTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
-                    startActivity(intent);
+                    startActivityForResult(intent, REQUEST_EDIT);
                 }
             });
-            view.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                    if (Build.VERSION.SDK_INT <= 10) {
-                        setupPopupWindow(moreImageButton);
-                    } else {
-                        setupPopupWindow(moreImageButton);
-                    }
+                public boolean onLongClick(View v) {
+                    onItemLongClickListener.onItemLongClicked();
+
+                    // TODO: Select the NfcTags.
+
+                    MainActivity.setOnContexDeleteListener(new MainActivity.OnContextDeleteListener() {
+                        @Override
+                        public void onContextDeleted() {
+                            NfcTag nfcTag = nfcTags.get(getAdapterPosition());
+                            Toast.makeText(getActivity(), "Deleted items: " + nfcTag.getTitle(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    return true;
                 }
             });
 
@@ -262,9 +249,7 @@ public class CreateGameFragment extends Fragment {
 
         public void bindRiddle(final NfcTag nfcTag) {
             this.nfcTag = nfcTag;
-
             titleTextView.setText(nfcTag.getTitle());
-
             difficultyTextView.setText(nfcTag.getDifficulty());
         }
 
@@ -284,6 +269,7 @@ public class CreateGameFragment extends Fragment {
                 public void onClick(View v) {
                     // Delete the selected NfcTag.
                     MyTags.get(getActivity()).deleteNfcTag(nfcTag);
+
                     // Refresh the list.
                     recyclerView.getAdapter().notifyItemRemoved(getAdapterPosition());
 
@@ -297,5 +283,15 @@ public class CreateGameFragment extends Fragment {
             }
             popupWindow.showAsDropDown(view, 25, -265);
         }
+    }
+
+    private static OnItemLongClickListener onItemLongClickListener;
+
+    public static void setOnItemLongClickListener(OnItemLongClickListener newOnItemLongClickListener) {
+        onItemLongClickListener = newOnItemLongClickListener;
+    }
+
+    public interface OnItemLongClickListener {
+        void onItemLongClicked();
     }
 }
