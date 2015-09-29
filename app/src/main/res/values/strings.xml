@@ -1,16 +1,23 @@
 <resources>
 
-    <string name="app_name">Riddle Hunting</string>
+    <string name="app_name">Tag it!</string>
     <string name="action_settings">Settings</string>
-    <string name="riddle_title_label">Riddle</string>
-    <string name="riddle_details_label">Details</string>
-    <string name="riddle_solved">Solved: </string>
-    <string name="riddle_date_solved">Date Solved: \</string>
-    <string name="riddles_title">Riddles</string>
-    <string name="riddle_difficulty">Difficulty: \</string>
-    <string name="riddle_title">Riddle Title</string>
-    <string name="new_riddle">New Riddle</string>
+    <string name="tag_title_label">Tag</string>
+    <string name="tag_details_label">Details</string>
+    <string name="tag_solved">Solved: </string>
+    <string name="tag_date_solved">Date Solved: \</string>
+    <string name="tags_title">Tags</string>
+    <string name="tag_difficulty">Difficulty: \</string>
+    <string name="tag_title">Tag Title</string>
+    <string name="track">Track</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="popup_window_delete">Delete</string>
+
+    <string-array name="difficulty">
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Hard</item>
+    </string-array>
 
 </resources>

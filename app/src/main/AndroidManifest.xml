@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.karhades_pc.riddlehunting">
+    package="com.example.karhades_pc.tag_it">
 
     <!-- Permission to use NFC -->
     <uses-permission android:name="android.permission.NFC" />
@@ -14,8 +14,9 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MenuActivity"
-            android:label="@string/app_name">
+            android:name="com.example.karhades_pc.tag_it.MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,7 +25,7 @@
 
             <!-- The android system searches for these filters-->
             <!-- and matches with the appropriate one that-->
-            <!-- corresponds to the tag-->
+            <!-- corresponds to the nfcTag-->
 
             <!-- NDEF_DISCOVERED-->
             <intent-filter>
@@ -33,6 +34,34 @@
                 <!-- Custom URI: kar://karhades-->
                 <data android:mimeType="application/com.example.karhades_pc.nfchandler" />
             </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".TrackingTagPagerActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.karhades_pc.tag_it.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".CreateTagPagerActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.karhades_pc.tag_it.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".CreateTagActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.karhades_pc.tag_it.MainActivity" />
 
             <!--TECH_DISCOVERED-->
             <intent-filter>
@@ -46,15 +75,6 @@
             <intent-filter>
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
             </intent-filter>
-
-        </activity>
-
-        <activity
-            android:name=".RiddlePagerActivity"
-            android:label="@string/app_name">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MenuActivity" />
         </activity>
 
     </application>

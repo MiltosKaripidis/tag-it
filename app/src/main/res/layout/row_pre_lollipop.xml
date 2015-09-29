@@ -1,0 +1,36 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:background="@drawable/touch_effect"
+    android:clickable="true"
+    android:gravity="center"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
+
+    <CheckBox
+        android:id="@+id/row_tracking_solved_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:enabled="false"
+        android:focusable="false" />
+
+    <TextView
+        android:id="@+id/row_create_title_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/row_tracking_solved_check_box"
+        android:text="@string/tag_title"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/row_create_difficulty_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/row_create_title_text_view"
+        android:layout_toLeftOf="@id/row_tracking_solved_check_box"
+        android:text="HARD"
+        android:textSize="22sp" />
+
+</RelativeLayout>

@@ -34,7 +34,7 @@ import android.view.ViewOutlineProvider;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.example.karhades_pc.riddlehunting.R;
+import com.example.karhades_pc.tag_it.R;
 import com.software.shell.uitools.convert.DensityConverter;
 import com.software.shell.uitools.resutils.color.ColorModifier;
 import com.software.shell.uitools.resutils.id.IdGenerator;
