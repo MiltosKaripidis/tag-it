@@ -8,16 +8,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.karhades_pc.utils.FontCache;
 
@@ -130,7 +126,7 @@ public class TrackingGameFragment extends Fragment {
         public RiddleHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View view;
             if (Build.VERSION.SDK_INT < 21)
-                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_pre_lollipop, viewGroup, false);
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_tracking_pre_lollipop, viewGroup, false);
             else
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_tracking_game_fragment, viewGroup, false);
 

@@ -7,20 +7,20 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp">
 
-    <CheckBox
-        android:id="@+id/row_tracking_solved_check_box"
+    <ImageButton
+        android:id="@+id/row_create_more_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:enabled="false"
-        android:focusable="false" />
+        android:background="@android:color/white"
+        android:src="@drawable/background_image_button" />
 
     <TextView
         android:id="@+id/row_create_title_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/row_tracking_solved_check_box"
+        android:layout_toLeftOf="@id/row_create_more_image_view"
         android:text="@string/tag_title"
         android:textSize="24sp" />
 
@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/row_create_title_text_view"
-        android:layout_toLeftOf="@id/row_tracking_solved_check_box"
+        android:layout_toLeftOf="@id/row_create_more_image_view"
         android:text="HARD"
         android:textSize="22sp" />
 

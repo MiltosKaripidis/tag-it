@@ -43,14 +43,14 @@ public class MyTags {
             Log.e(TAG, "Error loading tags: ", e);
         }
 
-//        // Dummy Riddles
+//        // Dummy Tags
+//        nfcTags = new ArrayList<>();
 //        NfcTag nfcTag_1 = new NfcTag("Black", "Cras aliquet blandit vehicula. Maecenas auctor egestas eros...", "Hard", "04D11AD2C03480");
 //        NfcTag nfcTag_2 = new NfcTag("Red", "Nulla et lacus quis erat luctus elementum. Mauris...", "Easy", "04BCE16AC82980");
 //        NfcTag nfcTag_3 = new NfcTag("White", "Suspendisse rhoncus facilisis mi, in suscipit est fermentum...", "Medium", "04DC1BD2C03480");
-//        NfcTag tag_4 = new NfcTag("Blue", "Class aptent taciti sociosqu ad litora torquent per...", "Hard", false, "04BCE16AC82982");
-//        NfcTag tag_5 = new NfcTag("Green", "Sed convallis diam eu mi consequat, at varius...", "Easy", false, "04BCE16AC82983");
-//        NfcTag tag_6 = new NfcTag("Orange", "Quisque sed nisi dignissim, ornare urna sed, tempor...", "Medium", false, "04BCE16AC82984");
-//        NfcTag tag_7 = new NfcTag("Gray", "Donec efficitur vitae ante a egestas. Quisque sed...", "Easy", false, "04BCE16AC82985");
+//        nfcTags.add(nfcTag_1);
+//        nfcTags.add(nfcTag_2);
+//        nfcTags.add(nfcTag_3);
     }
 
     /**
