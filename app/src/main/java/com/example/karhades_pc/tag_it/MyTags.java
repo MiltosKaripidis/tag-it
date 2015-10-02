@@ -24,6 +24,25 @@ public class MyTags {
     private AudioPlayer audioPlayer;
     private TagJSONSerializer serializer;
 
+    private onListChangeListener onListChangeListener;
+
+    /**
+     * Register a callback to be invoked when the list changes.
+     *
+     * @param onListChangeListener The callback that will run.
+     */
+    public void setOnListChangeListener(onListChangeListener onListChangeListener) {
+        this.onListChangeListener = onListChangeListener;
+    }
+
+    /**
+     * Interface definition for a callback to be invoked
+     * when the list changes.
+     */
+    public interface onListChangeListener {
+        void onListChanged();
+    }
+
     /**
      * Private constructor that gets called only
      * once by it's get(context) method.
@@ -146,25 +165,5 @@ public class MyTags {
         Log.d(TAG, "NfcTag deleted!");
         nfcTags.remove(nfcTag);
         onListChangeListener.onListChanged();
-    }
-
-    private onListChangeListener onListChangeListener;
-
-    /**
-     * Register a callback to be invoked when the list changes.
-     *
-     * @param onListChangeListener The callback that will run.
-     */
-    public void setOnListChangeListener(onListChangeListener onListChangeListener) {
-        this.onListChangeListener = onListChangeListener;
-    }
-
-    /**
-     * Interface definition for a callback to be invoked
-     * when the list changes.
-     *
-     */
-    public interface onListChangeListener {
-        void onListChanged();
     }
 }

@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="280dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/illidan" />
+        android:src="@drawable/icon_illidan" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/create_tag_tool_bar"
@@ -87,7 +87,7 @@
             android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:background="@drawable/raised_button_secondary"
+            android:background="@drawable/selector_raised_button_secondary"
             android:text="CANCEL"
             android:textColor="@android:color/black" />
 
@@ -95,7 +95,7 @@
             android:id="@+id/tag_it_button"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:background="@drawable/raised_button"
+            android:background="@drawable/selector_raised_button"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="Tag it!"

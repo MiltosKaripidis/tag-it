@@ -10,9 +10,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,16 +35,37 @@ import java.util.ArrayList;
  */
 public class CreateGameFragment extends Fragment {
 
+    /**
+     * Request codes, used for startActivityForResult().
+     */
     private static final int REQUEST_NEW = 0;
     private static final int REQUEST_EDIT = 1;
 
+    /**
+     * Extra key, used for the position value returned from startActivityForResult().
+     */
     public static final String EXTRA_POSITION = "com.example.karhades_pc.tag_it.position";
 
     private ArrayList<NfcTag> nfcTags;
 
-    private ActionButton actionButton;
     private RecyclerView recyclerView;
+    private ActionButton actionButton;
     private LinearLayout emptyLinearLayout;
+
+    private static OnContextFragmentListener onContextFragmentListener;
+
+    public static void setOnContextFragmentListener(OnContextFragmentListener newOnContextFragmentListener) {
+        onContextFragmentListener = newOnContextFragmentListener;
+    }
+
+    /**
+     * TODO
+     */
+    public interface OnContextFragmentListener {
+        void onItemLongClicked();
+
+        void onItemClicked(int tagsSelected);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,19 +91,9 @@ public class CreateGameFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_game, container, false);
 
-        emptyLinearLayout = (LinearLayout) view.findViewById(R.id.create_empty_linear_layout);
-
         setupRecyclerView(view);
         setupFloatingActionButton(view);
-
-        // Listen for list changes to hide or show widgets.
-        MyTags.get(getActivity()).setOnListChangeListener(new MyTags.onListChangeListener() {
-            @Override
-            public void onListChanged() {
-                hideRecyclerViewIfEmpty();
-            }
-        });
-        hideRecyclerViewIfEmpty();
+        setupEmptyView(view);
 
         return view;
     }
@@ -89,7 +102,7 @@ public class CreateGameFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.create_recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(new RiddleAdapter());
+        recyclerView.setAdapter(new NfcTagAdapter());
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -110,10 +123,6 @@ public class CreateGameFragment extends Fragment {
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                actionButton.setHideAnimation(ActionButton.Animations.SCALE_DOWN);
-//                actionButton.hide();
-//                actionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
-
                 // Start CreateTagActivity.
                 Intent intent = new Intent(getActivity(), CreateTagActivity.class);
                 startActivityForResult(intent, 0);
@@ -121,6 +130,19 @@ public class CreateGameFragment extends Fragment {
         });
         actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
         actionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
+    }
+
+    private void setupEmptyView(View view) {
+        emptyLinearLayout = (LinearLayout) view.findViewById(R.id.create_empty_linear_layout);
+
+        // Listen for list changes to hide or show widgets.
+        MyTags.get(getActivity()).setOnListChangeListener(new MyTags.onListChangeListener() {
+            @Override
+            public void onListChanged() {
+                hideRecyclerViewIfEmpty();
+            }
+        });
+        hideRecyclerViewIfEmpty();
     }
 
     private void hideRecyclerViewIfEmpty() {
@@ -141,7 +163,7 @@ public class CreateGameFragment extends Fragment {
     }
 
     private void startupAnimation() {
-        // Floating Action Button animation on show after a period of time.
+        // Floating Action Button animation onShow after a period of time.
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -156,12 +178,20 @@ public class CreateGameFragment extends Fragment {
     }
 
     /**
-     * TODO
+     * Wraps the data set and creates views for individual items.
      */
-    private class RiddleAdapter extends RecyclerView.Adapter<RiddleHolder> {
+    private class NfcTagAdapter extends RecyclerView.Adapter<NfcTagHolder> {
+
+        private SparseBooleanArray selectedItems;
+        private boolean isSelectionMode = false;
+
+        public NfcTagAdapter() {
+            selectedItems = new SparseBooleanArray();
+        }
+
         // Create new views (invoked by the layout manager).
         @Override
-        public RiddleHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        public NfcTagHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             //Log.d("CreateGameFragment", "onCreateViewHolder called");
             View view;
             if (Build.VERSION.SDK_INT < 21)
@@ -169,58 +199,137 @@ public class CreateGameFragment extends Fragment {
             else
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_create_game_fragment, viewGroup, false);
 
-            return new RiddleHolder(view);
+            return new NfcTagHolder(view);
         }
 
         // Replace the contents of a view (invoked by the layout manager).
         @Override
-        public void onBindViewHolder(RiddleHolder riddleHolder, int position) {
-            //Log.d("CreateGameFragment", "onBindViewHolder called " + position);
+        public void onBindViewHolder(NfcTagHolder nfcTagHolder, int position) {
             NfcTag nfcTag = nfcTags.get(position);
-            riddleHolder.bindRiddle(nfcTag);
+
+            // Fix the recycling of the holders.
+            if (isSelected(position)) {
+                nfcTagHolder.itemView.setActivated(true);
+            } else {
+                nfcTagHolder.itemView.setActivated(false);
+            }
+
+            nfcTagHolder.bindRiddle(nfcTag);
         }
 
         @Override
         public int getItemCount() {
             return nfcTags.size();
         }
+
+        public void setSelectionMode(boolean isSelectableMode) {
+            this.isSelectionMode = isSelectableMode;
+        }
+
+        public boolean isSelectionMode() {
+            return isSelectionMode;
+        }
+
+        public void toggleSelection(int position) {
+            if (selectedItems.get(position)) {
+                selectedItems.delete(position);
+            } else {
+                selectedItems.put(position, true);
+            }
+        }
+
+        public boolean isSelected(int position) {
+            return selectedItems.get(position);
+        }
+
+        public void clearSelection() {
+            selectedItems.clear();
+
+            for (int i = 0; i < nfcTags.size(); i++) {
+                View view = recyclerView.getChildAt(i);
+                if (view instanceof CardView) {
+                    view.setActivated(false);
+                }
+            }
+        }
+
+        public int getSelectionSize() {
+            return selectedItems.size();
+        }
+
+        public void deleteSelectedItems() {
+            for (int i = nfcTags.size(); i >= 0; i--) {
+                if (isSelected(i)) {
+                    NfcTag nfcTag = nfcTags.get(i);
+                    MyTags.get(getActivity()).deleteNfcTag(nfcTag);
+                    notifyItemRemoved(i);
+                }
+            }
+        }
     }
 
     /**
-     * TODO
+     * Holds all sub views that depend on the current item’s data.
      */
-    private class RiddleHolder extends RecyclerView.ViewHolder {
-        private NfcTag nfcTag;
+    private class NfcTagHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
         private TextView titleTextView;
         private TextView difficultyTextView;
         private ImageButton moreImageButton;
 
-        public RiddleHolder(final View view) {
+        private NfcTag nfcTag;
+        private NfcTagAdapter adapter;
+
+        public NfcTagHolder(final View view) {
             super(view);
+
+            adapter = (NfcTagAdapter) recyclerView.getAdapter();
+
+            // CardView OnClickListener.
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Start CreateTagPagerActivity.
-                    Intent intent = new Intent(getActivity(), CreateTagPagerActivity.class);
-                    intent.putExtra(CreateTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
-                    startActivityForResult(intent, REQUEST_EDIT);
+                    // Contextual Action Bar is disabled.
+                    if (!adapter.isSelectionMode()) {
+                        // Start CreateTagPagerActivity.
+                        Intent intent = new Intent(getActivity(), CreateTagPagerActivity.class);
+                        intent.putExtra(CreateTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
+                        startActivityForResult(intent, REQUEST_EDIT);
+                    }
+                    // Contextual Action Bar is enabled.
+                    else {
+                        // Toggle the selected view.
+                        selectItem(view);
+                    }
                 }
             });
+            // CardView OnLongClickListener.
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    onItemLongClickListener.onItemLongClicked();
+                    onContextFragmentListener.onItemLongClicked();
 
-                    // TODO: Select the NfcTags.
+                    // Enable selection mode.
+                    adapter.setSelectionMode(true);
 
-                    MainActivity.setOnContexDeleteListener(new MainActivity.OnContextDeleteListener() {
+                    // Toggle the selected view.
+                    selectItem(view);
+
+                    // Listen for MainActivity's events.
+                    MainActivity.setOnContextActivityListener(new MainActivity.OnContextActivityListener() {
                         @Override
-                        public void onContextDeleted() {
-                            NfcTag nfcTag = nfcTags.get(getAdapterPosition());
-                            Toast.makeText(getActivity(), "Deleted items: " + nfcTag.getTitle(), Toast.LENGTH_SHORT).show();
+                        public void onDeleteIconPressed() {
+                            Toast.makeText(getActivity(), "Items deleted", Toast.LENGTH_SHORT).show();
+                            adapter.deleteSelectedItems();
+                        }
+
+                        @Override
+                        public void onContextExited() {
+                            adapter.setSelectionMode(false);
+                            adapter.clearSelection();
                         }
                     });
+
                     return true;
                 }
             });
@@ -247,10 +356,16 @@ public class CreateGameFragment extends Fragment {
             });
         }
 
-        public void bindRiddle(final NfcTag nfcTag) {
-            this.nfcTag = nfcTag;
-            titleTextView.setText(nfcTag.getTitle());
-            difficultyTextView.setText(nfcTag.getDifficulty());
+        private void selectItem(View view) {
+            // Highlight the selected view.
+            if (adapter.isSelected(getAdapterPosition())) {
+                view.setActivated(false);
+            } else {
+                view.setActivated(true);
+            }
+
+            adapter.toggleSelection(getAdapterPosition());
+            onContextFragmentListener.onItemClicked(adapter.getSelectionSize());
         }
 
         private void setupPopupWindow(View view) {
@@ -283,15 +398,12 @@ public class CreateGameFragment extends Fragment {
             }
             popupWindow.showAsDropDown(view, 25, -265);
         }
-    }
 
-    private static OnItemLongClickListener onItemLongClickListener;
-
-    public static void setOnItemLongClickListener(OnItemLongClickListener newOnItemLongClickListener) {
-        onItemLongClickListener = newOnItemLongClickListener;
-    }
-
-    public interface OnItemLongClickListener {
-        void onItemLongClicked();
+        public void bindRiddle(NfcTag nfcTag) {
+            this.nfcTag = nfcTag;
+            imageView.setImageDrawable(getResources().getDrawable(R.drawable.icon_illidan));
+            titleTextView.setText(nfcTag.getTitle());
+            difficultyTextView.setText(nfcTag.getDifficulty());
+        }
     }
 }

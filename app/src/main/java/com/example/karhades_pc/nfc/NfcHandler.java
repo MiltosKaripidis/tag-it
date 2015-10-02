@@ -175,7 +175,6 @@ public class NfcHandler {
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void readFromTag(Tag tag) {
-        Log.d(TAG, "readFromTag called!");
         try {
             Ndef ndef = Ndef.get(tag);
             ndef.connect();
@@ -183,14 +182,14 @@ public class NfcHandler {
             NdefRecord ndefRecord = ndefMessage.getRecords()[0];
 
             String mimeType = ndefRecord.toMimeType();
-            Log.d(TAG, "MIME TYPE: " + mimeType);
+            //Log.d(TAG, "MIME TYPE: " + mimeType);
 
             String payload = new String(ndefRecord.getPayload());
-            Log.d(TAG, "Payload: " + payload);
+            //Log.d(TAG, "Payload: " + payload);
 
             if (mimeType.equals(MIME_TYPE) && payload.equals("tag")) {
                 String tagId = ByteArrayToHexString(tag.getId());
-                Log.d(TAG, "NfcTag ID: " + tagId);
+                //Log.d(TAG, "NfcTag ID: " + tagId);
 
                 // Start the solved activity.
                 startActivityFromNFC(tagId);
@@ -268,8 +267,6 @@ public class NfcHandler {
                 || NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())
                 || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
             if (writeMode) {
-                Log.d(TAG, "Write Mode");
-
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                 writeToTag(tag);
             } else {

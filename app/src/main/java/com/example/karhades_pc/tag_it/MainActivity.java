@@ -31,14 +31,16 @@ public class MainActivity extends AppCompatActivity {
     private NfcHandler nfcHandler;
     private int pagePosition = 0;
 
-    private static OnContextDeleteListener onContextDeleteListener;
+    private static OnContextActivityListener onContextActivityListener;
 
-    public static void setOnContexDeleteListener(OnContextDeleteListener newOnContextDeleteListener) {
-        onContextDeleteListener = newOnContextDeleteListener;
+    public static void setOnContextActivityListener(OnContextActivityListener newOnContextActivityListener) {
+        onContextActivityListener = newOnContextActivityListener;
     }
 
-    public interface OnContextDeleteListener {
-        void onContextDeleted();
+    public interface OnContextActivityListener {
+        void onDeleteIconPressed();
+
+        void onContextExited();
     }
 
     @Override
@@ -48,70 +50,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         statusBar = (FrameLayout) findViewById(R.id.main_status_bar);
+
+        setupNFC();
         setupToolbar();
         setupTabMenu();
+        setupContextualActionBar();
         setUpNavigationDrawer();
-        setupNFC();
-
-        materialCab = new MaterialCab(this, R.id.view_stub);
-        CreateGameFragment.setOnItemLongClickListener(new CreateGameFragment.OnItemLongClickListener() {
-            @Override
-            public void onItemLongClicked() {
-                statusBar.setBackgroundColor(getResources().getColor(R.color.accent_dark));
-                materialCab.setMenu(R.menu.fragment_create_game_context);
-                materialCab.setBackgroundColor(getResources().getColor(R.color.accent));
-                materialCab.setTitle("Delete Tags");
-                materialCab.start(new MaterialCab.Callback() {
-                    @Override
-                    public boolean onCabCreated(MaterialCab cab, Menu menu) {
-                        return true;
-                    }
-
-                    @Override
-                    public boolean onCabItemClicked(MenuItem item) {
-                        switch (item.getItemId())
-                        {
-                            case R.id.context_bar_delete:
-                                onContextDeleteListener.onContextDeleted();
-                                return true;
-                            default:
-                                return false;
-                        }
-                    }
-
-                    @Override
-                    public boolean onCabFinished(MaterialCab cab) {
-                        statusBar.setBackgroundColor(getResources().getColor(R.color.primary_dark));
-                        slidingTabLayout.setTextViewActivated(false, 2);
-                        slidingTabLayout.setBackgroundColor(getResources().getColor(R.color.primary));
-                        slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-                            @Override
-                            public int getIndicatorColor(int position) {
-                                return getResources().getColor(R.color.accent);
-                            }
-                        });
-                        return true;
-                    }
-                });
-                slidingTabLayout.setTextViewActivated(true, 2);
-                slidingTabLayout.setBackgroundColor(getResources().getColor(R.color.accent));
-                slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-                    @Override
-                    public int getIndicatorColor(int position) {
-                        return getResources().getColor(R.color.primary);
-                    }
-                });
-            }
-        });
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (materialCab != null && materialCab.isActive()) {
-            materialCab.finish();
-        } else {
-            super.onBackPressed();
-        }
     }
 
     @Override
@@ -123,7 +67,10 @@ public class MainActivity extends AppCompatActivity {
 
         nfcHandler.disableForegroundDispatch();
 
-        materialCab.finish();
+        // If Contextual Action Bar is enabled, close it.
+        if (materialCab != null && materialCab.isActive()) {
+            disableContextBar();
+        }
     }
 
     @Override
@@ -146,6 +93,20 @@ public class MainActivity extends AppCompatActivity {
         nfcHandler.enableForegroundDispatch();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (materialCab != null && materialCab.isActive()) {
+            disableContextBar();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void disableContextBar() {
+        materialCab.finish();
+        onContextActivityListener.onContextExited();
+    }
+
     private void setupNFC() {
         nfcHandler = new NfcHandler();
         nfcHandler.setupNfcHandler(this);
@@ -158,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
     }
 
-    @SuppressWarnings("deprecation")
     private void setupTabMenu() {
         // Tab names.
         final String[] tabNames = {"TRACKING", "SHARE", "CREATE"};
@@ -212,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 pagePosition = position;
                 if (materialCab != null && materialCab.isActive() && position != 2) {
-                    materialCab.finish();
+                    disableContextBar();
                 }
             }
 
@@ -221,6 +181,78 @@ public class MainActivity extends AppCompatActivity {
                 // DO NOTHING.
             }
         });
+    }
+
+    private void setupContextualActionBar() {
+        materialCab = new MaterialCab(this, R.id.view_stub);
+        materialCab.setMenu(R.menu.fragment_create_game_context);
+        materialCab.setBackgroundColor(getResources().getColor(R.color.accent));
+
+        // Listen for CreateGameFragment's events.
+        CreateGameFragment.setOnContextFragmentListener(new CreateGameFragment.OnContextFragmentListener() {
+            @Override
+            public void onItemLongClicked() {
+                changeBarThemeColor(false);
+
+                materialCab.start(new MaterialCab.Callback() {
+                    @Override
+                    public boolean onCabCreated(MaterialCab cab, Menu menu) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onCabItemClicked(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.context_bar_delete:
+
+                                onContextActivityListener.onDeleteIconPressed();
+                                disableContextBar();
+
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+
+                    @Override
+                    public boolean onCabFinished(MaterialCab cab) {
+                        changeBarThemeColor(true);
+                        return true;
+                    }
+                });
+            }
+
+            @Override
+            public void onItemClicked(int tagsSelected) {
+                materialCab.setTitle(tagsSelected + " selected");
+            }
+        });
+    }
+
+    private void changeBarThemeColor(boolean isVisible) {
+        if (isVisible) {
+            statusBar.setBackgroundColor(getResources().getColor(R.color.primary_dark));
+
+            slidingTabLayout.setTextViewActivated(false, 2);
+            slidingTabLayout.setBackgroundColor(getResources().getColor(R.color.primary));
+            slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+                @Override
+                public int getIndicatorColor(int position) {
+                    return getResources().getColor(R.color.accent);
+                }
+            });
+        } else {
+            statusBar.setBackgroundColor(getResources().getColor(R.color.accent_dark));
+
+            slidingTabLayout.setTextViewActivated(true, 2);
+            slidingTabLayout.setBackgroundColor(getResources().getColor(R.color.accent));
+            slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+                @Override
+                public int getIndicatorColor(int position) {
+                    return getResources().getColor(R.color.primary);
+                }
+            });
+        }
     }
 
     private void setUpNavigationDrawer() {

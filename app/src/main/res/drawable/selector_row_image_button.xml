@@ -4,7 +4,7 @@
     <item android:state_pressed="true">
         <bitmap android:src="@mipmap/more" />
     </item>
-    <!-- Default state-->
+    <!-- Normal state-->
     <item>
         <bitmap android:src="@mipmap/more" android:tint="@color/secondary_text" />
     </item>
