@@ -1,7 +1,9 @@
 package com.example.karhades_pc.tag_it;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.karhades_pc.picture_utils.AsyncDrawable;
+import com.example.karhades_pc.picture_utils.BitmapWorkerTask;
+import com.example.karhades_pc.picture_utils.PictureUtils;
 import com.example.karhades_pc.utils.FontCache;
 
 import java.util.ArrayList;
@@ -98,25 +103,27 @@ public class TrackingGameFragment extends Fragment {
             });
 
             imageView = (ImageView) view.findViewById(R.id.row_tracking_image_view);
+
             titleTextView = (TextView) view.findViewById(R.id.row_tracking_title_text_view);
             difficultyTextView = (TextView) view.findViewById(R.id.row_tracking_difficulty_text_view);
             solvedCheckBox = (CheckBox) view.findViewById(R.id.row_tracking_solved_check_box);
-        }
 
-        public void bindRiddle(NfcTag nfcTag) {
             // Custom Fonts.
             Typeface typefaceBold = FontCache.get("fonts/Capture_it.ttf", getActivity());
             Typeface typefaceNormal = FontCache.get("fonts/amatic_bold.ttf", getActivity());
 
-            this.nfcTag = nfcTag;
-
-            titleTextView.setText(nfcTag.getTitle());
             titleTextView.setTypeface(typefaceBold);
-
-            difficultyTextView.setText(nfcTag.getDifficulty());
             difficultyTextView.setTypeface(typefaceNormal);
             difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
+        }
 
+        public void bindRiddle(NfcTag nfcTag) {
+            this.nfcTag = nfcTag;
+
+            loadBitmap(nfcTag.getPictureFilename(), imageView);
+
+            titleTextView.setText(nfcTag.getTitle());
+            difficultyTextView.setText(nfcTag.getDifficulty());
             solvedCheckBox.setChecked(nfcTag.isSolved());
         }
     }
@@ -143,5 +150,20 @@ public class TrackingGameFragment extends Fragment {
         public int getItemCount() {
             return nfcTags.size();
         }
+    }
+
+    private void loadBitmap(final String filename, final ImageView imageView) {
+        imageView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (PictureUtils.cancelPotentialWork(filename, imageView)) {
+                    final BitmapWorkerTask bitmapWorkerTask = new BitmapWorkerTask(imageView);
+                    Bitmap bitmap = new BitmapDrawable().getBitmap();
+                    final AsyncDrawable asyncDrawable = new AsyncDrawable(getResources(), bitmap, bitmapWorkerTask);
+                    imageView.setImageDrawable(asyncDrawable);
+                    bitmapWorkerTask.execute(filename, imageView.getWidth(), imageView.getHeight());
+                }
+            }
+        });
     }
 }

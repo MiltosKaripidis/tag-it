@@ -1,6 +1,8 @@
 package com.example.karhades_pc.tag_it;
 
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -14,10 +16,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.karhades_pc.floating_action_button.ActionButton;
+import com.example.karhades_pc.picture_utils.AsyncDrawable;
+import com.example.karhades_pc.picture_utils.BitmapWorkerTask;
+import com.example.karhades_pc.picture_utils.PictureUtils;
 import com.example.karhades_pc.utils.FontCache;
 
 /**
@@ -26,14 +31,13 @@ import com.example.karhades_pc.utils.FontCache;
 public class TrackingTagFragment extends Fragment {
     public static final String EXTRA_TAG_ID = "com.example.karhades_pc.tag_id";
 
-    private TextView tagDifficultyTextView;
-    private TextView riddleTextView;
-    private CheckBox tagSolvedCheckBox;
-    private TextView riddleDateSolvedTextView;
-    private Toolbar toolbar;
-    private ActionButton actionButton;
-
     private NfcTag nfcTag;
+
+    private ImageView pictureImageView;
+    private TextView difficultyTextView;
+    private CheckBox solvedCheckBox;
+    private Toolbar toolbar;
+    private ActionButton fullscreenActionButton;
 
     /**
      * Return a TrackingTagFragment with tagId as its argument.
@@ -67,6 +71,28 @@ public class TrackingTagFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        loadBitmap(nfcTag.getPictureFilename(), pictureImageView);
+    }
+
+    private void loadBitmap(final String filename, final ImageView imageView) {
+        imageView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (PictureUtils.cancelPotentialWork(filename, imageView)) {
+                    final BitmapWorkerTask bitmapWorkerTask = new BitmapWorkerTask(imageView);
+                    Bitmap bitmap = new BitmapDrawable().getBitmap();
+                    final AsyncDrawable asyncDrawable = new AsyncDrawable(getResources(), bitmap, bitmapWorkerTask);
+                    imageView.setImageDrawable(asyncDrawable);
+                    bitmapWorkerTask.execute(filename, imageView.getWidth(), imageView.getHeight());
+                }
+            }
+        });
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
@@ -75,8 +101,8 @@ public class TrackingTagFragment extends Fragment {
     }
 
     private void updateUI() {
-        tagDifficultyTextView.setText(nfcTag.getDifficulty());
-        tagSolvedCheckBox.setChecked(nfcTag.isSolved());
+        difficultyTextView.setText(nfcTag.getDifficulty());
+        solvedCheckBox.setChecked(nfcTag.isSolved());
 //        riddleTextView.setText(nfcTag.getText());
 //        if (nfcTag.getDateSolved() != null) {
 //            // Format the Date into human-readable text
@@ -92,10 +118,10 @@ public class TrackingTagFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (actionButton.isHidden()) {
-                    actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
-                    actionButton.show();
-                    actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
+                if (fullscreenActionButton.isHidden()) {
+                    fullscreenActionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
+                    fullscreenActionButton.show();
+                    fullscreenActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
                 }
             }
         }, 750);
@@ -139,10 +165,10 @@ public class TrackingTagFragment extends Fragment {
     /**
      * Helper method for setting up the tool bar.
      *
-     * @param view A view needed for the findViewById() method
+     * @param view A view needed for the findViewById() method.
      */
     private void setupToolbar(View view) {
-        toolbar = (Toolbar) view.findViewById(R.id.tracking_tag_tool_bar);
+        toolbar = (Toolbar) view.findViewById(R.id.tracking_tool_bar);
 
         // Retrieve an AppCompatActivity hosting activity to get the supported actionbar.
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -163,21 +189,21 @@ public class TrackingTagFragment extends Fragment {
     }
 
     private void setupFloatingActionButton(View view) {
-        actionButton = (ActionButton) view.findViewById(R.id.full_screen_floating_action_button);
-        actionButton.setOnClickListener(new View.OnClickListener() {
+        fullscreenActionButton = (ActionButton) view.findViewById(R.id.full_screen_floating_action_button);
+        fullscreenActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Full Screen!", Toast.LENGTH_SHORT).show();
+                // TODO: Fullscreen.
             }
         });
-        actionButton.setHideAnimation(ActionButton.Animations.SCALE_DOWN);
-        actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
+        fullscreenActionButton.setHideAnimation(ActionButton.Animations.SCALE_DOWN);
+        fullscreenActionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
     }
 
     /**
      * Initialize the Widgets and wire custom fonts to them.
      *
-     * @param view A view needed for the findViewById() method
+     * @param view A view needed for the findViewById() method.
      */
     private void initializeWidgets(View view) {
         // Custom Fonts.
@@ -185,38 +211,33 @@ public class TrackingTagFragment extends Fragment {
         Typeface typefaceBold = FontCache.get("fonts/amatic_bold.ttf", getActivity());
         Typeface typefaceNormal = FontCache.get("fonts/amatic_normal.ttf", getActivity());
 
-        // NfcTag Title TextView
-        //TextView riddleTitleTextView = (TextView) view.findViewById(R.id.riddle_title_text_view);
-        //riddleTitleTextView.setTypeface(typefaceTitle);
+        // NfcTag Picture ImageView.
+        pictureImageView = (ImageView) view.findViewById(R.id.tracking_image_view);
 
-        // NfcTag Details Title TextView
-        TextView riddleDetailsTitleTextView = (TextView) view.findViewById(R.id.riddle_details_title_text_view);
-        riddleDetailsTitleTextView.setTypeface(typefaceTitle);
+        // NfcTag Details Title TextView.
+        TextView detailsTextView = (TextView) view.findViewById(R.id.tracking_details_text_view);
+        detailsTextView.setTypeface(typefaceTitle);
 
-        // NfcTag TextView
-//        riddleTextView = (TextView) view.findViewById(R.id.riddle_text_view);
-//        riddleTextView.setTypeface(typefaceBold);
+        // NfcTag Difficulty Label TextView.
+        TextView difficultyLabelTextView = (TextView) view.findViewById(R.id.tracking_difficulty_label_text_view);
+        difficultyLabelTextView.setTypeface(typefaceNormal);
 
-        // NfcTag Difficulty Label TextView
-        TextView riddleDifficultyLabel = (TextView) view.findViewById(R.id.riddle_difficulty_label_text_view);
-        riddleDifficultyLabel.setTypeface(typefaceNormal);
+        // NfcTag Difficulty TextView.
+        difficultyTextView = (TextView) view.findViewById(R.id.tracking_difficulty_text_view);
+        difficultyTextView.setTypeface(typefaceNormal);
 
-        // NfcTag Difficulty TextView
-        tagDifficultyTextView = (TextView) view.findViewById(R.id.riddle_difficulty_text_view);
-        tagDifficultyTextView.setTypeface(typefaceNormal);
+        // NfcTag Solved Label TextView.
+        TextView solvedLabelTextView = (TextView) view.findViewById(R.id.tracking_solved_label_text_view);
+        solvedLabelTextView.setTypeface(typefaceNormal);
 
-        // NfcTag Solved Label TextView
-        TextView riddleSolvedLabel = (TextView) view.findViewById(R.id.riddle_solved_label_text_view);
-        riddleSolvedLabel.setTypeface(typefaceNormal);
+        // NfcTag Solved CheckBox.
+        solvedCheckBox = (CheckBox) view.findViewById(R.id.tracking_solved_check_box);
 
-        // NfcTag Solved CheckBox
-        tagSolvedCheckBox = (CheckBox) view.findViewById(R.id.riddle_solved_check_box);
-
-        // NfcTag Date Label TextView
+        // NfcTag Date Label TextView.
 //        TextView riddleDateSolvedLabelTextView = (TextView) view.findViewById(R.id.riddle_date_solved_label_text_view);
 //        riddleDateSolvedLabelTextView.setTypeface(typefaceNormal);
 //
-//        // NfcTag Date Solved CheckBox
+//        // NfcTag Date Solved TextView.
 //        riddleDateSolvedTextView = (TextView) view.findViewById(R.id.date_solved_text_view);
 //        riddleDateSolvedTextView.setTypeface(typefaceNormal);
     }

@@ -4,14 +4,14 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/row_create_image_view"
+        android:id="@+id/tracking_image_view"
         android:layout_width="match_parent"
         android:layout_height="280dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/icon_illidan" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/icon_no_image" />
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/tracking_tag_tool_bar"
+        android:id="@+id/tracking_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -22,12 +22,12 @@
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_below="@+id/row_create_image_view"
+        android:layout_below="@+id/tracking_image_view"
         android:background="@color/primary"
         android:paddingLeft="16dp">
 
         <TextView
-            android:id="@+id/riddle_details_title_text_view"
+            android:id="@+id/tracking_details_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|left"
@@ -40,7 +40,7 @@
         android:id="@+id/full_screen_floating_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/row_create_image_view"
+        android:layout_alignBottom="@+id/tracking_image_view"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="-50dp"
         android:visibility="invisible"
@@ -51,7 +51,7 @@
 
     <!--Difficulty-->
     <LinearLayout
-        android:id="@+id/difficulty_linear_layout"
+        android:id="@+id/tracking_difficulty_linear_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/frame_layout"
@@ -59,14 +59,14 @@
         android:layout_marginTop="16dp">
 
         <TextView
-            android:id="@+id/riddle_difficulty_label_text_view"
+            android:id="@+id/tracking_difficulty_label_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tag_difficulty"
             android:textSize="34sp" />
 
         <TextView
-            android:id="@+id/riddle_difficulty_text_view"
+            android:id="@+id/tracking_difficulty_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/accent"
@@ -78,23 +78,23 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/difficulty_linear_layout"
+        android:layout_below="@+id/tracking_difficulty_linear_layout"
         android:layout_marginLeft="30dp">
 
         <TextView
-            android:id="@+id/riddle_solved_label_text_view"
+            android:id="@+id/tracking_solved_label_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tag_solved"
             android:textSize="34sp" />
 
         <CheckBox
-            android:id="@+id/riddle_solved_check_box"
+            android:id="@+id/tracking_solved_check_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:enabled="false"
-            android:button="@drawable/solved_check_box"/>
+            android:button="@drawable/selector_solved_check_box"
+            android:enabled="false" />
 
     </LinearLayout>
 

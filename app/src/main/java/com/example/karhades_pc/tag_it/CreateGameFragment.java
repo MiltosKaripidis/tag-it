@@ -3,8 +3,10 @@ package com.example.karhades_pc.tag_it;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +28,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.karhades_pc.floating_action_button.ActionButton;
+import com.example.karhades_pc.picture_utils.AsyncDrawable;
+import com.example.karhades_pc.picture_utils.BitmapWorkerTask;
+import com.example.karhades_pc.picture_utils.PictureUtils;
 import com.example.karhades_pc.utils.FontCache;
 
 import java.util.ArrayList;
@@ -347,7 +352,7 @@ public class CreateGameFragment extends Fragment {
             difficultyTextView.setTypeface(typefaceNormal);
             difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
 
-            moreImageButton = (ImageButton) view.findViewById(R.id.row_create_more_image_view);
+            moreImageButton = (ImageButton) view.findViewById(R.id.row_create_more_image_button);
             moreImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -401,9 +406,25 @@ public class CreateGameFragment extends Fragment {
 
         public void bindRiddle(NfcTag nfcTag) {
             this.nfcTag = nfcTag;
-            imageView.setImageDrawable(getResources().getDrawable(R.drawable.icon_illidan));
+
+            loadBitmap(nfcTag.getPictureFilename(), imageView);
             titleTextView.setText(nfcTag.getTitle());
             difficultyTextView.setText(nfcTag.getDifficulty());
         }
+    }
+
+    private void loadBitmap(final String filename, final ImageView imageView) {
+        imageView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (PictureUtils.cancelPotentialWork(filename, imageView)) {
+                    final BitmapWorkerTask bitmapWorkerTask = new BitmapWorkerTask(imageView);
+                    Bitmap bitmap = new BitmapDrawable().getBitmap();
+                    final AsyncDrawable asyncDrawable = new AsyncDrawable(getResources(), bitmap, bitmapWorkerTask);
+                    imageView.setImageDrawable(asyncDrawable);
+                    bitmapWorkerTask.execute(filename, imageView.getWidth(), imageView.getHeight());
+                }
+            }
+        });
     }
 }

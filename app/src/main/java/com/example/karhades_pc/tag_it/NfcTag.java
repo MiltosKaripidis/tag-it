@@ -3,9 +3,6 @@ package com.example.karhades_pc.tag_it;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Date;
-import java.util.UUID;
-
 /**
  * Created by Karhades - PC on 4/11/2015.
  */
@@ -14,20 +11,17 @@ public class NfcTag {
     private static final String JSON_DIFFICULTY = "difficulty";
     private static final String JSON_TAG_ID = "tag_id";
     private static final String JSON_TITLE = "title";
+    private static final String JSON_PICTURE_FILE_NAME = "picture_file_name";
     private static final String JSON_SOLVED = "solved";
 
     private String title;
-    private UUID id;
-    private String text;
     private String difficulty;
     private boolean solved;
     private String tagId;
-    private Date dateSolved;
-    private int picture;
+    private String pictureFilename;
 
-    public NfcTag(String title, String text, String difficulty, String tagId) {
+    public NfcTag(String title, String difficulty, String tagId) {
         this.title = title;
-        this.text = text;
         this.difficulty = difficulty;
         this.tagId = tagId;
     }
@@ -43,6 +37,7 @@ public class NfcTag {
         difficulty = jsonObject.getString(JSON_DIFFICULTY);
         tagId = jsonObject.getString(JSON_TAG_ID);
         title = jsonObject.getString(JSON_TITLE);
+        pictureFilename = jsonObject.getString(JSON_PICTURE_FILE_NAME);
         solved = jsonObject.getBoolean(JSON_SOLVED);
     }
 
@@ -58,17 +53,18 @@ public class NfcTag {
         jsonObject.put(JSON_DIFFICULTY, difficulty);
         jsonObject.put(JSON_TAG_ID, tagId);
         jsonObject.put(JSON_TITLE, title);
+        jsonObject.put(JSON_PICTURE_FILE_NAME, pictureFilename);
         jsonObject.put(JSON_SOLVED, solved);
 
         return jsonObject;
     }
 
-    public int getPicture() {
-        return picture;
+    public String getPictureFilename() {
+        return pictureFilename;
     }
 
-    public void setPicture(int picture) {
-        this.picture = picture;
+    public void setPictureFilename(String pictureFilename) {
+        this.pictureFilename = pictureFilename;
     }
 
     public String getTitle() {
@@ -77,14 +73,6 @@ public class NfcTag {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 
     public String getDifficulty() {
@@ -109,14 +97,6 @@ public class NfcTag {
 
     public void setTagId(String tagId) {
         this.tagId = tagId;
-    }
-
-    public Date getDateSolved() {
-        return dateSolved;
-    }
-
-    public void setDateSolved(Date dateSolved) {
-        this.dateSolved = dateSolved;
     }
 
     @Override

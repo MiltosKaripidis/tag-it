@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.example.karhades_pc.utils.AudioPlayer;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -163,6 +164,14 @@ public class MyTags {
      */
     public void deleteNfcTag(NfcTag nfcTag) {
         Log.d(TAG, "NfcTag deleted!");
+
+        File deleteFile = new File(nfcTag.getPictureFilename());
+        if (deleteFile.delete()) {
+            Log.d(TAG, "NFC " + nfcTag.getTitle() + " picture deleted.");
+        } else {
+            Log.e(TAG, "Error deleting " + nfcTag.getTitle() + " picture.");
+        }
+
         nfcTags.remove(nfcTag);
         onListChangeListener.onListChanged();
     }
