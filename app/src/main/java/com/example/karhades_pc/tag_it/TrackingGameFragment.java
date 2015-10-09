@@ -1,9 +1,7 @@
 package com.example.karhades_pc.tag_it;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,8 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.karhades_pc.picture_utils.AsyncDrawable;
-import com.example.karhades_pc.picture_utils.BitmapWorkerTask;
 import com.example.karhades_pc.picture_utils.PictureUtils;
 import com.example.karhades_pc.utils.FontCache;
 
@@ -120,7 +116,7 @@ public class TrackingGameFragment extends Fragment {
         public void bindRiddle(NfcTag nfcTag) {
             this.nfcTag = nfcTag;
 
-            loadBitmap(nfcTag.getPictureFilename(), imageView);
+            PictureUtils.loadBitmap(nfcTag.getPictureFilename(), imageView);
 
             titleTextView.setText(nfcTag.getTitle());
             difficultyTextView.setText(nfcTag.getDifficulty());
@@ -150,20 +146,5 @@ public class TrackingGameFragment extends Fragment {
         public int getItemCount() {
             return nfcTags.size();
         }
-    }
-
-    private void loadBitmap(final String filename, final ImageView imageView) {
-        imageView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (PictureUtils.cancelPotentialWork(filename, imageView)) {
-                    final BitmapWorkerTask bitmapWorkerTask = new BitmapWorkerTask(imageView);
-                    Bitmap bitmap = new BitmapDrawable().getBitmap();
-                    final AsyncDrawable asyncDrawable = new AsyncDrawable(getResources(), bitmap, bitmapWorkerTask);
-                    imageView.setImageDrawable(asyncDrawable);
-                    bitmapWorkerTask.execute(filename, imageView.getWidth(), imageView.getHeight());
-                }
-            }
-        });
     }
 }

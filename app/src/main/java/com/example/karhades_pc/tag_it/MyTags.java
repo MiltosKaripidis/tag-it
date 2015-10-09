@@ -65,9 +65,9 @@ public class MyTags {
 
 //        // Dummy Tags
 //        nfcTags = new ArrayList<>();
-//        NfcTag nfcTag_1 = new NfcTag("Black", "Cras aliquet blandit vehicula. Maecenas auctor egestas eros...", "Hard", "04D11AD2C03480");
-//        NfcTag nfcTag_2 = new NfcTag("Red", "Nulla et lacus quis erat luctus elementum. Mauris...", "Easy", "04BCE16AC82980");
-//        NfcTag nfcTag_3 = new NfcTag("White", "Suspendisse rhoncus facilisis mi, in suscipit est fermentum...", "Medium", "04DC1BD2C03480");
+//        NfcTag nfcTag_1 = new NfcTag("Tag 1", "Hard", "04D11AD2C03480");
+//        NfcTag nfcTag_2 = new NfcTag("Tag 2", "Easy", "04BCE16AC82980");
+//        NfcTag nfcTag_3 = new NfcTag("Tag 3", "Medium", "04DC1BD2C03480");
 //        nfcTags.add(nfcTag_1);
 //        nfcTags.add(nfcTag_2);
 //        nfcTags.add(nfcTag_3);

@@ -1,8 +1,6 @@
 package com.example.karhades_pc.tag_it;
 
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -20,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.karhades_pc.floating_action_button.ActionButton;
-import com.example.karhades_pc.picture_utils.AsyncDrawable;
-import com.example.karhades_pc.picture_utils.BitmapWorkerTask;
 import com.example.karhades_pc.picture_utils.PictureUtils;
 import com.example.karhades_pc.utils.FontCache;
 
@@ -74,22 +70,7 @@ public class TrackingTagFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        loadBitmap(nfcTag.getPictureFilename(), pictureImageView);
-    }
-
-    private void loadBitmap(final String filename, final ImageView imageView) {
-        imageView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (PictureUtils.cancelPotentialWork(filename, imageView)) {
-                    final BitmapWorkerTask bitmapWorkerTask = new BitmapWorkerTask(imageView);
-                    Bitmap bitmap = new BitmapDrawable().getBitmap();
-                    final AsyncDrawable asyncDrawable = new AsyncDrawable(getResources(), bitmap, bitmapWorkerTask);
-                    imageView.setImageDrawable(asyncDrawable);
-                    bitmapWorkerTask.execute(filename, imageView.getWidth(), imageView.getHeight());
-                }
-            }
-        });
+        PictureUtils.loadBitmap(nfcTag.getPictureFilename(), pictureImageView);
     }
 
     @Override

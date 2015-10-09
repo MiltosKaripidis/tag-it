@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,8 +31,6 @@ import android.widget.Toast;
 
 import com.example.karhades_pc.floating_action_button.ActionButton;
 import com.example.karhades_pc.nfc.NfcHandler;
-import com.example.karhades_pc.picture_utils.AsyncDrawable;
-import com.example.karhades_pc.picture_utils.BitmapWorkerTask;
 import com.example.karhades_pc.picture_utils.PictureUtils;
 
 import java.io.File;
@@ -159,23 +155,8 @@ public class CreateTagFragment extends Fragment {
             //loadBitmap(temporaryPictureFilename, imageView);
             imageView.setImageBitmap(PictureUtils.decodeSampledBitmapFromResource(temporaryPictureFilename, imageView.getWidth(), imageView.getHeight()));
         } else if (nfcTag != null) {
-            loadBitmap(nfcTag.getPictureFilename(), imageView);
+            PictureUtils.loadBitmap(nfcTag.getPictureFilename(), imageView);
         }
-    }
-
-    private void loadBitmap(final String filename, final ImageView imageView) {
-        imageView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (PictureUtils.cancelPotentialWork(filename, imageView)) {
-                    final BitmapWorkerTask bitmapWorkerTask = new BitmapWorkerTask(imageView);
-                    Bitmap bitmap = new BitmapDrawable().getBitmap();
-                    final AsyncDrawable asyncDrawable = new AsyncDrawable(getResources(), bitmap, bitmapWorkerTask);
-                    imageView.setImageDrawable(asyncDrawable);
-                    bitmapWorkerTask.execute(filename, imageView.getWidth(), imageView.getHeight());
-                }
-            }
-        });
     }
 
     @Override
