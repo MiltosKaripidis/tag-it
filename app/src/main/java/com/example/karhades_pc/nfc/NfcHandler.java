@@ -27,6 +27,7 @@ import com.example.karhades_pc.tag_it.TrackingTagPagerActivity;
  * Created by Karhades on 18-Aug-15.
  */
 public class NfcHandler {
+
     private static final String TAG = "NfcHandler";
     private static final String MIME_TYPE = "application/com.example.karhades_pc.nfchandler";
 
@@ -37,6 +38,16 @@ public class NfcHandler {
     private Activity activity;
 
     private static boolean writeMode = false;
+
+    public enum Mode {
+        OVERWRITE, CREATE_NEW
+    }
+
+    private static Mode mode;
+
+    public static void setMode(Mode newMode) {
+        mode = newMode;
+    }
 
     private static OnTagWriteListener onTagWriteListener;
 
@@ -295,10 +306,35 @@ public class NfcHandler {
 
             String tagId = ByteArrayToHexString(tag.getId());
 
+            // If it's a new tag.
+            if (mode == Mode.CREATE_NEW) {
+                // Search if the tag exists.
+                NfcTag nfcTag = MyTags.get(activity).getNfcTag(tagId);
+
+                // If NFC tag exists, don't create another one.
+                if (nfcTag != null) {
+                    throw new TagIdExistsException("TagId already exists.");
+                }
+            }
             Log.d(TAG, "Write to tag was successful!");
+
+            // Set STATUS_OK.
             onTagWriteListener.onTagWritten(OnTagWriteListener.STATUS_OK, tagId);
+        } catch (TagIdExistsException e) {
+            Log.e(TAG, "Error when writing NdefMessage to NfcTag. " + e.getMessage());
+
+            // Inform user.
+            Toast.makeText(activity, "Nfc tag already exists!", Toast.LENGTH_SHORT).show();
+
+            // Set STATUS_ERROR.
+            onTagWriteListener.onTagWritten(OnTagWriteListener.STATUS_ERROR, null);
         } catch (Exception e) {
             Log.e(TAG, "Error when writing NdefMessage to NfcTag. " + e.getMessage());
+
+            // Inform user.
+            Toast.makeText(activity, "Could not write to nfc tag!", Toast.LENGTH_SHORT).show();
+
+            // Set STATUS_ERROR.
             onTagWriteListener.onTagWritten(OnTagWriteListener.STATUS_ERROR, null);
         } finally {
             writeMode = false;
@@ -327,5 +363,11 @@ public class NfcHandler {
             hexArray += hex[i];
         }
         return hexArray;
+    }
+
+    public class TagIdExistsException extends RuntimeException {
+        TagIdExistsException(String message) {
+            super(message);
+        }
     }
 }

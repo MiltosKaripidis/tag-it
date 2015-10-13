@@ -11,14 +11,14 @@ public class NfcTag {
     private static final String JSON_DIFFICULTY = "difficulty";
     private static final String JSON_TAG_ID = "tag_id";
     private static final String JSON_TITLE = "title";
-    private static final String JSON_PICTURE_FILE_NAME = "picture_file_name";
+    private static final String JSON_PICTURE_FILE_PATH = "picture_file_name";
     private static final String JSON_SOLVED = "solved";
 
     private String title;
     private String difficulty;
     private boolean solved;
     private String tagId;
-    private String pictureFilename;
+    private String pictureFilePath;
 
     public NfcTag(String title, String difficulty, String tagId) {
         this.title = title;
@@ -37,7 +37,7 @@ public class NfcTag {
         difficulty = jsonObject.getString(JSON_DIFFICULTY);
         tagId = jsonObject.getString(JSON_TAG_ID);
         title = jsonObject.getString(JSON_TITLE);
-        pictureFilename = jsonObject.getString(JSON_PICTURE_FILE_NAME);
+        pictureFilePath = jsonObject.getString(JSON_PICTURE_FILE_PATH);
         solved = jsonObject.getBoolean(JSON_SOLVED);
     }
 
@@ -53,18 +53,18 @@ public class NfcTag {
         jsonObject.put(JSON_DIFFICULTY, difficulty);
         jsonObject.put(JSON_TAG_ID, tagId);
         jsonObject.put(JSON_TITLE, title);
-        jsonObject.put(JSON_PICTURE_FILE_NAME, pictureFilename);
+        jsonObject.put(JSON_PICTURE_FILE_PATH, pictureFilePath);
         jsonObject.put(JSON_SOLVED, solved);
 
         return jsonObject;
     }
 
-    public String getPictureFilename() {
-        return pictureFilename;
+    public String getPictureFilePath() {
+        return pictureFilePath;
     }
 
-    public void setPictureFilename(String pictureFilename) {
-        this.pictureFilename = pictureFilename;
+    public void setPictureFilePath(String pictureFilePath) {
+        this.pictureFilePath = pictureFilePath;
     }
 
     public String getTitle() {

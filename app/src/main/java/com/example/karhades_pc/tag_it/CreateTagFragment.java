@@ -39,6 +39,7 @@ import java.io.File;
  * Created by Karhades on 11-Sep-15.
  */
 public class CreateTagFragment extends Fragment {
+
     public static final String EXTRA_TAG_ID = "com.example.karhades_pc.tag_id";
 
     private static final int REQUEST_IMAGE = 0;
@@ -51,7 +52,7 @@ public class CreateTagFragment extends Fragment {
     private TagItDialogFragment dialogFragment;
     private Toolbar toolbar;
 
-    private NfcTag nfcTag;
+    private NfcTag currentNfcTag;
     private String temporaryDifficulty;
     private String temporaryPictureFilename;
 
@@ -129,7 +130,7 @@ public class CreateTagFragment extends Fragment {
         String tagId = getArguments().getString(EXTRA_TAG_ID);
 
         // Get the nfcTag through it's tag id from the arguments.
-        nfcTag = MyTags.get(getActivity()).getNfcTag(tagId);
+        currentNfcTag = MyTags.get(getActivity()).getNfcTag(tagId);
     }
 
     @Override
@@ -152,10 +153,10 @@ public class CreateTagFragment extends Fragment {
 
         // Load the picture taken.
         if (temporaryPictureFilename != null) {
-            //loadBitmap(temporaryPictureFilename, imageView);
-            imageView.setImageBitmap(PictureUtils.decodeSampledBitmapFromResource(temporaryPictureFilename, imageView.getWidth(), imageView.getHeight()));
-        } else if (nfcTag != null) {
-            PictureUtils.loadBitmap(nfcTag.getPictureFilename(), imageView);
+            PictureUtils.loadViewPagerBitmap(temporaryPictureFilename, imageView);
+        } else if (currentNfcTag != null) {
+            PictureUtils.loadRecyclerViewBitmap(currentNfcTag.getPictureFilePath(), imageView);
+            //PictureUtils.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
         }
     }
 
@@ -203,8 +204,8 @@ public class CreateTagFragment extends Fragment {
             // Display the caret for an ancestral navigation.
             if (NavUtils.getParentActivityName(getActivity()) != null)
                 actionBar.setDisplayHomeAsUpEnabled(true);
-            if (nfcTag != null)
-                actionBar.setTitle(nfcTag.getTitle());
+            if (currentNfcTag != null)
+                actionBar.setTitle(currentNfcTag.getTitle());
         }
     }
 
@@ -284,9 +285,9 @@ public class CreateTagFragment extends Fragment {
             }
         });
 
-        if (nfcTag != null) {
+        if (currentNfcTag != null) {
             int position = 0;
-            switch (nfcTag.getDifficulty()) {
+            switch (currentNfcTag.getDifficulty()) {
                 case "Easy":
                     position = 0;
                     break;
@@ -303,7 +304,9 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void setupNfcWriteCallback() {
-        if (nfcTag == null && temporaryPictureFilename == null) {
+
+        // If it's a new tag and there's no picture taken.
+        if (currentNfcTag == null && temporaryPictureFilename == null) {
             Toast.makeText(getActivity(), "Tap the camera button first.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -311,81 +314,101 @@ public class CreateTagFragment extends Fragment {
         // Enter write mode.
         NfcHandler.toggleTagWriteMode(true);
 
-        // Wire a listener for a on tag written event.
+        // If it's a new tag.
+        if (currentNfcTag == null) {
+            NfcHandler.setMode(NfcHandler.Mode.CREATE_NEW);
+        }
+        // If it already exists.
+        else {
+            NfcHandler.setMode(NfcHandler.Mode.OVERWRITE);
+        }
+
+        // Create and show the dialog.
+        dialogFragment = new TagItDialogFragment();
+        dialogFragment.show(getActivity().getSupportFragmentManager(), "write");
+
+        // Wire a listener for a on tag write event.
         NfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
             @Override
             public void onTagWritten(int status, String tagId) {
+
+                // Close dialog.
                 dialogFragment.dismiss();
 
-                // TODO: Invalidate.
-
-                // NFC write was successful.
+                // If NFC write was successful.
                 if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
-                    if (nfcTag != null) {
+                    if (currentNfcTag != null) {
                         overwriteNfcTag(tagId);
                     } else {
                         createNewNfcTag(tagId);
                     }
 
-                    // Rename the and set the file.
-                    if (temporaryPictureFilename != null) {
-                        File tempFile = new File(temporaryPictureFilename);
-                        String renamedPath = tempFile.getParent() + File.separator + "Tag" + nfcTag.getTagId() + ".jpg";
-                        File renamedFile = new File(renamedPath);
+                    // Rename temp_tag.jpg to new file path.
+                    renameTempFile();
 
-                        if (tempFile.renameTo(renamedFile)) {
-                            Log.d("CreateTagFragment", "Renamed file to: " + renamedFile.getAbsolutePath());
-                            nfcTag.setPictureFilename(renamedFile.getAbsolutePath());
-                            temporaryPictureFilename = null;
-                        } else {
-                            Log.e("CreateTagFragment", "Error while renaming: " + renamedFile.getAbsolutePath());
-                        }
-                    }
-
-                    // Inform the user.
+                    // Inform user.
                     Toast.makeText(getActivity(), "Nfc Tag was successfully written!", Toast.LENGTH_SHORT).show();
 
-                    // Close the activity.
+                    // Close activity.
                     getActivity().finish();
-
-                }
-                // NFC write failed.
-                else if (status == NfcHandler.OnTagWriteListener.STATUS_ERROR) {
-                    Toast.makeText(getActivity(), "Could not write to nfc tag!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-        dialogFragment = new TagItDialogFragment();
-        dialogFragment.show(getActivity().getSupportFragmentManager(), "write");
     }
 
     private void overwriteNfcTag(String tagId) {
-        NfcTag currentNfcTag = MyTags.get(getActivity()).getNfcTag(nfcTag.getTagId());
-        currentNfcTag.setDifficulty(temporaryDifficulty);
-        currentNfcTag.setTagId(tagId);
-        // TODO: Remove this statement.
-        currentNfcTag.setSolved(false);
+        // Get tag from list and overwrite it's fields.
+        NfcTag oldNfcTag = MyTags.get(getActivity()).getNfcTag(currentNfcTag.getTagId());
+        oldNfcTag.setDifficulty(temporaryDifficulty);
+        oldNfcTag.setTagId(tagId);
 
-        // Get the Nfc Tag's position to inform the RecyclerView.Adapter.
-        int position = MyTags.get(getActivity()).getNfcTags().indexOf(currentNfcTag);
-        // Set result for REQUEST_EDIT and set the position as an intent extra.
+        // TODO: Remove this statement.
+        oldNfcTag.setSolved(false);
+
+        // Clear memory cache for previous image to refresh ImageView.
+        PictureUtils.remove(currentNfcTag.getPictureFilePath());
+
+        // Get Nfc Tag's position to inform RecyclerView.Adapter.
+        int position = MyTags.get(getActivity()).getNfcTags().indexOf(oldNfcTag);
+        // Set result for REQUEST_EDIT and set position as an intent extra.
         Intent intent = new Intent();
         intent.putExtra(CreateGameFragment.EXTRA_POSITION, position);
+
+        // Set result for REQUEST_EDIT.
         getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
     private void createNewNfcTag(String tagId) {
         // TODO: Edit the creation of the tag.
         int number = MyTags.get(getActivity()).getNfcTags().size() + 1;
+
         NfcTag newNfcTag = new NfcTag("Tag " + number, temporaryDifficulty, tagId);
 
+        // Add new tag to NfcTags list.
         MyTags.get(getActivity()).addNfcTag(newNfcTag);
 
-        this.nfcTag = newNfcTag;
+        // Set new tag as current instance member.
+        currentNfcTag = newNfcTag;
 
         // Set result for REQUEST_NEW.
         getActivity().setResult(Activity.RESULT_OK);
+    }
+
+    private void renameTempFile() {
+        if (temporaryPictureFilename != null) {
+            File tempFile = new File(temporaryPictureFilename);
+            String renamedPath = tempFile.getParent() + File.separator + "Tag" + currentNfcTag.getTagId() + ".jpg";
+            File renamedFile = new File(renamedPath);
+
+            if (tempFile.renameTo(renamedFile)) {
+                Log.d("CreateTagFragment", "Renamed file to: " + renamedFile.getAbsolutePath());
+
+                temporaryPictureFilename = null;
+                currentNfcTag.setPictureFilePath(renamedFile.getAbsolutePath());
+            } else {
+                Log.e("CreateTagFragment", "Error while renaming: " + renamedFile.getAbsolutePath());
+            }
+        }
     }
 
     public static class TagItDialogFragment extends DialogFragment {

@@ -2,6 +2,7 @@ package com.example.karhades_pc.picture_utils;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
@@ -13,7 +14,6 @@ public class BitmapLoaderTask extends AsyncTask<Object, Void, Bitmap> {
 
     private final WeakReference<ImageView> imageViewReference;
     private String filePath;
-    private long timeStart;
 
     public BitmapLoaderTask(ImageView imageView) {
         // Use a WeakReference to ensure the ImageView can be garbage collected.
@@ -27,13 +27,22 @@ public class BitmapLoaderTask extends AsyncTask<Object, Void, Bitmap> {
     // Decode image in background.
     @Override
     protected Bitmap doInBackground(Object... params) {
-        timeStart = System.currentTimeMillis();
-
         filePath = (String) params[0];
         int width = (int) params[1];
         int height = (int) params[2];
 
-        return PictureUtils.decodeSampledBitmapFromResource(filePath, width, height);
+        // Decode the bitmap.
+        Bitmap bitmap = PictureUtils.decodeSampledBitmapFromResource(filePath, width, height);
+        Log.d("BitmapLoaderTask", "Bytes of bitmap: " + bitmap.getByteCount() / 1024 + " KB");
+
+        if (params.length > 3) {
+            LruMemoryCache lruMemoryCache = (LruMemoryCache) params[3];
+            // Add to cache.
+            lruMemoryCache.addBitmapToMemoryCache(filePath, bitmap);
+            Log.d("BitmapLoaderTask", "Cache Size: " + lruMemoryCache.size());
+        }
+
+        return bitmap;
     }
 
     // Once complete, see if ImageView is still around and set bitmap.
@@ -49,11 +58,6 @@ public class BitmapLoaderTask extends AsyncTask<Object, Void, Bitmap> {
 
             if (this == bitmapLoaderTask && imageView != null) {
                 imageView.setImageBitmap(bitmap);
-
-                long timeEnd = System.currentTimeMillis();
-                long timeDelta = timeEnd - timeStart;
-                double seconds = timeDelta / 1000.0;
-                //Log.d("BitmapLoaderTask", "AsyncTask completed in: " + seconds);
             }
         }
     }

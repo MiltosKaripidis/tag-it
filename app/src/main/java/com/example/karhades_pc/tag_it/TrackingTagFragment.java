@@ -70,7 +70,8 @@ public class TrackingTagFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        PictureUtils.loadBitmap(nfcTag.getPictureFilename(), pictureImageView);
+        PictureUtils.loadRecyclerViewBitmap(nfcTag.getPictureFilePath(), pictureImageView);
+        //PictureUtils.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), pictureImageView);
     }
 
     @Override

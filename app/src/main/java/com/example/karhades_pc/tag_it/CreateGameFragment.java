@@ -313,15 +313,19 @@ public class CreateGameFragment extends Fragment {
                     // Enable selection mode.
                     adapter.setSelectionMode(true);
 
-                    // Toggle the selected view.
+                    // Toggle selected view.
                     selectItem(view);
 
                     // Listen for MainActivity's events.
                     MainActivity.setOnContextActivityListener(new MainActivity.OnContextActivityListener() {
                         @Override
                         public void onDeleteIconPressed() {
-                            Toast.makeText(getActivity(), "Items deleted", Toast.LENGTH_SHORT).show();
                             adapter.deleteSelectedItems();
+
+                            reorderNfcTags();
+
+                            // Inform user.
+                            Toast.makeText(getActivity(), "Items deleted", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
@@ -358,7 +362,7 @@ public class CreateGameFragment extends Fragment {
         }
 
         private void selectItem(View view) {
-            // Highlight the selected view.
+            // Highlight selected view.
             if (adapter.isSelected(getAdapterPosition())) {
                 view.setActivated(false);
             } else {
@@ -389,6 +393,8 @@ public class CreateGameFragment extends Fragment {
                     // Refresh the list.
                     recyclerView.getAdapter().notifyItemRemoved(getAdapterPosition());
 
+                    reorderNfcTags();
+
                     popupWindow.dismiss();
                 }
             });
@@ -403,9 +409,20 @@ public class CreateGameFragment extends Fragment {
         public void bindRiddle(NfcTag nfcTag) {
             this.nfcTag = nfcTag;
 
-            PictureUtils.loadBitmap(nfcTag.getPictureFilename(), imageView);
+            PictureUtils.loadRecyclerViewBitmap(nfcTag.getPictureFilePath(), imageView);
+            //PictureUtils.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
             titleTextView.setText(nfcTag.getTitle());
             difficultyTextView.setText(nfcTag.getDifficulty());
         }
+    }
+
+    private void reorderNfcTags() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                MyTags.get(getActivity()).reorderNfcTags();
+                recyclerView.getAdapter().notifyItemRangeChanged(0, MyTags.get(getActivity()).getNfcTags().size());
+            }
+        }, 1000);
     }
 }

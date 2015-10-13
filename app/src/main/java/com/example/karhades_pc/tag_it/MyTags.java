@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.karhades_pc.picture_utils.PictureUtils;
 import com.example.karhades_pc.utils.AudioPlayer;
 
 import java.io.File;
@@ -91,7 +92,6 @@ public class MyTags {
     }
 
     private void setupAudioPlayer() {
-        // Initialize the audio player.
         audioPlayer = new AudioPlayer();
     }
 
@@ -138,12 +138,16 @@ public class MyTags {
      * @param tagId The id of the NfcTag to solve.
      */
     public void solveNfcTag(String tagId) {
+        // Get tag from list and solve.
         NfcTag nfcTag = getNfcTag(tagId);
         nfcTag.setSolved(true);
-        Toast.makeText(context, "NfcTag " + nfcTag.getTitle() + " was successfully solved!", Toast.LENGTH_SHORT).show();
-        // Play a winning sound.
+
+        // Play winning sound.
         // TODO: Uncomment the cheering sound.
         //audioPlayer.play(context, R.raw.cheering);
+
+        // Inform user.
+        Toast.makeText(context, "NfcTag " + nfcTag.getTitle() + " was successfully solved!", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -153,7 +157,11 @@ public class MyTags {
      */
     public void addNfcTag(NfcTag nfcTag) {
         Log.d(TAG, "NfcTag inserted!");
+
+        // Add to list.
         nfcTags.add(nfcTag);
+
+        // Callback event method.
         onListChangeListener.onListChanged();
     }
 
@@ -163,16 +171,32 @@ public class MyTags {
      * @param nfcTag The NfcTag to remove.
      */
     public void deleteNfcTag(NfcTag nfcTag) {
-        Log.d(TAG, "NfcTag deleted!");
+        Log.d(TAG, "NFC " + nfcTag.getTitle() + " deleted!");
 
-        File deleteFile = new File(nfcTag.getPictureFilename());
+        // Clear memory cache for previous image to refresh ImageView.
+        PictureUtils.remove(nfcTag.getPictureFilePath());
+
+        // Delete file from disk.
+        File deleteFile = new File(nfcTag.getPictureFilePath());
         if (deleteFile.delete()) {
             Log.d(TAG, "NFC " + nfcTag.getTitle() + " picture deleted.");
         } else {
             Log.e(TAG, "Error deleting " + nfcTag.getTitle() + " picture.");
         }
 
+        // Remove from list.
         nfcTags.remove(nfcTag);
+
+        // Callback event method.
         onListChangeListener.onListChanged();
+    }
+
+    public void reorderNfcTags() {
+        int title = 1;
+
+        for (NfcTag nfcTag : nfcTags) {
+            nfcTag.setTitle("Tag " + title);
+            title++;
+        }
     }
 }

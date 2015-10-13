@@ -116,7 +116,8 @@ public class TrackingGameFragment extends Fragment {
         public void bindRiddle(NfcTag nfcTag) {
             this.nfcTag = nfcTag;
 
-            PictureUtils.loadBitmap(nfcTag.getPictureFilename(), imageView);
+            PictureUtils.loadRecyclerViewBitmap(nfcTag.getPictureFilePath(), imageView);
+            //PictureUtils.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
 
             titleTextView.setText(nfcTag.getTitle());
             difficultyTextView.setText(nfcTag.getDifficulty());
