@@ -2,8 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/context_bar_delete"
+        android:id="@+id/context_bar_delete_item"
         android:icon="@mipmap/delete"
         android:title="Delete"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/context_bar_select_all_item"
+        android:title="Select all"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/context_bar_clear_selection_item"
+        android:title="Clear selection"
+        app:showAsAction="never"
+        android:visible="false"/>
 </menu>

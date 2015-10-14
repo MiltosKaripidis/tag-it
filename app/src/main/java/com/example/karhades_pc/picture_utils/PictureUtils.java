@@ -25,10 +25,6 @@ public class PictureUtils {
         lruMemoryCache.remove(key);
     }
 
-    public static void evictAll() {
-        lruMemoryCache.evictAll();
-    }
-
     /**
      * Get a Bitmap from the {@code filePath} and scale it
      * down to fit the required {@code width} and {@code height} of

@@ -243,6 +243,16 @@ public class CreateGameFragment extends Fragment {
             return selectedItems.get(position);
         }
 
+        public void selectAll() {
+            for (int i = 0; i < nfcTags.size(); i++) {
+                View view = recyclerView.getChildAt(i);
+                if (view instanceof CardView) {
+                    toggleSelection(i);
+                    view.setActivated(true);
+                }
+            }
+        }
+
         public void clearSelection() {
             selectedItems.clear();
 
@@ -290,14 +300,14 @@ public class CreateGameFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Contextual Action Bar is disabled.
+                    // If Contextual Action Bar is disabled.
                     if (!adapter.isSelectionMode()) {
                         // Start CreateTagPagerActivity.
                         Intent intent = new Intent(getActivity(), CreateTagPagerActivity.class);
                         intent.putExtra(CreateTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
                         startActivityForResult(intent, REQUEST_EDIT);
                     }
-                    // Contextual Action Bar is enabled.
+                    // If Contextual Action Bar is enabled.
                     else {
                         // Toggle the selected view.
                         selectItem(view);
@@ -319,13 +329,23 @@ public class CreateGameFragment extends Fragment {
                     // Listen for MainActivity's events.
                     MainActivity.setOnContextActivityListener(new MainActivity.OnContextActivityListener() {
                         @Override
-                        public void onDeleteIconPressed() {
-                            adapter.deleteSelectedItems();
+                        public void onMenuItemPressed(int id) {
+                            switch (id) {
+                                case R.id.context_bar_delete_item:
+                                    adapter.deleteSelectedItems();
 
-                            reorderNfcTags();
+                                    reorderNfcTags();
 
-                            // Inform user.
-                            Toast.makeText(getActivity(), "Items deleted", Toast.LENGTH_SHORT).show();
+                                    // Inform user.
+                                    Toast.makeText(getActivity(), "Items deleted", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case R.id.context_bar_select_all_item:
+                                    adapter.selectAll();
+                                    break;
+                                case R.id.context_bar_clear_selection_item:
+                                    adapter.clearSelection();
+                                    break;
+                            }
                         }
 
                         @Override

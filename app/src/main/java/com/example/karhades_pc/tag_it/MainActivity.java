@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public interface OnContextActivityListener {
-        void onDeleteIconPressed();
+        void onMenuItemPressed(int id);
 
         void onContextExited();
     }
@@ -202,12 +202,23 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public boolean onCabItemClicked(MenuItem item) {
+                        MenuItem selectAll = materialCab.getMenu().getItem(1);
+                        MenuItem clearSelection = materialCab.getMenu().getItem(2);
+
                         switch (item.getItemId()) {
-                            case R.id.context_bar_delete:
-
-                                onContextActivityListener.onDeleteIconPressed();
+                            case R.id.context_bar_delete_item:
+                                onContextActivityListener.onMenuItemPressed(R.id.context_bar_delete_item);
                                 disableContextBar();
-
+                                return true;
+                            case R.id.context_bar_select_all_item:
+                                clearSelection.setVisible(true);
+                                selectAll.setVisible(false);
+                                onContextActivityListener.onMenuItemPressed(R.id.context_bar_select_all_item);
+                                return true;
+                            case R.id.context_bar_clear_selection_item:
+                                clearSelection.setVisible(false);
+                                selectAll.setVisible(true);
+                                onContextActivityListener.onMenuItemPressed(R.id.context_bar_clear_selection_item);
                                 return true;
                             default:
                                 return false;
@@ -217,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onCabFinished(MaterialCab cab) {
                         changeBarThemeColor(true);
+                        onContextActivityListener.onContextExited();
                         return true;
                     }
                 });

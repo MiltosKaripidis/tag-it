@@ -49,8 +49,4 @@ public class LruMemoryCache {
     public void remove(String key) {
         lruCache.remove(key);
     }
-
-    public void evictAll() {
-        lruCache.evictAll();
-    }
 }
