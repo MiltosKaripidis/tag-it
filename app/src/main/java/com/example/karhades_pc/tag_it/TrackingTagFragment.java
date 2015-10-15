@@ -1,5 +1,6 @@
 package com.example.karhades_pc.tag_it;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,11 +26,12 @@ import com.example.karhades_pc.utils.FontCache;
  * Created by Karhades - PC on 4/14/2015.
  */
 public class TrackingTagFragment extends Fragment {
-    public static final String EXTRA_TAG_ID = "com.example.karhades_pc.tag_id";
+    public static final String EXTRA_TAG_ID = "com.example.karhades_pc.tag_it.tag_id";
+    public static final String EXTRA_FILE_PATH = "com.example.karhades_pc.tag_it.file_path";
 
     private NfcTag nfcTag;
 
-    private ImageView pictureImageView;
+    private ImageView imageView;
     private TextView difficultyTextView;
     private CheckBox solvedCheckBox;
     private Toolbar toolbar;
@@ -70,7 +72,7 @@ public class TrackingTagFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), pictureImageView);
+        PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
     }
 
     @Override
@@ -174,7 +176,7 @@ public class TrackingTagFragment extends Fragment {
         fullscreenActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Fullscreen.
+                enterFullScreen();
             }
         });
         fullscreenActionButton.setHideAnimation(ActionButton.Animations.SCALE_DOWN);
@@ -193,7 +195,13 @@ public class TrackingTagFragment extends Fragment {
         Typeface typefaceNormal = FontCache.get("fonts/amatic_normal.ttf", getActivity());
 
         // NfcTag Picture ImageView.
-        pictureImageView = (ImageView) view.findViewById(R.id.tracking_image_view);
+        imageView = (ImageView) view.findViewById(R.id.tracking_image_view);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterFullScreen();
+            }
+        });
 
         // NfcTag Details Title TextView.
         TextView detailsTextView = (TextView) view.findViewById(R.id.tracking_details_text_view);
@@ -221,5 +229,12 @@ public class TrackingTagFragment extends Fragment {
 //        // NfcTag Date Solved TextView.
 //        riddleDateSolvedTextView = (TextView) view.findViewById(R.id.date_solved_text_view);
 //        riddleDateSolvedTextView.setTypeface(typefaceNormal);
+    }
+
+    private void enterFullScreen() {
+        Intent intent = new Intent(getActivity(), FullScreenActivity.class);
+        String filePath = nfcTag.getPictureFilePath();
+        intent.putExtra(EXTRA_FILE_PATH, filePath);
+        startActivity(intent);
     }
 }

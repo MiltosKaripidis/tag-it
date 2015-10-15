@@ -24,7 +24,7 @@ public class PictureLoader {
             public void run() {
                 Picasso.with(context).load(new File(filePath))
                         .resize(imageView.getWidth(), imageView.getHeight())
-                        .centerCrop()
+                        .centerInside()
                         .into(imageView);
             }
         });

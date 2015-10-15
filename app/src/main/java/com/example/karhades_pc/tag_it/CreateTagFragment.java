@@ -40,7 +40,8 @@ import java.io.File;
  */
 public class CreateTagFragment extends Fragment {
 
-    public static final String EXTRA_TAG_ID = "com.example.karhades_pc.tag_id";
+    public static final String EXTRA_TAG_ID = "com.example.karhades_pc.tag_it.tag_id";
+    public static final String EXTRA_FILE_PATH = "com.example.karhades_pc.tag_it.file_path";
 
     private static final int REQUEST_IMAGE = 0;
 
@@ -48,7 +49,7 @@ public class CreateTagFragment extends Fragment {
     private Button cancelButton;
     private Button tagItButton;
     private Spinner difficultySpinner;
-    private ActionButton actionButton;
+    private ActionButton cameraActionButton;
     private TagItDialogFragment dialogFragment;
     private Toolbar toolbar;
 
@@ -116,10 +117,10 @@ public class CreateTagFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (actionButton.isHidden()) {
-                    actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
-                    actionButton.show();
-                    actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
+                if (cameraActionButton.isHidden()) {
+                    cameraActionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
+                    cameraActionButton.show();
+                    cameraActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
                 }
             }
         }, 750);
@@ -210,8 +211,8 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void setupFloatingActionButton(View view) {
-        actionButton = (ActionButton) view.findViewById(R.id.full_screen_floating_action_button);
-        actionButton.setOnClickListener(new View.OnClickListener() {
+        cameraActionButton = (ActionButton) view.findViewById(R.id.camera_action_button);
+        cameraActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isExternalStorageWritable()) {
@@ -229,8 +230,8 @@ public class CreateTagFragment extends Fragment {
                 }
             }
         });
-        actionButton.setHideAnimation(ActionButton.Animations.SCALE_DOWN);
-        actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
+        cameraActionButton.setHideAnimation(ActionButton.Animations.SCALE_DOWN);
+        cameraActionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
     }
 
     private boolean isExternalStorageWritable() {
@@ -249,7 +250,17 @@ public class CreateTagFragment extends Fragment {
         setupSpinner(view);
 
         imageView = (ImageView) view.findViewById(R.id.row_create_image_view);
-        // TODO: Implement click listener.
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentNfcTag != null) {
+                    Intent intent = new Intent(getActivity(), FullScreenActivity.class);
+                    String filePath = currentNfcTag.getPictureFilePath();
+                    intent.putExtra(EXTRA_FILE_PATH, filePath);
+                    startActivity(intent);
+                }
+            }
+        });
 
         tagItButton = (Button) view.findViewById(R.id.tag_it_button);
         tagItButton.setOnClickListener(new View.OnClickListener() {
