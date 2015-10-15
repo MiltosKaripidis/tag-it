@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.karhades_pc.picture_utils.PictureUtils;
+import com.example.karhades_pc.picture_utils.PictureLoader;
 import com.example.karhades_pc.utils.AudioPlayer;
 
 import java.io.File;
@@ -174,7 +174,7 @@ public class MyTags {
         Log.d(TAG, "NFC " + nfcTag.getTitle() + " deleted!");
 
         // Clear memory cache for previous image to refresh ImageView.
-        PictureUtils.remove(nfcTag.getPictureFilePath());
+        PictureLoader.invalidateWithPicasso(context, nfcTag.getPictureFilePath());
 
         // Delete file from disk.
         File deleteFile = new File(nfcTag.getPictureFilePath());

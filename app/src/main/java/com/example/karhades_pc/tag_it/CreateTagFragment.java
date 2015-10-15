@@ -31,7 +31,7 @@ import android.widget.Toast;
 
 import com.example.karhades_pc.floating_action_button.ActionButton;
 import com.example.karhades_pc.nfc.NfcHandler;
-import com.example.karhades_pc.picture_utils.PictureUtils;
+import com.example.karhades_pc.picture_utils.PictureLoader;
 
 import java.io.File;
 
@@ -153,10 +153,10 @@ public class CreateTagFragment extends Fragment {
 
         // Load the picture taken.
         if (temporaryPictureFilename != null) {
-            PictureUtils.loadViewPagerBitmap(temporaryPictureFilename, imageView);
+            PictureLoader.loadBitmapWithPicasso(getActivity(), temporaryPictureFilename, imageView);
+            PictureLoader.invalidateWithPicasso(getActivity(), temporaryPictureFilename);
         } else if (currentNfcTag != null) {
-            PictureUtils.loadRecyclerViewBitmap(currentNfcTag.getPictureFilePath(), imageView);
-            //PictureUtils.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
+            PictureLoader.loadBitmapWithPicasso(getActivity(), currentNfcTag.getPictureFilePath(), imageView);
         }
     }
 
@@ -357,19 +357,18 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void overwriteNfcTag(String tagId) {
-        // Get tag from list and overwrite it's fields.
-        NfcTag oldNfcTag = MyTags.get(getActivity()).getNfcTag(currentNfcTag.getTagId());
-        oldNfcTag.setDifficulty(temporaryDifficulty);
-        oldNfcTag.setTagId(tagId);
+        // Overwrite current nfc tag fields.
+        currentNfcTag.setDifficulty(temporaryDifficulty);
+        currentNfcTag.setTagId(tagId);
 
         // TODO: Remove this statement.
-        oldNfcTag.setSolved(false);
+        currentNfcTag.setSolved(false);
 
         // Clear memory cache for previous image to refresh ImageView.
-        PictureUtils.remove(currentNfcTag.getPictureFilePath());
+        PictureLoader.invalidateWithPicasso(getActivity(), currentNfcTag.getPictureFilePath());
 
         // Get Nfc Tag's position to inform RecyclerView.Adapter.
-        int position = MyTags.get(getActivity()).getNfcTags().indexOf(oldNfcTag);
+        int position = MyTags.get(getActivity()).getNfcTags().indexOf(currentNfcTag);
         // Set result for REQUEST_EDIT and set position as an intent extra.
         Intent intent = new Intent();
         intent.putExtra(CreateGameFragment.EXTRA_POSITION, position);

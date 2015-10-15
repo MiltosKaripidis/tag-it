@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.karhades_pc.picture_utils.PictureUtils;
+import com.example.karhades_pc.picture_utils.PictureLoader;
 import com.example.karhades_pc.utils.FontCache;
 
 import java.util.ArrayList;
@@ -116,8 +116,7 @@ public class TrackingGameFragment extends Fragment {
         public void bindRiddle(NfcTag nfcTag) {
             this.nfcTag = nfcTag;
 
-            PictureUtils.loadRecyclerViewBitmap(nfcTag.getPictureFilePath(), imageView);
-            //PictureUtils.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
+            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
 
             titleTextView.setText(nfcTag.getTitle());
             difficultyTextView.setText(nfcTag.getDifficulty());

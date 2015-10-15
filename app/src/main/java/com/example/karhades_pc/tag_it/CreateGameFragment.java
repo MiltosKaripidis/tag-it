@@ -26,7 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.karhades_pc.floating_action_button.ActionButton;
-import com.example.karhades_pc.picture_utils.PictureUtils;
+import com.example.karhades_pc.picture_utils.PictureLoader;
 import com.example.karhades_pc.utils.FontCache;
 
 import java.util.ArrayList;
@@ -431,8 +431,8 @@ public class CreateGameFragment extends Fragment {
         public void bindRiddle(NfcTag nfcTag) {
             this.nfcTag = nfcTag;
 
-            PictureUtils.loadRecyclerViewBitmap(nfcTag.getPictureFilePath(), imageView);
-            //PictureUtils.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
+            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
+
             titleTextView.setText(nfcTag.getTitle());
             difficultyTextView.setText(nfcTag.getDifficulty());
         }

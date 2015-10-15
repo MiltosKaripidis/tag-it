@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.karhades_pc.floating_action_button.ActionButton;
-import com.example.karhades_pc.picture_utils.PictureUtils;
+import com.example.karhades_pc.picture_utils.PictureLoader;
 import com.example.karhades_pc.utils.FontCache;
 
 /**
@@ -70,8 +70,7 @@ public class TrackingTagFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        PictureUtils.loadRecyclerViewBitmap(nfcTag.getPictureFilePath(), pictureImageView);
-        //PictureUtils.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), pictureImageView);
+        PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), pictureImageView);
     }
 
     @Override
