@@ -225,7 +225,7 @@ public class PictureUtils {
         private final WeakReference<BitmapLoaderTask> bitmapLoaderTaskWeakReference;
 
         public LoaderDrawable(BitmapLoaderTask bitmapLoaderTask) {
-            super(Color.GRAY);
+            super(Color.WHITE);
             bitmapLoaderTaskWeakReference = new WeakReference<>(bitmapLoaderTask);
         }
 

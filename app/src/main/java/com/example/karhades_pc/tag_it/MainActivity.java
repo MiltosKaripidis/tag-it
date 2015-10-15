@@ -202,8 +202,8 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public boolean onCabItemClicked(MenuItem item) {
-                        MenuItem selectAll = materialCab.getMenu().getItem(1);
-                        MenuItem clearSelection = materialCab.getMenu().getItem(2);
+                        MenuItem selectAllItem = materialCab.getMenu().findItem(R.id.context_bar_select_all_item);
+                        MenuItem clearSelectionItem = materialCab.getMenu().findItem(R.id.context_bar_clear_selection_item);
 
                         switch (item.getItemId()) {
                             case R.id.context_bar_delete_item:
@@ -211,13 +211,13 @@ public class MainActivity extends AppCompatActivity {
                                 disableContextBar();
                                 return true;
                             case R.id.context_bar_select_all_item:
-                                clearSelection.setVisible(true);
-                                selectAll.setVisible(false);
+                                clearSelectionItem.setVisible(true);
+                                selectAllItem.setVisible(false);
                                 onContextActivityListener.onMenuItemPressed(R.id.context_bar_select_all_item);
                                 return true;
                             case R.id.context_bar_clear_selection_item:
-                                clearSelection.setVisible(false);
-                                selectAll.setVisible(true);
+                                clearSelectionItem.setVisible(false);
+                                selectAllItem.setVisible(true);
                                 onContextActivityListener.onMenuItemPressed(R.id.context_bar_clear_selection_item);
                                 return true;
                             default:
@@ -237,6 +237,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClicked(int tagsSelected) {
                 materialCab.setTitle(tagsSelected + " selected");
+
+                MenuItem deleteItem = materialCab.getMenu().findItem(R.id.context_bar_delete_item);
+                // If there are no selected tags.
+                if (tagsSelected == 0) {
+                    deleteItem.setVisible(false);
+                } else {
+                    deleteItem.setVisible(true);
+                }
             }
         });
     }

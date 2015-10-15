@@ -247,10 +247,11 @@ public class CreateGameFragment extends Fragment {
             for (int i = 0; i < nfcTags.size(); i++) {
                 View view = recyclerView.getChildAt(i);
                 if (view instanceof CardView) {
-                    toggleSelection(i);
+                    selectedItems.put(i, true);
                     view.setActivated(true);
                 }
             }
+            onContextFragmentListener.onItemClicked(getSelectionSize());
         }
 
         public void clearSelection() {
@@ -262,6 +263,7 @@ public class CreateGameFragment extends Fragment {
                     view.setActivated(false);
                 }
             }
+            onContextFragmentListener.onItemClicked(getSelectionSize());
         }
 
         public int getSelectionSize() {
