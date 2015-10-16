@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -18,8 +19,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.karhades_pc.floating_action_button.ActionButton;
-import com.example.karhades_pc.picture_utils.PictureLoader;
+import com.example.karhades_pc.utils.PictureLoader;
 import com.example.karhades_pc.utils.FontCache;
 
 /**
@@ -35,7 +35,7 @@ public class TrackingTagFragment extends Fragment {
     private TextView difficultyTextView;
     private CheckBox solvedCheckBox;
     private Toolbar toolbar;
-    private ActionButton fullscreenActionButton;
+    private FloatingActionButton fullscreenActionButton;
 
     /**
      * Return a TrackingTagFragment with tagId as its argument.
@@ -93,6 +93,7 @@ public class TrackingTagFragment extends Fragment {
 //            Date date = nfcTag.getDateSolved();
 //            String formattedDate = simpleDateFormat.format(date);
 //            riddleDateSolvedTextView.setText(formattedDate);
+//        }
     }
 
     private void startupAnimation() {
@@ -101,10 +102,8 @@ public class TrackingTagFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (fullscreenActionButton.isHidden()) {
-                    fullscreenActionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
+                if (fullscreenActionButton.getVisibility() == View.INVISIBLE) {
                     fullscreenActionButton.show();
-                    fullscreenActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
                 }
             }
         }, 750);
@@ -172,15 +171,13 @@ public class TrackingTagFragment extends Fragment {
     }
 
     private void setupFloatingActionButton(View view) {
-        fullscreenActionButton = (ActionButton) view.findViewById(R.id.full_screen_floating_action_button);
+        fullscreenActionButton = (FloatingActionButton) view.findViewById(R.id.full_screen_action_button);
         fullscreenActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 enterFullScreen();
             }
         });
-        fullscreenActionButton.setHideAnimation(ActionButton.Animations.SCALE_DOWN);
-        fullscreenActionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
     }
 
     /**

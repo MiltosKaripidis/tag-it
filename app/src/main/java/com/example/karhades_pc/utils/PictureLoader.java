@@ -1,4 +1,4 @@
-package com.example.karhades_pc.picture_utils;
+package com.example.karhades_pc.utils;
 
 import android.content.Context;
 import android.widget.ImageView;

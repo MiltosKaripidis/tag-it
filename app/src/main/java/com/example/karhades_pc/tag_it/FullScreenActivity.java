@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.karhades_pc.picture_utils.PictureLoader;
+import com.example.karhades_pc.utils.PictureLoader;
 
 /**
  * Created by Karhades on 15-10-15.

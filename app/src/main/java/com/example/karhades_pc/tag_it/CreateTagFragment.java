@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
@@ -29,9 +30,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.karhades_pc.floating_action_button.ActionButton;
 import com.example.karhades_pc.nfc.NfcHandler;
-import com.example.karhades_pc.picture_utils.PictureLoader;
+import com.example.karhades_pc.utils.PictureLoader;
 
 import java.io.File;
 
@@ -49,7 +49,7 @@ public class CreateTagFragment extends Fragment {
     private Button cancelButton;
     private Button tagItButton;
     private Spinner difficultySpinner;
-    private ActionButton cameraActionButton;
+    private FloatingActionButton cameraActionButton;
     private TagItDialogFragment dialogFragment;
     private Toolbar toolbar;
 
@@ -117,10 +117,8 @@ public class CreateTagFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (cameraActionButton.isHidden()) {
-                    cameraActionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
+                if (cameraActionButton.getVisibility() == View.INVISIBLE) {
                     cameraActionButton.show();
-                    cameraActionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
                 }
             }
         }, 750);
@@ -211,7 +209,7 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void setupFloatingActionButton(View view) {
-        cameraActionButton = (ActionButton) view.findViewById(R.id.camera_action_button);
+        cameraActionButton = (FloatingActionButton) view.findViewById(R.id.camera_action_button);
         cameraActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -230,8 +228,6 @@ public class CreateTagFragment extends Fragment {
                 }
             }
         });
-        cameraActionButton.setHideAnimation(ActionButton.Animations.SCALE_DOWN);
-        cameraActionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
     }
 
     private boolean isExternalStorageWritable() {
@@ -249,7 +245,7 @@ public class CreateTagFragment extends Fragment {
     private void initializeWidgets(View view) {
         setupSpinner(view);
 
-        imageView = (ImageView) view.findViewById(R.id.row_create_image_view);
+        imageView = (ImageView) view.findViewById(R.id.create_image_view);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

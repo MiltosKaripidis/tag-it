@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.karhades_pc.picture_utils.PictureLoader;
+import com.example.karhades_pc.utils.PictureLoader;
 import com.example.karhades_pc.utils.FontCache;
 
 import java.util.ArrayList;

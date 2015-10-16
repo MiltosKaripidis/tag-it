@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/row_create_image_view"
+        android:id="@+id/create_image_view"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:scaleType="centerCrop"
@@ -22,7 +22,7 @@
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_below="@+id/row_create_image_view"
+        android:layout_below="@+id/create_image_view"
         android:background="@color/primary"
         android:paddingLeft="16dp">
 
@@ -36,18 +36,17 @@
             android:textSize="24sp" />
     </FrameLayout>
 
-    <com.example.karhades_pc.floating_action_button.ActionButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/camera_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/row_create_image_view"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="-50dp"
+        android:layout_alignBottom="@id/create_image_view"
+        android:layout_alignRight="@id/create_image_view"
+        android:layout_marginBottom="-27dp"
+        android:layout_marginRight="16dp"
+        android:src="@mipmap/camera"
         android:visibility="invisible"
-        app:button_color="@color/accent"
-        app:button_colorPressed="@color/accent_dark"
-        app:image="@mipmap/camera"
-        app:rippleEffect_enabled="true" />
+        app:backgroundTint="@color/accent" />
 
     <!--Difficulty-->
     <LinearLayout

@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -25,8 +26,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.karhades_pc.floating_action_button.ActionButton;
-import com.example.karhades_pc.picture_utils.PictureLoader;
+import com.example.karhades_pc.utils.PictureLoader;
 import com.example.karhades_pc.utils.FontCache;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class CreateGameFragment extends Fragment {
     private ArrayList<NfcTag> nfcTags;
 
     private RecyclerView recyclerView;
-    private ActionButton actionButton;
+    private FloatingActionButton addActionButton;
     private LinearLayout emptyLinearLayout;
 
     private static OnContextFragmentListener onContextFragmentListener;
@@ -111,17 +111,17 @@ public class CreateGameFragment extends Fragment {
                 // If scrolling down (dy > 0). The faster the scrolling
                 // the bigger the dy.
                 if (dy > 0) {
-                    actionButton.hide();
+                    addActionButton.hide();
                 } else if (dy < -15) {
-                    actionButton.show();
+                    addActionButton.show();
                 }
             }
         });
     }
 
     private void setupFloatingActionButton(View view) {
-        actionButton = (ActionButton) view.findViewById(R.id.floating_action_button);
-        actionButton.setOnClickListener(new View.OnClickListener() {
+        addActionButton = (FloatingActionButton) view.findViewById(R.id.add_action_button);
+        addActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Start CreateTagActivity.
@@ -129,8 +129,6 @@ public class CreateGameFragment extends Fragment {
                 startActivityForResult(intent, 0);
             }
         });
-        actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
-        actionButton.setHideAnimation(ActionButton.Animations.ROLL_TO_DOWN);
     }
 
     private void setupEmptyView(View view) {
@@ -169,10 +167,8 @@ public class CreateGameFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (actionButton.isHidden()) {
-                    actionButton.setShowAnimation(ActionButton.Animations.SCALE_UP);
-                    actionButton.show();
-                    actionButton.setShowAnimation(ActionButton.Animations.ROLL_FROM_DOWN);
+                if (addActionButton.getVisibility() == View.INVISIBLE) {
+                    addActionButton.show();
                 }
             }
         }, 750);

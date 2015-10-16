@@ -36,18 +36,17 @@
             android:textSize="34dp" />
     </FrameLayout>
 
-    <com.example.karhades_pc.floating_action_button.ActionButton
-        android:id="@+id/full_screen_floating_action_button"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/full_screen_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/tracking_image_view"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="-50dp"
+        android:layout_alignBottom="@id/tracking_image_view"
+        android:layout_alignRight="@id/tracking_image_view"
+        android:layout_marginBottom="-27dp"
+        android:layout_marginRight="16dp"
+        android:src="@mipmap/fullscreen"
         android:visibility="invisible"
-        app:button_color="@color/accent"
-        app:button_colorPressed="@color/accent_dark"
-        app:image="@mipmap/fullscreen"
-        app:rippleEffect_enabled="true" />
+        app:backgroundTint="@color/accent" />
 
     <!--Difficulty-->
     <LinearLayout
