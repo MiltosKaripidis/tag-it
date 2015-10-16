@@ -60,7 +60,9 @@ public class NfcTag {
         jsonObject.put(JSON_TITLE, title);
         jsonObject.put(JSON_PICTURE_FILE_PATH, pictureFilePath);
         jsonObject.put(JSON_SOLVED, solved);
-        jsonObject.put(JSON_DATE_SOLVED, dateSolved);
+        if (dateSolved != null) {
+            jsonObject.put(JSON_DATE_SOLVED, dateSolved);
+        }
 
         return jsonObject;
     }

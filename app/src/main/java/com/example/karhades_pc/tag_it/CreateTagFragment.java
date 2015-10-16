@@ -218,7 +218,7 @@ public class CreateTagFragment extends Fragment {
 
                     Uri fileUri = Uri.fromFile(file);
 
-                    // Camera Intent
+                    // Camera Intent.
                     Intent intent = new Intent();
                     intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
