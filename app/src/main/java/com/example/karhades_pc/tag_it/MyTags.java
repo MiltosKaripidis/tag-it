@@ -8,7 +8,9 @@ import com.example.karhades_pc.utils.PictureLoader;
 import com.example.karhades_pc.utils.AudioPlayer;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Karhades - PC on 4/14/2015.
@@ -141,6 +143,12 @@ public class MyTags {
         // Get tag from list and solve.
         NfcTag nfcTag = getNfcTag(tagId);
         nfcTag.setSolved(true);
+
+        // Format the Date into custom string.
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM (HH:mm:ss)");
+        String formattedDate = simpleDateFormat.format(date);
+        nfcTag.setDateSolved(formattedDate);
 
         // Play winning sound.
         // TODO: Uncomment the cheering sound.

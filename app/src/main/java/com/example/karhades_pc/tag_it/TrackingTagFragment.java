@@ -19,8 +19,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.karhades_pc.utils.PictureLoader;
 import com.example.karhades_pc.utils.FontCache;
+import com.example.karhades_pc.utils.PictureLoader;
 
 /**
  * Created by Karhades - PC on 4/14/2015.
@@ -34,6 +34,7 @@ public class TrackingTagFragment extends Fragment {
     private ImageView imageView;
     private TextView difficultyTextView;
     private CheckBox solvedCheckBox;
+    private TextView dateSolvedTextView;
     private Toolbar toolbar;
     private FloatingActionButton fullscreenActionButton;
 
@@ -86,14 +87,9 @@ public class TrackingTagFragment extends Fragment {
     private void updateUI() {
         difficultyTextView.setText(nfcTag.getDifficulty());
         solvedCheckBox.setChecked(nfcTag.isSolved());
-//        riddleTextView.setText(nfcTag.getText());
-//        if (nfcTag.getDateSolved() != null) {
-//            // Format the Date into human-readable text
-//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, MMMM dd, yyyy (HH:mm:ss)");
-//            Date date = nfcTag.getDateSolved();
-//            String formattedDate = simpleDateFormat.format(date);
-//            riddleDateSolvedTextView.setText(formattedDate);
-//        }
+        if (nfcTag.getDateSolved() != null) {
+            dateSolvedTextView.setText(nfcTag.getDateSolved());
+        }
     }
 
     private void startupAnimation() {
@@ -220,12 +216,12 @@ public class TrackingTagFragment extends Fragment {
         solvedCheckBox = (CheckBox) view.findViewById(R.id.tracking_solved_check_box);
 
         // NfcTag Date Label TextView.
-//        TextView riddleDateSolvedLabelTextView = (TextView) view.findViewById(R.id.riddle_date_solved_label_text_view);
-//        riddleDateSolvedLabelTextView.setTypeface(typefaceNormal);
-//
-//        // NfcTag Date Solved TextView.
-//        riddleDateSolvedTextView = (TextView) view.findViewById(R.id.date_solved_text_view);
-//        riddleDateSolvedTextView.setTypeface(typefaceNormal);
+        TextView dateSolvedLabelTextView = (TextView) view.findViewById(R.id.tracking_date_solved_label_text_view);
+        dateSolvedLabelTextView.setTypeface(typefaceNormal);
+
+        // NfcTag Date Solved TextView.
+        dateSolvedTextView = (TextView) view.findViewById(R.id.tracking_date_solved_text_view);
+        dateSolvedTextView.setTypeface(typefaceNormal);
     }
 
     private void enterFullScreen() {

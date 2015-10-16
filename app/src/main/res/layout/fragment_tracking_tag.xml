@@ -75,6 +75,7 @@
 
     <!--Solved-->
     <LinearLayout
+        android:id="@+id/solved_linear_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tracking_difficulty_linear_layout"
@@ -93,8 +94,31 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:button="@drawable/selector_solved_check_box"
-            android:enabled="false" />
+            android:enabled="false"
+            android:paddingTop="8dp" />
 
+    </LinearLayout>
+
+    <!--Date Solved-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/solved_linear_layout"
+        android:layout_marginLeft="30dp">
+
+        <TextView
+            android:id="@+id/tracking_date_solved_label_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date Solved:  \"
+            android:textSize="34sp" />
+
+        <TextView
+            android:id="@+id/tracking_date_solved_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N/A"
+            android:textSize="34sp" />
     </LinearLayout>
 
 </RelativeLayout>

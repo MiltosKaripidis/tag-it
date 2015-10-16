@@ -11,14 +11,16 @@ public class NfcTag {
     private static final String JSON_DIFFICULTY = "difficulty";
     private static final String JSON_TAG_ID = "tag_id";
     private static final String JSON_TITLE = "title";
-    private static final String JSON_PICTURE_FILE_PATH = "picture_file_name";
+    private static final String JSON_PICTURE_FILE_PATH = "picture_file_path";
     private static final String JSON_SOLVED = "solved";
+    private static final String JSON_DATE_SOLVED = "date_solved";
 
+    private String tagId;
     private String title;
+    private String pictureFilePath;
     private String difficulty;
     private boolean solved;
-    private String tagId;
-    private String pictureFilePath;
+    private String dateSolved;
 
     public NfcTag(String title, String difficulty, String tagId) {
         this.title = title;
@@ -39,6 +41,7 @@ public class NfcTag {
         title = jsonObject.getString(JSON_TITLE);
         pictureFilePath = jsonObject.getString(JSON_PICTURE_FILE_PATH);
         solved = jsonObject.getBoolean(JSON_SOLVED);
+        dateSolved = jsonObject.getString(JSON_DATE_SOLVED);
     }
 
     /**
@@ -55,6 +58,7 @@ public class NfcTag {
         jsonObject.put(JSON_TITLE, title);
         jsonObject.put(JSON_PICTURE_FILE_PATH, pictureFilePath);
         jsonObject.put(JSON_SOLVED, solved);
+        jsonObject.put(JSON_DATE_SOLVED, dateSolved);
 
         return jsonObject;
     }
@@ -99,8 +103,11 @@ public class NfcTag {
         this.tagId = tagId;
     }
 
-    @Override
-    public String toString() {
-        return title;
+    public String getDateSolved() {
+        return dateSolved;
+    }
+
+    public void setDateSolved(String dateSolved) {
+        this.dateSolved = dateSolved;
     }
 }
