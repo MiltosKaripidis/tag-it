@@ -41,7 +41,9 @@ public class NfcTag {
         title = jsonObject.getString(JSON_TITLE);
         pictureFilePath = jsonObject.getString(JSON_PICTURE_FILE_PATH);
         solved = jsonObject.getBoolean(JSON_SOLVED);
-        dateSolved = jsonObject.getString(JSON_DATE_SOLVED);
+        if (jsonObject.has(JSON_DATE_SOLVED)) {
+            dateSolved = jsonObject.getString(JSON_DATE_SOLVED);
+        }
     }
 
     /**
