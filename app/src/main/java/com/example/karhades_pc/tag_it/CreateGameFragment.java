@@ -175,7 +175,8 @@ public class CreateGameFragment extends Fragment {
     }
 
     /**
-     * Wraps the data set and creates views for individual items.
+     * Wraps the data set and creates views for individual items. It's the
+     * intermediate that sits between the RecyclerView and the data set.
      */
     private class NfcTagAdapter extends RecyclerView.Adapter<NfcTagHolder> {
 
