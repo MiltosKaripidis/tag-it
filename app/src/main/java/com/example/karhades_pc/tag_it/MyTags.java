@@ -2,16 +2,12 @@ package com.example.karhades_pc.tag_it;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.karhades_pc.utils.PictureLoader;
-import com.example.karhades_pc.utils.AudioPlayer;
 import com.example.karhades_pc.utils.TagJSONSerializer;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by Karhades - PC on 4/14/2015.
@@ -26,7 +22,6 @@ public class MyTags {
     private Context context;
 
     private ArrayList<NfcTag> nfcTags;
-    private AudioPlayer audioPlayer;
     private TagJSONSerializer serializer;
 
     private onListChangeListener onListChangeListener;
@@ -57,7 +52,6 @@ public class MyTags {
     private MyTags(Context context) {
         this.context = context;
         serializer = new TagJSONSerializer(this.context, FILENAME);
-        setupAudioPlayer();
 
         try {
             nfcTags = serializer.loadTags();
@@ -92,10 +86,6 @@ public class MyTags {
             Log.e(TAG, "Error saving tags: ", e);
             return false;
         }
-    }
-
-    private void setupAudioPlayer() {
-        audioPlayer = new AudioPlayer();
     }
 
     /**
@@ -133,30 +123,6 @@ public class MyTags {
             }
         }
         return null;
-    }
-
-    /**
-     * Solve the NfcTag with the given tag id.
-     *
-     * @param tagId The id of the NfcTag to solve.
-     */
-    public void solveNfcTag(String tagId) {
-        // Get tag from list and solve.
-        NfcTag nfcTag = getNfcTag(tagId);
-        nfcTag.setSolved(true);
-
-        // Format the Date into custom string.
-        Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM (HH:mm:ss)");
-        String formattedDate = simpleDateFormat.format(date);
-        nfcTag.setDateSolved(formattedDate);
-
-        // Play winning sound.
-        // TODO: Uncomment the cheering sound.
-        //audioPlayer.play(context, R.raw.cheering);
-
-        // Inform user.
-        Toast.makeText(context, "NfcTag " + nfcTag.getTitle() + " was successfully solved!", Toast.LENGTH_SHORT).show();
     }
 
     /**

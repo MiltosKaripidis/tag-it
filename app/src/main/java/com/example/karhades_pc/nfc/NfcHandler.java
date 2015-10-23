@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -22,6 +23,8 @@ import com.example.karhades_pc.tag_it.MyTags;
 import com.example.karhades_pc.tag_it.NfcTag;
 import com.example.karhades_pc.tag_it.TrackingTagFragment;
 import com.example.karhades_pc.tag_it.TrackingTagPagerActivity;
+
+import java.io.IOException;
 
 /**
  * Created by Karhades on 18-Aug-15.
@@ -169,14 +172,19 @@ public class NfcHandler {
      * @param intent The NFC intent to resolve the tag discovery type.
      */
     public void enableNfcReadTag(Intent intent) {
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
-            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            // NFC tag.
-            readFromTag(tag);
-        } else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction()) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
-            Toast.makeText(activity, "Nfc tag not registered!", Toast.LENGTH_SHORT).show();
+        try {
+            if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+                Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+                // NFC tag.
+                readFromTag(tag);
+            } else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction()) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
+                throw new TagIdNotRegisteredException("Nfc tag not registered!");
+            }
+        } catch (TagIdNotRegisteredException e) {
+            Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Log.e(TAG, "Error reading from tag. " + e.getMessage());
         }
-
     }
 
     /**
@@ -185,33 +193,26 @@ public class NfcHandler {
      * @param tag The tag that will be read.
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void readFromTag(Tag tag) {
-        try {
-            Ndef ndef = Ndef.get(tag);
-            ndef.connect();
-            NdefMessage ndefMessage = ndef.getNdefMessage();
-            NdefRecord ndefRecord = ndefMessage.getRecords()[0];
+    private void readFromTag(Tag tag) throws IOException, FormatException {
+        Ndef ndef = Ndef.get(tag);
+        ndef.connect();
+        NdefMessage ndefMessage = ndef.getNdefMessage();
+        NdefRecord ndefRecord = ndefMessage.getRecords()[0];
 
-            String mimeType = ndefRecord.toMimeType();
-            //Log.d(TAG, "MIME TYPE: " + mimeType);
+        String mimeType = ndefRecord.toMimeType();
+        //Log.d(TAG, "MIME TYPE: " + mimeType);
 
-            String payload = new String(ndefRecord.getPayload());
-            //Log.d(TAG, "Payload: " + payload);
+        String payload = new String(ndefRecord.getPayload());
+        //Log.d(TAG, "Payload: " + payload);
 
-            if (mimeType.equals(MIME_TYPE) && payload.equals("tag")) {
-                String tagId = ByteArrayToHexString(tag.getId());
-                //Log.d(TAG, "NfcTag ID: " + tagId);
+        if (mimeType.equals(MIME_TYPE) && payload.equals("tag")) {
+            String tagId = ByteArrayToHexString(tag.getId());
+            //Log.d(TAG, "NfcTag ID: " + tagId);
 
-                // Start the solved activity.
-                startActivityFromNFC(tagId);
-
-                // Solve the Nfc Tag.
-                MyTags.get(activity).solveNfcTag(tagId);
-            } else {
-                Toast.makeText(activity, "Nfc NfcTag not registered!", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error reading from tag. " + e.getMessage());
+            // Start the solved activity.
+            startActivityFromNFC(tagId);
+        } else {
+            throw new TagIdNotRegisteredException("Nfc tag not registered!");
         }
     }
 
@@ -227,12 +228,13 @@ public class NfcHandler {
         if (nfcTag != null) {
             // Create an Intent and send the extra discovered NfcTag ID and
             // another extra to indicate that it's from the NFC discovery.
-            Intent intentTagId = new Intent(activity, TrackingTagPagerActivity.class);
-            intentTagId.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            intentTagId.putExtra(TrackingTagFragment.EXTRA_TAG_ID, tagId);
-            activity.startActivity(intentTagId);
+            Intent intent = new Intent(activity, TrackingTagPagerActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, tagId);
+            intent.putExtra(TrackingTagFragment.EXTRA_TAG_DISCOVERED, true);
+            activity.startActivity(intent);
         } else {
-            Toast.makeText(activity, "Nfc NfcTag not registered!", Toast.LENGTH_SHORT).show();
+            throw new TagIdNotRegisteredException("Nfc tag not registered!");
         }
     }
 
@@ -273,17 +275,17 @@ public class NfcHandler {
      *
      * @param intent The NFC intent to resolve the tag discovery type.
      */
-    public void enableNfcWriteTag(Intent intent) {
+    public boolean enableNfcWriteTag(Intent intent) {
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())
                 || NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())
                 || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
             if (writeMode) {
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                 writeToTag(tag);
-            } else {
-                Toast.makeText(activity, "Press the \"TAG IT!\" button to write! ", Toast.LENGTH_SHORT).show();
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -293,17 +295,8 @@ public class NfcHandler {
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void writeToTag(Tag tag) {
-        byte[] payload = "tag".getBytes();
-
-        NdefRecord ndefRecord = NdefRecord.createMime(MIME_TYPE, payload);
-        NdefMessage ndefMessage = new NdefMessage(ndefRecord);
-
-        Ndef ndef = Ndef.get(tag);
-
         try {
-            ndef.connect();
-            ndef.writeNdefMessage(ndefMessage);
-
+            // Get discovered tag id.
             String tagId = ByteArrayToHexString(tag.getId());
 
             // If it's a new tag.
@@ -313,9 +306,28 @@ public class NfcHandler {
 
                 // If NFC tag exists, don't create another one.
                 if (nfcTag != null) {
-                    throw new TagIdExistsException("TagId already exists.");
+                    throw new TagIdExistsException("Nfc tag already exists!");
                 }
             }
+            // If it exists.
+            else if (mode == Mode.OVERWRITE) {
+                // DO NOTHING.
+            }
+
+            /* START WRITING */
+            byte[] payload = "tag".getBytes();
+
+            // Encapsulate a NdefRecord inside a NdefMessage.
+            NdefRecord ndefRecord = NdefRecord.createMime(MIME_TYPE, payload);
+            NdefMessage ndefMessage = new NdefMessage(ndefRecord);
+
+            // Get an interface to connect with NFC tag.
+            Ndef ndef = Ndef.get(tag);
+
+            // Connect and write data to NFC tag.
+            ndef.connect();
+            ndef.writeNdefMessage(ndefMessage);
+
             Log.d(TAG, "Write to tag was successful!");
 
             // Set STATUS_OK.
@@ -324,7 +336,7 @@ public class NfcHandler {
             Log.e(TAG, "Error when writing NdefMessage to NfcTag. " + e.getMessage());
 
             // Inform user.
-            Toast.makeText(activity, "Nfc tag already exists!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
 
             // Set STATUS_ERROR.
             onTagWriteListener.onTagWritten(OnTagWriteListener.STATUS_ERROR, null);
@@ -367,6 +379,12 @@ public class NfcHandler {
 
     public class TagIdExistsException extends RuntimeException {
         TagIdExistsException(String message) {
+            super(message);
+        }
+    }
+
+    public class TagIdNotRegisteredException extends RuntimeException {
+        TagIdNotRegisteredException(String message) {
             super(message);
         }
     }

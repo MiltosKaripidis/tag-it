@@ -1,22 +1,24 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
 
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/create_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingBottom="48dp"
+        android:paddingBottom="8dp"
         android:scrollbars="vertical" />
 
     <LinearLayout
         android:id="@+id/create_empty_linear_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerInParent="true"
+        android:gravity="center"
         android:orientation="vertical"
         android:visibility="invisible">
 
@@ -53,11 +55,12 @@
         android:id="@+id/add_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:src="@mipmap/add"
         android:visibility="invisible"
-        app:backgroundTint="@color/accent" />
-</RelativeLayout>
+        app:backgroundTint="@color/accent"
+        app:layout_anchor="@id/coordinator_layout"
+        app:layout_anchorGravity="bottom|right" />
+
+</android.support.design.widget.CoordinatorLayout>

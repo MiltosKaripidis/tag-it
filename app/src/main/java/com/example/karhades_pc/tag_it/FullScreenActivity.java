@@ -1,7 +1,6 @@
 package com.example.karhades_pc.tag_it;
 
 import android.app.Activity;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -39,9 +38,7 @@ public class FullScreenActivity extends Activity {
     }
 
     private void toggleSystemUI() {
-        if (Build.VERSION.SDK_INT >= 16) {
-            // Full screen | Hide navigation bar.
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        }
+        // Full screen | Hide navigation bar.
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
     }
 }

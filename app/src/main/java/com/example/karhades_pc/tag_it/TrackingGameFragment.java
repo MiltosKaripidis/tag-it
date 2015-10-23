@@ -1,5 +1,6 @@
 package com.example.karhades_pc.tag_it;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -15,8 +16,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.karhades_pc.utils.PictureLoader;
 import com.example.karhades_pc.utils.FontCache;
+import com.example.karhades_pc.utils.PictureLoader;
 
 import java.util.ArrayList;
 
@@ -94,7 +95,13 @@ public class TrackingGameFragment extends Fragment {
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), TrackingTagPagerActivity.class);
                     intent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
-                    startActivity(intent);
+                    intent.putExtra(TrackingTagPagerActivity.EXTRA_CURRENT_ITEM_POSITION, getAdapterPosition());
+
+                    if (Build.VERSION.SDK_INT >= 21) {
+                        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), imageView, imageView.getTransitionName())
+                                .toBundle();
+                        getActivity().startActivity(intent, bundle);
+                    }
                 }
             });
 
@@ -115,6 +122,11 @@ public class TrackingGameFragment extends Fragment {
 
         public void bindRiddle(NfcTag nfcTag) {
             this.nfcTag = nfcTag;
+
+            if (Build.VERSION.SDK_INT >= 21) {
+                imageView.setTransitionName(nfcTag.getTagId());
+                imageView.setTag(nfcTag.getTagId());
+            }
 
             PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
 

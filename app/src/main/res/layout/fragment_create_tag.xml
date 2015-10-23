@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/create_main_relative_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
@@ -20,7 +21,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
     <FrameLayout
-        android:id="@+id/frame_layout"
+        android:id="@+id/create_title_frame_layout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_below="@+id/create_image_view"
@@ -34,7 +35,7 @@
             android:layout_gravity="center|left"
             android:text="@string/tag_details_label"
             android:textColor="@android:color/white"
-            android:textSize="24sp" />
+            android:textSize="34sp" />
     </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -49,58 +50,64 @@
         android:visibility="invisible"
         app:backgroundTint="@color/accent" />
 
-    <!--Difficulty-->
-    <LinearLayout
-        android:id="@+id/create_difficulty_linear_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/frame_layout"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="14dp">
+    <RelativeLayout
+        android:id="@+id/create_content_relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/create_title_frame_layout"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp">
 
-        <TextView
-            android:id="@+id/create_difficulty_label_text_view"
+        <!--Difficulty-->
+        <LinearLayout
+            android:id="@+id/create_difficulty_linear_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/create_difficulty_label_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tag_difficulty"
+                android:textSize="16sp" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <!-- Buttons-->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tag_difficulty"
-            android:textSize="16sp" />
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true">
 
-        <Spinner
-            android:id="@+id/spinner"
-            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/cancel_button"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@drawable/selector_raised_button_secondary"
+                android:text="CANCEL"
+                android:textColor="@android:color/black" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/tag_it_button"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@drawable/selector_raised_button"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="Tag it!"
+                android:textColor="@android:color/white" />
 
-    <!-- Buttons-->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="64dp"
-        android:layout_marginRight="16dp">
-
-        <Button
-            android:id="@+id/cancel_button"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:background="@drawable/selector_raised_button_secondary"
-            android:text="CANCEL"
-            android:textColor="@android:color/black" />
-
-        <Button
-            android:id="@+id/tag_it_button"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:background="@drawable/selector_raised_button"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:text="Tag it!"
-            android:textColor="@android:color/white" />
-
-    </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

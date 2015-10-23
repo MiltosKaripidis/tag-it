@@ -1,18 +1,21 @@
 package com.example.karhades_pc.tag_it;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.example.karhades_pc.contextual_action_bar.MaterialCab;
 import com.example.karhades_pc.nfc.NfcHandler;
@@ -22,14 +25,17 @@ import com.example.karhades_pc.sliding_tab_layout.SlidingTabLayout;
  * Created by Karhades on 20-Aug-15.
  */
 public class MainActivity extends AppCompatActivity {
+
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
     private ViewPager viewPager;
     private Toolbar toolbar;
     private SlidingTabLayout slidingTabLayout;
-    private FrameLayout statusBar;
     private MaterialCab materialCab;
 
     private NfcHandler nfcHandler;
     private int pagePosition = 0;
+    private Bundle bundle;
 
     private static OnContextActivityListener onContextActivityListener;
 
@@ -46,26 +52,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
-        statusBar = (FrameLayout) findViewById(R.id.main_status_bar);
-
         setupNFC();
+        setupNavigationDrawer();
         setupToolbar();
         setupTabMenu();
         setupContextualActionBar();
-        setUpNavigationDrawer();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
+        nfcHandler.disableForegroundDispatch();
+
         // Save the tags to a file.
         MyTags.get(this).saveTags();
-
-        nfcHandler.disableForegroundDispatch();
 
         // If Contextual Action Bar is enabled, close it.
         if (materialCab != null && materialCab.isActive()) {
@@ -80,9 +83,9 @@ public class MainActivity extends AppCompatActivity {
         if (pagePosition == 0) {
             nfcHandler.enableNfcReadTag(intent);
         } else if (pagePosition == 1) {
-            Toast.makeText(this, "Share game tab!", Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.navigation_drawer_layout), "Share game tab!", Snackbar.LENGTH_LONG).show();
         } else {
-            Toast.makeText(this, "Click the + button or overwrite an existing NFC tag.", Toast.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.coordinator_layout), "Click the + button to create a new one.", Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -94,12 +97,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onActivityReenter(int resultCode, Intent data) {
+        Log.d("MainActivity", "onActivityReenter called!");
+        super.onActivityReenter(resultCode, data);
+
+        bundle = new Bundle(data.getExtras());
+        int oldPosition = bundle.getInt(TrackingTagPagerActivity.EXTRA_OLD_ITEM_POSITION);
+        int currentPosition = bundle.getInt(TrackingTagPagerActivity.EXTRA_OLD_ITEM_POSITION);
+
+        if (oldPosition != currentPosition) {
+
+        }
+    }
+
+    @Override
     public void onBackPressed() {
-        if (materialCab != null && materialCab.isActive()) {
+        if (drawerLayout.isDrawerOpen(navigationView)) {
+            drawerLayout.closeDrawer(navigationView);
+        }
+        else if (materialCab != null && materialCab.isActive()) {
             disableContextBar();
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(navigationView);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void disableContextBar() {
@@ -113,10 +143,20 @@ public class MainActivity extends AppCompatActivity {
         nfcHandler.enableNfcReadTag(getIntent());
     }
 
+    private void setupNavigationDrawer() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.navigation_drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+    }
+
     private void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.main_tool_bar);
         // Substitute the action bar for this toolbar.
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(getResources().getDrawable(R.mipmap.hamburger_menu));
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void setupTabMenu() {
@@ -137,9 +177,9 @@ public class MainActivity extends AppCompatActivity {
                         return new ShareGameFragment();
                     case 2:
                         return new CreateGameFragment();
+                    default:
+                        return null;
                 }
-
-                return null;
             }
 
             @Override
@@ -152,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 return tabNames[position];
             }
         });
+
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tab_layout);
         slidingTabLayout.setDistributeEvenly(true);
         slidingTabLayout.setViewPager(viewPager);
@@ -249,9 +290,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @TargetApi(21)
     private void changeBarThemeColor(boolean isVisible) {
         if (isVisible) {
-            statusBar.setBackgroundColor(getResources().getColor(R.color.primary_dark));
+            getWindow().setStatusBarColor(getResources().getColor(R.color.primary_dark));
+            getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
 
             slidingTabLayout.setTextViewActivated(false, 2);
             slidingTabLayout.setBackgroundColor(getResources().getColor(R.color.primary));
@@ -262,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } else {
-            statusBar.setBackgroundColor(getResources().getColor(R.color.accent_dark));
+            getWindow().setStatusBarColor(getResources().getColor(R.color.accent_dark));
 
             slidingTabLayout.setTextViewActivated(true, 2);
             slidingTabLayout.setBackgroundColor(getResources().getColor(R.color.accent));
@@ -273,11 +316,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-    }
-
-    private void setUpNavigationDrawer() {
-        NavigationDrawerFragment fragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer_fragment);
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.navigation_drawer_layout);
-        fragment.setUp(drawerLayout, toolbar);
     }
 }

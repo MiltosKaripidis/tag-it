@@ -6,11 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
@@ -152,8 +152,7 @@ public class CreateTagFragment extends Fragment {
 
         // Load the picture taken.
         if (temporaryPictureFilename != null) {
-            PictureLoader.loadBitmapWithPicasso(getActivity(), temporaryPictureFilename, imageView);
-            PictureLoader.invalidateWithPicasso(getActivity(), temporaryPictureFilename);
+            PictureLoader.loadBitmapWithPicassoNoCache(getActivity(), temporaryPictureFilename, imageView);
         } else if (currentNfcTag != null) {
             PictureLoader.loadBitmapWithPicasso(getActivity(), currentNfcTag.getPictureFilePath(), imageView);
         }
@@ -213,27 +212,17 @@ public class CreateTagFragment extends Fragment {
         cameraActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isExternalStorageWritable()) {
-                    File file = createExternalStoragePrivateFile();
+                File file = createExternalStoragePrivateFile();
 
-                    Uri fileUri = Uri.fromFile(file);
+                Uri fileUri = Uri.fromFile(file);
 
-                    // Camera Intent.
-                    Intent intent = new Intent();
-                    intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                    startActivityForResult(intent, REQUEST_IMAGE);
-                } else {
-                    Toast.makeText(getActivity(), "External Storage is unmounted!", Toast.LENGTH_SHORT).show();
-                }
+                // Camera Intent.
+                Intent intent = new Intent();
+                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                startActivityForResult(intent, REQUEST_IMAGE);
             }
         });
-    }
-
-    private boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-
-        return Environment.MEDIA_MOUNTED.equals(state);
     }
 
     private File createExternalStoragePrivateFile() {
@@ -314,7 +303,7 @@ public class CreateTagFragment extends Fragment {
 
         // If it's a new tag and there's no picture taken.
         if (currentNfcTag == null && temporaryPictureFilename == null) {
-            Toast.makeText(getActivity(), "Tap the camera button first.", Toast.LENGTH_SHORT).show();
+            Snackbar.make(getView(), "Tap the camera button first.", Snackbar.LENGTH_LONG).show();
             return;
         }
 
@@ -438,5 +427,9 @@ public class CreateTagFragment extends Fragment {
 
             NfcHandler.toggleTagWriteMode(false);
         }
+    }
+
+    public void makeSnackbar() {
+        Snackbar.make(getView(), "Press the \"TAG IT!\" button to write! ", Snackbar.LENGTH_LONG).show();
     }
 }

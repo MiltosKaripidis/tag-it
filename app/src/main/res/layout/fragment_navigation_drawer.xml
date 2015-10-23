@@ -2,12 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
+    android:background="@android:color/white"
     tools:context="com.example.karhades_pc.tag_it.NavigationDrawerFragment">
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="210dp"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/icon_illidan" />
 
 </FrameLayout>

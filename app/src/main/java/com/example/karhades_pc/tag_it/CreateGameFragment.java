@@ -26,8 +26,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.karhades_pc.utils.PictureLoader;
 import com.example.karhades_pc.utils.FontCache;
+import com.example.karhades_pc.utils.PictureLoader;
 
 import java.util.ArrayList;
 
@@ -112,7 +112,7 @@ public class CreateGameFragment extends Fragment {
                 // the bigger the dy.
                 if (dy > 0) {
                     addActionButton.hide();
-                } else if (dy < -15) {
+                } else {
                     addActionButton.show();
                 }
             }

@@ -3,6 +3,7 @@ package com.example.karhades_pc.utils;
 import android.content.Context;
 import android.widget.ImageView;
 
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -16,17 +17,15 @@ public class PictureLoader {
         Picasso.with(context).invalidate(new File(filePath));
     }
 
-    public static void loadBitmapWithPicasso(final Context context, final String filePath, final ImageView imageView) {
+    public static void loadBitmapWithPicasso(Context context, final String filePath, final ImageView imageView) {
+        Picasso.with(context).load(new File(filePath)).fit().centerInside().into(imageView);
+    }
 
-        // Run on a new Thread to let the ImageView calculate it's size on the screen.
-        imageView.post(new Runnable() {
-            @Override
-            public void run() {
-                Picasso.with(context).load(new File(filePath))
-                        .resize(imageView.getWidth(), imageView.getHeight())
-                        .centerInside()
-                        .into(imageView);
-            }
-        });
+    public static void loadBitmapWithPicassoNoCache(Context context, final String filePath, final ImageView imageView) {
+        Picasso.with(context).load(new File(filePath))
+                .fit()
+                .centerInside()
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                .into(imageView);
     }
 }

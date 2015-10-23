@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tracking_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
@@ -10,6 +11,17 @@
         android:layout_height="300dp"
         android:scaleType="centerCrop" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/full_screen_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/tracking_image_view"
+        android:layout_alignRight="@id/tracking_image_view"
+        android:layout_marginBottom="-27dp"
+        android:layout_marginRight="16dp"
+        android:src="@mipmap/fullscreen"
+        app:backgroundTint="@color/accent" />
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/tracking_tool_bar"
         android:layout_width="match_parent"
@@ -19,7 +31,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
     <FrameLayout
-        android:id="@+id/frame_layout"
+        android:id="@+id/tracking_title_frame_layout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_below="@+id/tracking_image_view"
@@ -36,89 +48,17 @@
             android:textSize="34dp" />
     </FrameLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/full_screen_action_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/tracking_image_view"
-        android:layout_alignRight="@id/tracking_image_view"
-        android:layout_marginBottom="-27dp"
-        android:layout_marginRight="16dp"
-        android:src="@mipmap/fullscreen"
-        android:visibility="invisible"
-        app:backgroundTint="@color/accent" />
-
-    <!--Difficulty-->
     <LinearLayout
-        android:id="@+id/tracking_difficulty_linear_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/frame_layout"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="16dp">
+        android:id="@+id/tracking_root_scene_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tracking_title_frame_layout"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingTop="8dp">
 
-        <TextView
-            android:id="@+id/tracking_difficulty_label_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tag_difficulty"
-            android:textSize="34sp" />
+        <include layout="@layout/fragment_tracking_tag_scene_1" />
 
-        <TextView
-            android:id="@+id/tracking_difficulty_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/accent"
-            android:textSize="34sp" />
-
-    </LinearLayout>
-
-    <!--Solved-->
-    <LinearLayout
-        android:id="@+id/solved_linear_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tracking_difficulty_linear_layout"
-        android:layout_marginLeft="30dp">
-
-        <TextView
-            android:id="@+id/tracking_solved_label_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tag_solved"
-            android:textSize="34sp" />
-
-        <CheckBox
-            android:id="@+id/tracking_solved_check_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:button="@drawable/selector_solved_check_box"
-            android:enabled="false"
-            android:paddingTop="8dp" />
-
-    </LinearLayout>
-
-    <!--Date Solved-->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/solved_linear_layout"
-        android:layout_marginLeft="30dp">
-
-        <TextView
-            android:id="@+id/tracking_date_solved_label_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Date Solved:  \"
-            android:textSize="34sp" />
-
-        <TextView
-            android:id="@+id/tracking_date_solved_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="N/A"
-            android:textSize="34sp" />
     </LinearLayout>
 
 </RelativeLayout>
