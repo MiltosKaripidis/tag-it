@@ -10,7 +10,10 @@ import org.json.JSONException;
 import org.json.JSONTokener;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,7 +42,7 @@ public class TagJSONSerializer {
      * @throws JSONException
      * @throws IOException
      */
-    public void saveTags(ArrayList<NfcTag> nfcTags) throws JSONException, IOException {
+    public void saveTagsInternal(ArrayList<NfcTag> nfcTags) throws JSONException, IOException {
         // Build an array in JSON.
         JSONArray jsonArray = new JSONArray();
 
@@ -67,7 +70,7 @@ public class TagJSONSerializer {
      * @throws IOException
      * @throws JSONException
      */
-    public ArrayList<NfcTag> loadTags() throws IOException, JSONException {
+    public ArrayList<NfcTag> loadTagsInternal() throws IOException, JSONException {
         ArrayList<NfcTag> tags = new ArrayList<>();
 
         BufferedReader bufferedReader = null;
@@ -76,6 +79,61 @@ public class TagJSONSerializer {
             // Open the file and create an input stream.
             InputStream inputStream = context.openFileInput(filename);
             bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+            // Create a StringBuilder, read each line of the file
+            // and append it.
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+
+            // Parse the JSON String and return a JSONArray.
+            JSONArray jsonArray = (JSONArray) new JSONTokener(stringBuilder.toString()).nextValue();
+
+            // Build the array of tags from JSONObjects.
+            for (int i = 0; i < jsonArray.length(); i++) {
+                tags.add(new NfcTag(jsonArray.getJSONObject(i)));
+            }
+
+        } catch (FileNotFoundException e) {
+            Log.e("TagJSONSerializer", "File not found!", e);
+        } finally {
+            if (bufferedReader != null)
+                bufferedReader.close();
+        }
+
+        return tags;
+    }
+
+    public void saveTagsExternal(ArrayList<NfcTag> nfcTags) throws JSONException, IOException {
+        // Build an array in JSON.
+        JSONArray jsonArray = new JSONArray();
+
+        // Put each NfcTag to the JSONArray.
+        for (NfcTag nfcTag : nfcTags) {
+            jsonArray.put(nfcTag.toJSON());
+        }
+
+        File file = new File(context.getExternalFilesDir(null) + File.separator + "tags.txt");
+
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        fileOutputStream.write(jsonArray.toString().getBytes());
+        fileOutputStream.close();
+    }
+
+    public ArrayList<NfcTag> loadTagsExternal() throws IOException, JSONException {
+
+        ArrayList<NfcTag> tags = new ArrayList<>();
+
+        BufferedReader bufferedReader = null;
+
+        try {
+            File file = new File(context.getExternalFilesDir(null) + File.separator + "tags.txt");
+
+            FileInputStream fileInputStream = new FileInputStream(file);
+
+            bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
             // Create a StringBuilder, read each line of the file
             // and append it.

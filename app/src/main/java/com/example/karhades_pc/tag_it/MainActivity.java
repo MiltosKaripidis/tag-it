@@ -80,10 +80,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
+        nfcHandler.handleAndroidBeamReceivedFiles(intent);
+
         if (pagePosition == 0) {
             nfcHandler.enableNfcReadTag(intent);
         } else if (pagePosition == 1) {
-            Snackbar.make(findViewById(R.id.navigation_drawer_layout), "Share game tab!", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.navigation_drawer_layout), "Approach the devices to share game.", Snackbar.LENGTH_LONG).show();
         } else {
             Snackbar.make(findViewById(R.id.coordinator_layout), "Click the + button to create a new one.", Snackbar.LENGTH_LONG).show();
         }
@@ -114,8 +116,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(navigationView)) {
             drawerLayout.closeDrawer(navigationView);
-        }
-        else if (materialCab != null && materialCab.isActive()) {
+        } else if (materialCab != null && materialCab.isActive()) {
             disableContextBar();
         } else {
             super.onBackPressed();
@@ -141,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
         nfcHandler = new NfcHandler();
         nfcHandler.setupNfcHandler(this);
         nfcHandler.enableNfcReadTag(getIntent());
+        nfcHandler.enableAndroidBeamShareFiles();
+        nfcHandler.handleAndroidBeamReceivedFiles(getIntent());
     }
 
     private void setupNavigationDrawer() {

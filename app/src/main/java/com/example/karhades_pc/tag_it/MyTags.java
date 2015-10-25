@@ -1,6 +1,7 @@
 package com.example.karhades_pc.tag_it;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.example.karhades_pc.utils.PictureLoader;
@@ -54,7 +55,7 @@ public class MyTags {
         serializer = new TagJSONSerializer(this.context, FILENAME);
 
         try {
-            nfcTags = serializer.loadTags();
+            nfcTags = serializer.loadTagsExternal();
             Log.d(TAG, "Nfc Tags were loaded!");
         } catch (Exception e) {
             nfcTags = new ArrayList<>();
@@ -79,7 +80,7 @@ public class MyTags {
      */
     public boolean saveTags() {
         try {
-            serializer.saveTags(nfcTags);
+            serializer.saveTagsExternal(nfcTags);
             Log.d(TAG, "Tags saved to file!");
             return true;
         } catch (Exception e) {
@@ -108,6 +109,10 @@ public class MyTags {
      */
     public ArrayList<NfcTag> getNfcTags() {
         return nfcTags;
+    }
+
+    public void setNfcTags(ArrayList<NfcTag> nfcTags) {
+        this.nfcTags = nfcTags;
     }
 
     /**
@@ -173,5 +178,34 @@ public class MyTags {
             nfcTag.setTitle("Tag " + title);
             title++;
         }
+    }
+
+    /**
+     * Create a Uri array with the uris of the tags.txt and the pictures
+     * associated with every NfcTag object.
+     *
+     * @return Return the Uri array containing the uris of tags.json and
+     * the images.
+     */
+    public Uri[] createFileUrisArray() {
+        // First, save any changes of the tags into the model.
+        saveTags();
+
+        Uri[] fileUris = new Uri[nfcTags.size() + 1];
+
+        // tags.json file.
+        File tagsFile = new File(context.getExternalFilesDir(null) + File.separator + "tags.txt");
+        tagsFile.setReadable(true, false);
+        fileUris[0] = Uri.fromFile(tagsFile);
+
+        // Picture file paths.
+        for (int i = 0; i < nfcTags.size(); i++) {
+            File file = new File(nfcTags.get(i).getPictureFilePath());
+            file.setReadable(true, false);
+            Uri uri = Uri.fromFile(file);
+            fileUris[i + 1] = uri;
+        }
+
+        return fileUris;
     }
 }

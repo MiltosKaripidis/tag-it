@@ -117,7 +117,7 @@ public class CreateTagFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (cameraActionButton.getVisibility() == View.INVISIBLE) {
+                if (!cameraActionButton.isShown()) {
                     cameraActionButton.show();
                 }
             }

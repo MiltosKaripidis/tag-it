@@ -167,7 +167,7 @@ public class CreateGameFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (addActionButton.getVisibility() == View.INVISIBLE) {
+                if (!addActionButton.isShown()) {
                     addActionButton.show();
                 }
             }
