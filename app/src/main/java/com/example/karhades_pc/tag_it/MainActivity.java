@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -19,7 +20,6 @@ import android.view.MenuItem;
 
 import com.example.karhades_pc.contextual_action_bar.MaterialCab;
 import com.example.karhades_pc.nfc.NfcHandler;
-import com.example.karhades_pc.sliding_tab_layout.SlidingTabLayout;
 
 /**
  * Created by Karhades on 20-Aug-15.
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private ViewPager viewPager;
     private Toolbar toolbar;
-    private SlidingTabLayout slidingTabLayout;
+    private TabLayout tabLayout;
     private MaterialCab materialCab;
 
     private NfcHandler nfcHandler;
@@ -57,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
         setupNFC();
         setupNavigationDrawer();
         setupToolbar();
-        setupTabMenu();
+        setupTabLayout();
+        setupViewPager();
         setupContextualActionBar();
     }
 
@@ -162,10 +163,35 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setupTabMenu() {
-        // Tab names.
-        final String[] tabNames = {"TRACKING", "SHARE", "CREATE"};
+    private void setupTabLayout() {
+        tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("TRACKING"));
+        tabLayout.addTab(tabLayout.newTab().setText("SHARE"));
+        tabLayout.addTab(tabLayout.newTab().setText("CREATE"));
+        tabLayout.setTabTextColors(getResources().getColorStateList(R.color.tab_selector));
+        tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                pagePosition = tab.getPosition();
+                if (materialCab != null && materialCab.isActive() && tab.getPosition() != 2) {
+                    disableContextBar();
+                }
+            }
 
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // DO NOTHING.
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // DO NOTHING.
+            }
+        });
+    }
+
+    private void setupViewPager() {
         // The FragmentManager is needed for the view pager.
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -189,42 +215,8 @@ public class MainActivity extends AppCompatActivity {
             public int getCount() {
                 return 3;
             }
-
-            @Override
-            public CharSequence getPageTitle(int position) {
-                return tabNames[position];
-            }
         });
-
-        slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tab_layout);
-        slidingTabLayout.setDistributeEvenly(true);
-        slidingTabLayout.setViewPager(viewPager);
-        // Slider color.
-        slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-            @Override
-            public int getIndicatorColor(int position) {
-                return getResources().getColor(R.color.accent);
-            }
-        });
-        slidingTabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                // DO NOTHING.
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                pagePosition = position;
-                if (materialCab != null && materialCab.isActive() && position != 2) {
-                    disableContextBar();
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                // DO NOTHING.
-            }
-        });
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
 
     private void setupContextualActionBar() {
@@ -299,25 +291,15 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.primary_dark));
             getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
 
-            slidingTabLayout.setTextViewActivated(false, 2);
-            slidingTabLayout.setBackgroundColor(getResources().getColor(R.color.primary));
-            slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-                @Override
-                public int getIndicatorColor(int position) {
-                    return getResources().getColor(R.color.accent);
-                }
-            });
+            tabLayout.setTabTextColors(getResources().getColorStateList(R.color.tab_selector));
+            tabLayout.setBackgroundColor(getResources().getColor(R.color.primary));
+            tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
         } else {
             getWindow().setStatusBarColor(getResources().getColor(R.color.accent_dark));
 
-            slidingTabLayout.setTextViewActivated(true, 2);
-            slidingTabLayout.setBackgroundColor(getResources().getColor(R.color.accent));
-            slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-                @Override
-                public int getIndicatorColor(int position) {
-                    return getResources().getColor(R.color.primary);
-                }
-            });
+            tabLayout.setTabTextColors(getResources().getColorStateList(R.color.tab_selector_context));
+            tabLayout.setBackgroundColor(getResources().getColor(R.color.accent));
+            tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.primary));
         }
     }
 }

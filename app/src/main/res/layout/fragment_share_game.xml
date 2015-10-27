@@ -4,6 +4,16 @@
     android:background="@color/background"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="32dp"
+        android:text="Approach devices to share a created game."
+        android:textSize="24sp" />
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

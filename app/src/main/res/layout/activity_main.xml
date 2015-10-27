@@ -28,13 +28,12 @@
                 android:layout_height="?actionBarSize" />
         </FrameLayout>
 
-        <com.example.karhades_pc.sliding_tab_layout.SlidingTabLayout
-            android:id="@+id/sliding_tab_layout"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/main_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/primary"
-            android:elevation="10dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+            android:elevation="10dp" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/main_view_pager"
