@@ -53,19 +53,26 @@ public class CreateGameFragment extends Fragment {
     private FloatingActionButton addActionButton;
     private LinearLayout emptyLinearLayout;
 
-    private static OnContextFragmentListener onContextFragmentListener;
-
-    public static void setOnContextFragmentListener(OnContextFragmentListener newOnContextFragmentListener) {
-        onContextFragmentListener = newOnContextFragmentListener;
-    }
+    private OnContextualActionBarEnterListener onContextualActionBarEnterListener;
 
     /**
-     * TODO
+     * Interface definition for a callback to be invoked when
+     * the fragment enters contextual mode.
      */
-    public interface OnContextFragmentListener {
+    public interface OnContextualActionBarEnterListener {
         void onItemLongClicked();
 
         void onItemClicked(int tagsSelected);
+    }
+
+    /**
+     * Register a callback to be invoked when the fragment
+     * enters contextual mode.
+     *
+     * @param onContextualActionBarEnterListener The callback that will run.
+     */
+    public void setOnContextualActionBarEnterListener(OnContextualActionBarEnterListener onContextualActionBarEnterListener) {
+        this.onContextualActionBarEnterListener = onContextualActionBarEnterListener;
     }
 
     @Override
@@ -174,6 +181,33 @@ public class CreateGameFragment extends Fragment {
         }, 750);
     }
 
+    public void contextDeleteSelectedItems() {
+        NfcTagAdapter adapter = (NfcTagAdapter) recyclerView.getAdapter();
+        adapter.deleteSelectedItems();
+
+        reorderNfcTags();
+
+        // Inform user.
+        Toast.makeText(getActivity(), "Items deleted", Toast.LENGTH_SHORT).show();
+    }
+
+    public void contextSelectAll() {
+        NfcTagAdapter adapter = (NfcTagAdapter) recyclerView.getAdapter();
+        adapter.selectAll();
+    }
+
+    public void contextClearSelection() {
+        NfcTagAdapter adapter = (NfcTagAdapter) recyclerView.getAdapter();
+        adapter.clearSelection();
+    }
+
+    public void contextFinish() {
+        NfcTagAdapter adapter = (NfcTagAdapter) recyclerView.getAdapter();
+
+        adapter.setSelectionMode(false);
+        adapter.clearSelection();
+    }
+
     /**
      * Wraps the data set and creates views for individual items. It's the
      * intermediate that sits between the RecyclerView and the data set.
@@ -248,7 +282,7 @@ public class CreateGameFragment extends Fragment {
                     view.setActivated(true);
                 }
             }
-            onContextFragmentListener.onItemClicked(getSelectionSize());
+            onContextualActionBarEnterListener.onItemClicked(getSelectionSize());
         }
 
         public void clearSelection() {
@@ -260,7 +294,7 @@ public class CreateGameFragment extends Fragment {
                     view.setActivated(false);
                 }
             }
-            onContextFragmentListener.onItemClicked(getSelectionSize());
+            onContextualActionBarEnterListener.onItemClicked(getSelectionSize());
         }
 
         public int getSelectionSize() {
@@ -282,6 +316,7 @@ public class CreateGameFragment extends Fragment {
      * Holds all sub views that depend on the current item’s data.
      */
     private class NfcTagHolder extends RecyclerView.ViewHolder {
+
         private ImageView imageView;
         private TextView titleTextView;
         private TextView difficultyTextView;
@@ -290,6 +325,7 @@ public class CreateGameFragment extends Fragment {
         private NfcTag nfcTag;
         private NfcTagAdapter adapter;
 
+        @SuppressWarnings("deprecation")
         public NfcTagHolder(final View view) {
             super(view);
 
@@ -317,42 +353,13 @@ public class CreateGameFragment extends Fragment {
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    onContextFragmentListener.onItemLongClicked();
+                    onContextualActionBarEnterListener.onItemLongClicked();
 
                     // Enable selection mode.
                     adapter.setSelectionMode(true);
 
                     // Toggle selected view.
                     selectItem(view);
-
-                    // Listen for MainActivity's events.
-                    MainActivity.setOnContextActivityListener(new MainActivity.OnContextActivityListener() {
-                        @Override
-                        public void onMenuItemPressed(int id) {
-                            switch (id) {
-                                case R.id.context_bar_delete_item:
-                                    adapter.deleteSelectedItems();
-
-                                    reorderNfcTags();
-
-                                    // Inform user.
-                                    Toast.makeText(getActivity(), "Items deleted", Toast.LENGTH_SHORT).show();
-                                    break;
-                                case R.id.context_bar_select_all_item:
-                                    adapter.selectAll();
-                                    break;
-                                case R.id.context_bar_clear_selection_item:
-                                    adapter.clearSelection();
-                                    break;
-                            }
-                        }
-
-                        @Override
-                        public void onContextExited() {
-                            adapter.setSelectionMode(false);
-                            adapter.clearSelection();
-                        }
-                    });
 
                     return true;
                 }
@@ -389,7 +396,7 @@ public class CreateGameFragment extends Fragment {
             }
 
             adapter.toggleSelection(getAdapterPosition());
-            onContextFragmentListener.onItemClicked(adapter.getSelectionSize());
+            onContextualActionBarEnterListener.onItemClicked(adapter.getSelectionSize());
         }
 
         private void setupPopupWindow(View view) {
