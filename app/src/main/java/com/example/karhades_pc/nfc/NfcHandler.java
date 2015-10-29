@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.net.Uri;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
@@ -17,8 +16,6 @@ import android.nfc.tech.MifareUltralight;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NfcA;
 import android.os.Build;
-import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,7 +27,6 @@ import com.example.karhades_pc.tag_it.NfcTag;
 import com.example.karhades_pc.tag_it.TrackingTagFragment;
 import com.example.karhades_pc.tag_it.TrackingTagPagerActivity;
 import com.example.karhades_pc.utils.PictureLoader;
-import com.example.karhades_pc.utils.TagJSONSerializer;
 
 import java.io.File;
 import java.io.IOException;
@@ -244,58 +240,58 @@ public class NfcHandler {
         }
     }
 
-    /**
-     * Send small amount of data like URL, text, etc.
-     */
-    public void setupAndroidBeam() {
-        nfcAdapter.setNdefPushMessageCallback(new NfcAdapter.CreateNdefMessageCallback() {
-            @Override
-            public NdefMessage createNdefMessage(NfcEvent event) {
-                Log.d(TAG, "createNdefMessage called!");
-
-                byte[] payload = "Karhades".getBytes();
-
-                NdefRecord ndefRecord = NdefRecord.createMime(MIME_TYPE, payload);
-                NdefMessage ndefMessage = new NdefMessage(ndefRecord);
-
-                return ndefMessage;
-            }
-        }, activity);
-    }
-
-    /**
-     * Listen for an android beam intent call.
-     *
-     * @param intent The NFC intent to resolve the tag discovery type.
-     */
-    public void enableNfcAndroidBeam(Intent intent) {
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
-
-            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            // If it's from Android beam.
-            if (tag.getTechList()[0].equals("android.nfc.tech.Ndef")) {
-                readFromBeam(intent);
-            }
-        }
-    }
-
-    /**
-     * Read the data from the intent sent of android beam.
-     *
-     * @param intent The intent to resolve the raw data.
-     */
-    private void readFromBeam(Intent intent) {
-
-        // Get raw data from intent.
-        Parcelable[] rawData = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-        // Message sent during the beam.
-        NdefMessage ndefMessage = (NdefMessage) rawData[0];
-
-        // Create String from raw data.
-        String payload = new String(ndefMessage.getRecords()[0].getPayload());
-
-        Toast.makeText(activity, "Payload: " + payload, Toast.LENGTH_SHORT).show();
-    }
+//    /**
+//     * Send small amount of data like URL, text, etc.
+//     */
+//    public void setupAndroidBeam() {
+//        nfcAdapter.setNdefPushMessageCallback(new NfcAdapter.CreateNdefMessageCallback() {
+//            @Override
+//            public NdefMessage createNdefMessage(NfcEvent event) {
+//                Log.d(TAG, "createNdefMessage called!");
+//
+//                byte[] payload = "Karhades".getBytes();
+//
+//                NdefRecord ndefRecord = NdefRecord.createMime(MIME_TYPE, payload);
+//                NdefMessage ndefMessage = new NdefMessage(ndefRecord);
+//
+//                return ndefMessage;
+//            }
+//        }, activity);
+//    }
+//
+//    /**
+//     * Listen for an android beam intent call.
+//     *
+//     * @param intent The NFC intent to resolve the tag discovery type.
+//     */
+//    public void enableNfcAndroidBeam(Intent intent) {
+//        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+//
+//            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+//            // If it's from Android beam.
+//            if (tag.getTechList()[0].equals("android.nfc.tech.Ndef")) {
+//                readFromBeam(intent);
+//            }
+//        }
+//    }
+//
+//    /**
+//     * Read the data from the intent sent of android beam.
+//     *
+//     * @param intent The intent to resolve the raw data.
+//     */
+//    private void readFromBeam(Intent intent) {
+//
+//        // Get raw data from intent.
+//        Parcelable[] rawData = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+//        // Message sent during the beam.
+//        NdefMessage ndefMessage = (NdefMessage) rawData[0];
+//
+//        // Create String from raw data.
+//        String payload = new String(ndefMessage.getRecords()[0].getPayload());
+//
+//        Toast.makeText(activity, "Payload: " + payload, Toast.LENGTH_SHORT).show();
+//    }
 
     /**
      * Listen for an android beam event and send the data.
@@ -344,7 +340,7 @@ public class NfcHandler {
             if (TextUtils.equals(beamUri.getScheme(), "file")) {
                 parentFilePath = handleFileUri(beamUri);
             } else if (TextUtils.equals(beamUri.getScheme(), "content")) {
-                parentFilePath = handleContentUri(beamUri);
+//                parentFilePath = handleContentUri(beamUri);
             }
 
             // Get tags.txt from android beam.
@@ -354,13 +350,8 @@ public class NfcHandler {
             // Overwrite the existing file with the beam file.
             beamTagsJSONFile.renameTo(existingTagsJSONFile);
 
-            TagJSONSerializer tagJSONSerializer = new TagJSONSerializer(activity, null);
-            try {
-                // Load the skeleton from the tags.txt file, received from Android beam.
-                MyTags.get(activity).setNfcTags(tagJSONSerializer.loadTagsExternal());
-            } catch (Exception e) {
-                Log.e(TAG, "Error reading from tags.txt");
-            }
+            // Load the skeleton from the tags.txt file, received from Android beam.
+            MyTags.get(activity).loadTags();
 
             // Get pictures from android beam through the newly tags.txt file.
             int size = MyTags.get(activity).getNfcTags().size();
@@ -389,41 +380,41 @@ public class NfcHandler {
         return copiedFile.getParent();
     }
 
-    public String handleContentUri(Uri beamUri) {
-        // Position of the filename in the query Cursor.
-        int filenameIndex;
-        // File object for the filename.
-        File copiedFile;
-        // The filename stored in MediaStore.
-        String fileName;
-        // Test the authority of the URI.
-        if (!TextUtils.equals(beamUri.getAuthority(), MediaStore.AUTHORITY)) {
-            /*
-             * Handle content URIs for other content providers
-             */
-            // For a MediaStore content URI
-        } else {
-            // Get the column that contains the file name
-            String[] projection = {MediaStore.MediaColumns.DATA};
-            Cursor pathCursor = activity.getContentResolver().query(beamUri, projection, null, null, null);
-            // Check for a valid cursor
-            if (pathCursor != null && pathCursor.moveToFirst()) {
-                // Get the column index in the Cursor
-                filenameIndex = pathCursor.getColumnIndex(MediaStore.MediaColumns.DATA);
-                // Get the full file name including path
-                fileName = pathCursor.getString(filenameIndex);
-                // Create a File object for the filename
-                copiedFile = new File(fileName);
-                // Return the parent directory of the file
-                return copiedFile.getParent();
-            } else {
-                // The query didn't work; return null
-                return null;
-            }
-        }
-        return null;
-    }
-
+//    public String handleContentUri(Uri beamUri) {
+//        // Position of the filename in the query Cursor.
+//        int filenameIndex;
+//        // File object for the filename.
+//        File copiedFile;
+//        // The filename stored in MediaStore.
+//        String fileName;
+//        // Test the authority of the URI.
+//        if (!TextUtils.equals(beamUri.getAuthority(), MediaStore.AUTHORITY)) {
+//            /*
+//             * Handle content URIs for other content providers
+//             */
+//
+//            // For a MediaStore content URI
+//        } else {
+//            // Get the column that contains the file name
+//            String[] projection = {MediaStore.MediaColumns.DATA};
+//            Cursor pathCursor = activity.getContentResolver().query(beamUri, projection, null, null, null);
+//            // Check for a valid cursor
+//            if (pathCursor != null && pathCursor.moveToFirst()) {
+//                // Get the column index in the Cursor
+//                filenameIndex = pathCursor.getColumnIndex(MediaStore.MediaColumns.DATA);
+//                // Get the full file name including path
+//                fileName = pathCursor.getString(filenameIndex);
+//                // Create a File object for the filename
+//                copiedFile = new File(fileName);
+//                // Return the parent directory of the file
+//                return copiedFile.getParent();
+//            } else {
+//                // The query didn't work; return null
+//                return null;
+//            }
+//        }
+//        return null;
+//    }
 
     /**
      * Listen for a tag discovery that needs to be written.

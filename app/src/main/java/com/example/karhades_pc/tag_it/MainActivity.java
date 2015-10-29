@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         // Disable the interception of any intent.
         nfcHandler.disableForegroundDispatch();
 
-        // TODO: Needs Background Thread.
         // Save the tags to a file before leaving.
         MyTags.get(this).saveTags();
 

@@ -106,7 +106,7 @@ public class TagJSONSerializer {
         return tags;
     }
 
-    public void saveTagsExternal(ArrayList<NfcTag> nfcTags) throws JSONException, IOException {
+    public void saveTagsExternal(ArrayList<NfcTag> nfcTags, String filename) throws JSONException, IOException {
         // Build an array in JSON.
         JSONArray jsonArray = new JSONArray();
 
@@ -115,21 +115,21 @@ public class TagJSONSerializer {
             jsonArray.put(nfcTag.toJSON());
         }
 
-        File file = new File(context.getExternalFilesDir(null) + File.separator + "tags.txt");
+        File file = new File(context.getExternalFilesDir(null) + File.separator + filename);
 
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         fileOutputStream.write(jsonArray.toString().getBytes());
         fileOutputStream.close();
     }
 
-    public ArrayList<NfcTag> loadTagsExternal() throws IOException, JSONException {
+    public ArrayList<NfcTag> loadTagsExternal(String filename) throws IOException, JSONException {
 
-        ArrayList<NfcTag> tags = new ArrayList<>();
+        ArrayList<NfcTag> loadedTags = new ArrayList<>();
 
         BufferedReader bufferedReader = null;
 
         try {
-            File file = new File(context.getExternalFilesDir(null) + File.separator + "tags.txt");
+            File file = new File(context.getExternalFilesDir(null) + File.separator + filename);
 
             FileInputStream fileInputStream = new FileInputStream(file);
 
@@ -148,7 +148,7 @@ public class TagJSONSerializer {
 
             // Build the array of tags from JSONObjects.
             for (int i = 0; i < jsonArray.length(); i++) {
-                tags.add(new NfcTag(jsonArray.getJSONObject(i)));
+                loadedTags.add(new NfcTag(jsonArray.getJSONObject(i)));
             }
 
         } catch (FileNotFoundException e) {
@@ -158,6 +158,6 @@ public class TagJSONSerializer {
                 bufferedReader.close();
         }
 
-        return tags;
+        return loadedTags;
     }
 }

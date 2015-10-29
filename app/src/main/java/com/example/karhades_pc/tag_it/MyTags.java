@@ -2,6 +2,7 @@ package com.example.karhades_pc.tag_it;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.karhades_pc.utils.PictureLoader;
@@ -16,8 +17,7 @@ import java.util.ArrayList;
 public class MyTags {
 
     private static final String TAG = "MyTags";
-
-    private static final String FILENAME = "tags.json";
+    private static final String FILENAME = "tags.txt";
 
     private static MyTags myTags;
     private Context context;
@@ -54,13 +54,7 @@ public class MyTags {
         this.context = context;
         serializer = new TagJSONSerializer(this.context, FILENAME);
 
-        try {
-            nfcTags = serializer.loadTagsExternal();
-            Log.d(TAG, "Nfc Tags were loaded!");
-        } catch (Exception e) {
-            nfcTags = new ArrayList<>();
-            Log.e(TAG, "Error loading tags: ", e);
-        }
+        loadTags();
 
 //        // Dummy Tags
 //        nfcTags = new ArrayList<>();
@@ -73,19 +67,22 @@ public class MyTags {
     }
 
     /**
-     * Save the tags and return true if it succeeded or
-     * false if it failed.
-     *
-     * @return The boolean indicating the result.
+     * Save the tags to external storage.
      */
-    public boolean saveTags() {
+    public void saveTags() {
+        new AsyncTaskSaver().execute();
+    }
+
+    /**
+     * Load the tags from the external storage.
+     */
+    public void loadTags() {
         try {
-            serializer.saveTagsExternal(nfcTags);
-            Log.d(TAG, "Tags saved to file!");
-            return true;
+            nfcTags = serializer.loadTagsExternal(FILENAME);
+            Log.d(TAG, "Nfc Tags were loaded!");
         } catch (Exception e) {
-            Log.e(TAG, "Error saving tags: ", e);
-            return false;
+            nfcTags = new ArrayList<>();
+            Log.e(TAG, "Error loading tags: ", e);
         }
     }
 
@@ -109,10 +106,6 @@ public class MyTags {
      */
     public ArrayList<NfcTag> getNfcTags() {
         return nfcTags;
-    }
-
-    public void setNfcTags(ArrayList<NfcTag> nfcTags) {
-        this.nfcTags = nfcTags;
     }
 
     /**
@@ -207,5 +200,20 @@ public class MyTags {
         }
 
         return fileUris;
+    }
+
+    private class AsyncTaskSaver extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                serializer.saveTagsExternal(nfcTags, FILENAME);
+                Log.d(TAG, "Tags saved to file!");
+            } catch (Exception e) {
+                Log.e(TAG, "Error saving tags: ", e);
+            }
+
+            return null;
+        }
     }
 }
