@@ -150,6 +150,31 @@ public class MainActivity extends AppCompatActivity {
     private void setupNavigationDrawer() {
         drawerLayout = (DrawerLayout) findViewById(R.id.navigation_drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                navigationView.setCheckedItem(item.getItemId());
+                drawerLayout.closeDrawer(navigationView);
+
+                switch (item.getItemId()) {
+                    case R.id.navigation_tracking:
+                        tabLayout.getTabAt(0).select();
+                        return true;
+                    case R.id.navigation_share:
+                        tabLayout.getTabAt(1).select();
+                        return true;
+
+                    case R.id.navigation_create:
+                        tabLayout.getTabAt(2).select();
+                        return true;
+                    case R.id.navigation_settings:
+                        // DO NOTHING.
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
     }
 
     private void setupToolbar() {
@@ -178,6 +203,9 @@ public class MainActivity extends AppCompatActivity {
                 if (tab.getPosition() == 2) {
                     registerContextualActionBarListener();
                 }
+
+                Menu menu = navigationView.getMenu();
+                navigationView.setCheckedItem(menu.getItem(tab.getPosition()).getItemId());
             }
 
             @Override

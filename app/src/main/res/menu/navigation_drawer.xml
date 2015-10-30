@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/group_primary"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_tracking"
+            android:checked="true"
+            android:icon="@mipmap/tracking"
+            android:title="Tracking" />
+        <item
+            android:id="@+id/navigation_share"
+            android:icon="@mipmap/share"
+            android:title="Share" />
+        <item
+            android:id="@+id/navigation_create"
+            android:icon="@mipmap/add"
+            android:title="Create" />
+    </group>
+
+    <group
+        android:id="@+id/group_secondary"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_settings"
+            android:icon="@mipmap/settings"
+            android:title="Settings" />
+    </group>
+</menu>
