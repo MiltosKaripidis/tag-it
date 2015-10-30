@@ -106,7 +106,7 @@ public class TagJSONSerializer {
         return tags;
     }
 
-    public void saveTagsExternal(ArrayList<NfcTag> nfcTags, String filename) throws JSONException, IOException {
+    public void saveTagsExternal(ArrayList<NfcTag> nfcTags) throws JSONException, IOException {
         // Build an array in JSON.
         JSONArray jsonArray = new JSONArray();
 
@@ -122,7 +122,7 @@ public class TagJSONSerializer {
         fileOutputStream.close();
     }
 
-    public ArrayList<NfcTag> loadTagsExternal(String filename) throws IOException, JSONException {
+    public ArrayList<NfcTag> loadTagsExternal() throws IOException, JSONException {
 
         ArrayList<NfcTag> loadedTags = new ArrayList<>();
 
@@ -130,6 +130,11 @@ public class TagJSONSerializer {
 
         try {
             File file = new File(context.getExternalFilesDir(null) + File.separator + filename);
+
+            // If it's a first run.
+            if (!file.exists()) {
+                return loadedTags;
+            }
 
             FileInputStream fileInputStream = new FileInputStream(file);
 

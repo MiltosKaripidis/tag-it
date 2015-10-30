@@ -225,11 +225,7 @@ public class CreateGameFragment extends Fragment {
         @Override
         public NfcTagHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             //Log.d("CreateGameFragment", "onCreateViewHolder called");
-            View view;
-            if (Build.VERSION.SDK_INT < 21)
-                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_create_pre_lollipop, viewGroup, false);
-            else
-                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_create_game_fragment, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_create_game_fragment, viewGroup, false);
 
             return new NfcTagHolder(view);
         }

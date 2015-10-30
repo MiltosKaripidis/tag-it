@@ -319,21 +319,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void changeBarsColor(boolean isVisible) {
-        if (Build.VERSION.SDK_INT >= 21) {
-            if (isVisible) {
+        if (isVisible) {
+            if (Build.VERSION.SDK_INT >= 21) {
                 getWindow().setStatusBarColor(getResources().getColor(R.color.primary_dark));
                 getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
-
-                tabLayout.setTabTextColors(getResources().getColorStateList(R.color.tab_selector));
-                tabLayout.setBackgroundColor(getResources().getColor(R.color.primary));
-                tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
-            } else {
-                getWindow().setStatusBarColor(getResources().getColor(R.color.accent_dark));
-
-                tabLayout.setTabTextColors(getResources().getColorStateList(R.color.tab_selector_context));
-                tabLayout.setBackgroundColor(getResources().getColor(R.color.accent));
-                tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.primary));
             }
+
+            tabLayout.setTabTextColors(getResources().getColorStateList(R.color.tab_selector));
+            tabLayout.setBackgroundColor(getResources().getColor(R.color.primary));
+            tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
+        } else {
+            if (Build.VERSION.SDK_INT >= 21) {
+                getWindow().setStatusBarColor(getResources().getColor(R.color.accent_dark));
+            }
+            tabLayout.setTabTextColors(getResources().getColorStateList(R.color.tab_selector_context));
+            tabLayout.setBackgroundColor(getResources().getColor(R.color.accent));
+            tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.primary));
         }
     }
 

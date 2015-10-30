@@ -45,7 +45,7 @@
             android:layout_gravity="center|left"
             android:text="@string/tag_details_label"
             android:textColor="@android:color/white"
-            android:textSize="34dp" />
+            android:textSize="34sp" />
     </FrameLayout>
 
     <LinearLayout

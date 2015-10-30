@@ -14,9 +14,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Scene;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
-import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -198,8 +195,10 @@ public class TrackingTagFragment extends Fragment {
         setupFloatingActionButton(view);
         initializeWidgets(view);
 
-        rootContainer = (ViewGroup) view.findViewById(R.id.tracking_title_frame_layout);
-        otherScene = Scene.getSceneForLayout(rootContainer, R.layout.fragment_tracking_tag_scene_2, getActivity());
+        if (Build.VERSION.SDK_INT >= 21) {
+            rootContainer = (ViewGroup) view.findViewById(R.id.tracking_title_frame_layout);
+            otherScene = Scene.getSceneForLayout(rootContainer, R.layout.fragment_tracking_tag_scene_2, getActivity());
+        }
 
         return view;
     }
@@ -243,36 +242,36 @@ public class TrackingTagFragment extends Fragment {
 //                    }
 //                }, 100);
                 //TransitionManager.go(otherScene);
-                Transition slide = TransitionInflater.from(getActivity()).inflateTransition(R.transition.tracking_enter);
-                slide.addListener(new Transition.TransitionListener() {
-                    @Override
-                    public void onTransitionStart(Transition transition) {
-
-                    }
-
-                    @Override
-                    public void onTransitionEnd(Transition transition) {
-                        enterFullScreen();
-                    }
-
-                    @Override
-                    public void onTransitionCancel(Transition transition) {
-
-                    }
-
-                    @Override
-                    public void onTransitionPause(Transition transition) {
-
-                    }
-
-                    @Override
-                    public void onTransitionResume(Transition transition) {
-
-                    }
-                });
-
-                TransitionManager.beginDelayedTransition(rootContainer, slide);
-                fullscreenActionButton.setVisibility(View.INVISIBLE);
+//                Transition slide = TransitionInflater.from(getActivity()).inflateTransition(R.transition.tracking_enter);
+//                slide.addListener(new Transition.TransitionListener() {
+//                    @Override
+//                    public void onTransitionStart(Transition transition) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onTransitionEnd(Transition transition) {
+//                        enterFullScreen();
+//                    }
+//
+//                    @Override
+//                    public void onTransitionCancel(Transition transition) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onTransitionPause(Transition transition) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onTransitionResume(Transition transition) {
+//
+//                    }
+//                });
+//
+//                TransitionManager.beginDelayedTransition(rootContainer, slide);
+//                fullscreenActionButton.setVisibility(View.INVISIBLE);
             }
         });
     }

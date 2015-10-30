@@ -61,9 +61,15 @@ public class MyTags {
 //        NfcTag nfcTag_1 = new NfcTag("Tag 1", "Hard", "04D11AD2C03480");
 //        NfcTag nfcTag_2 = new NfcTag("Tag 2", "Easy", "04BCE16AC82980");
 //        NfcTag nfcTag_3 = new NfcTag("Tag 3", "Medium", "04DC1BD2C03480");
+//        NfcTag nfcTag_4 = new NfcTag("Tag 4", "Hard", "04D11AD2C03480");
+//        NfcTag nfcTag_5 = new NfcTag("Tag 5", "Easy", "04BCE16AC82980");
+//        NfcTag nfcTag_6 = new NfcTag("Tag 6", "Medium", "04DC1BD2C03480");
 //        nfcTags.add(nfcTag_1);
 //        nfcTags.add(nfcTag_2);
 //        nfcTags.add(nfcTag_3);
+//        nfcTags.add(nfcTag_4);
+//        nfcTags.add(nfcTag_5);
+//        nfcTags.add(nfcTag_6);
     }
 
     /**
@@ -78,7 +84,7 @@ public class MyTags {
      */
     public void loadTags() {
         try {
-            nfcTags = serializer.loadTagsExternal(FILENAME);
+            nfcTags = serializer.loadTagsExternal();
             Log.d(TAG, "Nfc Tags were loaded!");
         } catch (Exception e) {
             nfcTags = new ArrayList<>();
@@ -149,12 +155,14 @@ public class MyTags {
         // Clear memory cache for previous image to refresh ImageView.
         PictureLoader.invalidateWithPicasso(context, nfcTag.getPictureFilePath());
 
-        // Delete file from disk.
-        File deleteFile = new File(nfcTag.getPictureFilePath());
-        if (deleteFile.delete()) {
-            Log.d(TAG, "NFC " + nfcTag.getTitle() + " picture deleted.");
-        } else {
-            Log.e(TAG, "Error deleting " + nfcTag.getTitle() + " picture.");
+        if (nfcTag.getPictureFilePath() != null) {
+            // Delete file from disk.
+            File deleteFile = new File(nfcTag.getPictureFilePath());
+            if (deleteFile.delete()) {
+                Log.d(TAG, "NFC " + nfcTag.getTitle() + " picture deleted.");
+            } else {
+                Log.e(TAG, "Error deleting " + nfcTag.getTitle() + " picture.");
+            }
         }
 
         // Remove from list.
@@ -207,7 +215,7 @@ public class MyTags {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                serializer.saveTagsExternal(nfcTags, FILENAME);
+                serializer.saveTagsExternal(nfcTags);
                 Log.d(TAG, "Tags saved to file!");
             } catch (Exception e) {
                 Log.e(TAG, "Error saving tags: ", e);

@@ -97,10 +97,15 @@ public class TrackingGameFragment extends Fragment {
                     intent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
                     intent.putExtra(TrackingTagPagerActivity.EXTRA_CURRENT_ITEM_POSITION, getAdapterPosition());
 
+                    // if it supports transitions.
                     if (Build.VERSION.SDK_INT >= 21) {
                         Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), imageView, imageView.getTransitionName())
                                 .toBundle();
                         getActivity().startActivity(intent, bundle);
+                    }
+                    // No transitions.
+                    else {
+                        startActivity(intent);
                     }
                 }
             });
@@ -139,11 +144,7 @@ public class TrackingGameFragment extends Fragment {
     private class RiddleAdapter extends RecyclerView.Adapter<RiddleHolder> {
         @Override
         public RiddleHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View view;
-            if (Build.VERSION.SDK_INT < 21)
-                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_tracking_pre_lollipop, viewGroup, false);
-            else
-                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_tracking_game_fragment, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_tracking_game_fragment, viewGroup, false);
 
             return new RiddleHolder(view);
         }

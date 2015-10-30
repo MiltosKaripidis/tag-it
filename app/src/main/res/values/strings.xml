@@ -13,6 +13,8 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
     <string name="popup_window_delete">Delete</string>
+    <string name="cancel_button">CANCEL</string>
+    <string name="tag_it_button">TAG IT!</string>
 
     <string-array name="difficulty">
         <item>Easy</item>

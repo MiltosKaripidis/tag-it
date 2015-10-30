@@ -150,10 +150,12 @@ public class CreateTagFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        // Load the picture taken.
+        // Load newly picture taken.
         if (temporaryPictureFilename != null) {
             PictureLoader.loadBitmapWithPicassoNoCache(getActivity(), temporaryPictureFilename, imageView);
-        } else if (currentNfcTag != null) {
+        }
+        // Load saved picture.
+        else if (currentNfcTag != null) {
             PictureLoader.loadBitmapWithPicasso(getActivity(), currentNfcTag.getPictureFilePath(), imageView);
         }
     }

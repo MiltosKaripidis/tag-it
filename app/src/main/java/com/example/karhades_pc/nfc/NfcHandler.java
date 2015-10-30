@@ -174,6 +174,9 @@ public class NfcHandler {
      * @param intent The NFC intent to resolve the tag discovery type.
      */
     public void enableNfcReadTag(Intent intent) {
+        if (nfcAdapter == null)
+            return;
+
         try {
             if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
@@ -297,6 +300,9 @@ public class NfcHandler {
      * Listen for an android beam event and send the data.
      */
     public void enableAndroidBeamShareFiles() {
+        if (nfcAdapter == null)
+            return;
+
         nfcAdapter.setBeamPushUrisCallback(new NfcAdapter.CreateBeamUrisCallback() {
             @Override
             public Uri[] createBeamUris(NfcEvent event) {
@@ -326,6 +332,9 @@ public class NfcHandler {
      * @param intent The intent to get the cation.
      */
     public void handleAndroidBeamReceivedFiles(Intent intent) {
+        if (nfcAdapter == null)
+            return;
+
         String action = intent.getAction();
 
         // For ACTION_VIEW, the Activity is being asked to display data.
@@ -333,41 +342,14 @@ public class NfcHandler {
         if (TextUtils.equals(action, Intent.ACTION_VIEW)) {
             // Get the URI from the Intent.
             Uri beamUri = intent.getData();
-            Log.d("NfcHandler", "SCHEME: " + beamUri.getScheme());
 
             String parentFilePath = null;
             // Test for the type of URI, by getting its scheme value.
             if (TextUtils.equals(beamUri.getScheme(), "file")) {
                 parentFilePath = handleFileUri(beamUri);
-            } else if (TextUtils.equals(beamUri.getScheme(), "content")) {
-//                parentFilePath = handleContentUri(beamUri);
             }
 
-            // Get tags.txt from android beam.
-            File beamTagsJSONFile = new File(parentFilePath + File.separator + "tags.txt");
-            // Existing file path.
-            File existingTagsJSONFile = new File(activity.getExternalFilesDir(null) + File.separator + "tags.txt");
-            // Overwrite the existing file with the beam file.
-            beamTagsJSONFile.renameTo(existingTagsJSONFile);
-
-            // Load the skeleton from the tags.txt file, received from Android beam.
-            MyTags.get(activity).loadTags();
-
-            // Get pictures from android beam through the newly tags.txt file.
-            int size = MyTags.get(activity).getNfcTags().size();
-            for (int i = 0; i < size; i++) {
-                NfcTag nfcTag = MyTags.get(activity).getNfcTags().get(i);
-
-                // Delete memory cache.
-                PictureLoader.invalidateWithPicasso(activity, nfcTag.getPictureFilePath());
-
-                // Beam picture file path.
-                File beamPictureFile = new File(parentFilePath + File.separator + "Tag" + nfcTag.getTagId() + ".jpg");
-                // Existing picture file path.
-                File existingPictureFile = new File(nfcTag.getPictureFilePath());
-                // Overwrite the existing file with the beam file.
-                beamPictureFile.renameTo(existingPictureFile);
-            }
+            moveFilesToPrivateExternalStorage(parentFilePath);
         }
     }
 
@@ -380,41 +362,33 @@ public class NfcHandler {
         return copiedFile.getParent();
     }
 
-//    public String handleContentUri(Uri beamUri) {
-//        // Position of the filename in the query Cursor.
-//        int filenameIndex;
-//        // File object for the filename.
-//        File copiedFile;
-//        // The filename stored in MediaStore.
-//        String fileName;
-//        // Test the authority of the URI.
-//        if (!TextUtils.equals(beamUri.getAuthority(), MediaStore.AUTHORITY)) {
-//            /*
-//             * Handle content URIs for other content providers
-//             */
-//
-//            // For a MediaStore content URI
-//        } else {
-//            // Get the column that contains the file name
-//            String[] projection = {MediaStore.MediaColumns.DATA};
-//            Cursor pathCursor = activity.getContentResolver().query(beamUri, projection, null, null, null);
-//            // Check for a valid cursor
-//            if (pathCursor != null && pathCursor.moveToFirst()) {
-//                // Get the column index in the Cursor
-//                filenameIndex = pathCursor.getColumnIndex(MediaStore.MediaColumns.DATA);
-//                // Get the full file name including path
-//                fileName = pathCursor.getString(filenameIndex);
-//                // Create a File object for the filename
-//                copiedFile = new File(fileName);
-//                // Return the parent directory of the file
-//                return copiedFile.getParent();
-//            } else {
-//                // The query didn't work; return null
-//                return null;
-//            }
-//        }
-//        return null;
-//    }
+    private void moveFilesToPrivateExternalStorage(String parentFilePath) {
+        // Get tags.txt from android beam.
+        File beamTagsJSONFile = new File(parentFilePath + File.separator + "tags.txt");
+        // Existing file path.
+        File existingTagsJSONFile = new File(activity.getExternalFilesDir(null) + File.separator + "tags.txt");
+        // Overwrite the existing file with the beam file.
+        beamTagsJSONFile.renameTo(existingTagsJSONFile);
+
+        // Load the skeleton from the tags.txt file, received from Android beam.
+        MyTags.get(activity).loadTags();
+
+        // Get pictures from android beam through the newly tags.txt file.
+        int size = MyTags.get(activity).getNfcTags().size();
+        for (int i = 0; i < size; i++) {
+            NfcTag nfcTag = MyTags.get(activity).getNfcTags().get(i);
+
+            // Delete memory cache.
+            PictureLoader.invalidateWithPicasso(activity, nfcTag.getPictureFilePath());
+
+            // Beam picture file path.
+            File beamPictureFile = new File(parentFilePath + File.separator + "Tag" + nfcTag.getTagId() + ".jpg");
+            // Existing picture file path.
+            File existingPictureFile = new File(nfcTag.getPictureFilePath());
+            // Overwrite the existing file with the beam file.
+            beamPictureFile.renameTo(existingPictureFile);
+        }
+    }
 
     /**
      * Listen for a tag discovery that needs to be written.
@@ -422,6 +396,9 @@ public class NfcHandler {
      * @param intent The NFC intent to resolve the tag discovery type.
      */
     public boolean enableNfcWriteTag(Intent intent) {
+        if (nfcAdapter == null)
+            return false;
+
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())
                 || NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())
                 || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
