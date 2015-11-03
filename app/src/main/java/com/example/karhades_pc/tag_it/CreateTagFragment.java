@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -91,8 +90,6 @@ public class CreateTagFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        startupAnimation();
     }
 
     @Override
@@ -109,19 +106,6 @@ public class CreateTagFragment extends Fragment {
                 Log.e("CreateTagFragment", "Error deleting temporary file.");
             }
         }
-    }
-
-    private void startupAnimation() {
-        // Floating Action Button animation on show after a period of time.
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!cameraActionButton.isShown()) {
-                    cameraActionButton.show();
-                }
-            }
-        }, 750);
     }
 
     private void getFragmentArguments() {
@@ -156,7 +140,7 @@ public class CreateTagFragment extends Fragment {
         }
         // Load saved picture.
         else if (currentNfcTag != null) {
-            PictureLoader.loadBitmapWithPicasso(getActivity(), currentNfcTag.getPictureFilePath(), imageView);
+            PictureLoader.loadBitmapWithPicasso(getActivity(), currentNfcTag.getPictureFilePath(), imageView, null);
         }
     }
 
@@ -361,6 +345,7 @@ public class CreateTagFragment extends Fragment {
 
         // TODO: Remove this statement.
         currentNfcTag.setSolved(false);
+        currentNfcTag.setDateSolved(null);
 
         // Clear memory cache for previous image to refresh ImageView.
         PictureLoader.invalidateWithPicasso(getActivity(), currentNfcTag.getPictureFilePath());

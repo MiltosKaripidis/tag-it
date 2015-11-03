@@ -47,7 +47,6 @@
         android:layout_marginBottom="-27dp"
         android:layout_marginRight="16dp"
         android:src="@mipmap/camera"
-        android:visibility="invisible"
         app:backgroundTint="@color/accent" />
 
     <RelativeLayout

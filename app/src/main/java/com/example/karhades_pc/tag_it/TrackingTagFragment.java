@@ -1,10 +1,10 @@
 package com.example.karhades_pc.tag_it;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -13,11 +13,14 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.Scene;
+import android.transition.Transition;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +28,7 @@ import android.widget.TextView;
 import com.example.karhades_pc.utils.AudioPlayer;
 import com.example.karhades_pc.utils.FontCache;
 import com.example.karhades_pc.utils.PictureLoader;
+import com.squareup.picasso.Callback;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,9 +51,6 @@ public class TrackingTagFragment extends Fragment {
     private TextView dateSolvedTextView;
     private Toolbar toolbar;
     private FloatingActionButton fullscreenActionButton;
-
-    private ViewGroup rootContainer;
-    private Scene otherScene;
 
     /**
      * Return a TrackingTagFragment with tagId as its argument.
@@ -81,13 +82,40 @@ public class TrackingTagFragment extends Fragment {
 
         getFragmentArguments();
         setupAudioPlayer();
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            enableTransitions();
+        }
     }
 
+    @TargetApi(21)
     @Override
     public void onStart() {
         super.onStart();
 
-        PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
+        // Register a callback to be invoked when the image has been loaded
+        // to inform the activity to start the shared element transition.
+        Callback picassoCallback = new Callback() {
+            @Override
+            public void onSuccess() {
+                if (Build.VERSION.SDK_INT >= 21) {
+                    imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                        @Override
+                        public boolean onPreDraw() {
+                            imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                            getActivity().startPostponedEnterTransition();
+                            return true;
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onError() {
+                Log.e("TrackingTagFragment", "There was an error at loading image with Picasso");
+            }
+        };
+        PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView, picassoCallback);
     }
 
     @Override
@@ -95,14 +123,7 @@ public class TrackingTagFragment extends Fragment {
         super.onResume();
 
         updateUI();
-        //startupAnimation();
-
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        }, 1000);
+        showActionButton();
     }
 
     private void updateUI() {
@@ -110,6 +131,16 @@ public class TrackingTagFragment extends Fragment {
         solvedCheckBox.setChecked(nfcTag.isSolved());
         if (nfcTag.getDateSolved() != null) {
             dateSolvedTextView.setText(nfcTag.getDateSolved());
+        }
+    }
+
+    private void showActionButton() {
+        // Floating Action Button animation on show after a period of time.
+        if (fullscreenActionButton.getScaleX() == 0 && fullscreenActionButton.getScaleY() == 0) {
+            fullscreenActionButton.animate()
+                    .setStartDelay(500)
+                    .scaleX(1)
+                    .scaleY(1);
         }
     }
 
@@ -150,19 +181,6 @@ public class TrackingTagFragment extends Fragment {
         updateUI();
     }
 
-    private void startupAnimation() {
-        // Floating Action Button animation on show after a period of time.
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!fullscreenActionButton.isShown()) {
-                    fullscreenActionButton.show();
-                }
-            }
-        }, 750);
-    }
-
     private void getFragmentArguments() {
         // Get the tag ID either from the TrackingGameFragment (onListClick) or
         // the NFC tag Discovery.
@@ -195,11 +213,6 @@ public class TrackingTagFragment extends Fragment {
         setupFloatingActionButton(view);
         initializeWidgets(view);
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            rootContainer = (ViewGroup) view.findViewById(R.id.tracking_title_frame_layout);
-            otherScene = Scene.getSceneForLayout(rootContainer, R.layout.fragment_tracking_tag_scene_2, getActivity());
-        }
-
         return view;
     }
 
@@ -224,8 +237,9 @@ public class TrackingTagFragment extends Fragment {
             // Display the caret for an ancestral navigation.
             if (NavUtils.getParentActivityName(getActivity()) != null)
                 actionBar.setDisplayHomeAsUpEnabled(true);
-            if (nfcTag != null)
+            if (nfcTag != null) {
                 actionBar.setTitle(nfcTag.getTitle());
+            }
         }
     }
 
@@ -234,44 +248,15 @@ public class TrackingTagFragment extends Fragment {
         fullscreenActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                fullscreenActionButton.hide();
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        enterFullScreen();
-//                    }
-//                }, 100);
-                //TransitionManager.go(otherScene);
-//                Transition slide = TransitionInflater.from(getActivity()).inflateTransition(R.transition.tracking_enter);
-//                slide.addListener(new Transition.TransitionListener() {
-//                    @Override
-//                    public void onTransitionStart(Transition transition) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onTransitionEnd(Transition transition) {
-//                        enterFullScreen();
-//                    }
-//
-//                    @Override
-//                    public void onTransitionCancel(Transition transition) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onTransitionPause(Transition transition) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onTransitionResume(Transition transition) {
-//
-//                    }
-//                });
-//
-//                TransitionManager.beginDelayedTransition(rootContainer, slide);
-//                fullscreenActionButton.setVisibility(View.INVISIBLE);
+                fullscreenActionButton.animate()
+                        .scaleX(0)
+                        .scaleY(0)
+                        .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                enterFullScreen();
+                            }
+                        });
             }
         });
     }
@@ -296,7 +281,7 @@ public class TrackingTagFragment extends Fragment {
             }
         });
         if (Build.VERSION.SDK_INT >= 21) {
-            imageView.setTransitionName(nfcTag.getTagId());
+            imageView.setTransitionName("image" + nfcTag.getTagId());
         }
 
         // NfcTag Details Title TextView.
@@ -332,5 +317,60 @@ public class TrackingTagFragment extends Fragment {
         String filePath = nfcTag.getPictureFilePath();
         intent.putExtra(EXTRA_FILE_PATH, filePath);
         startActivity(intent);
+    }
+
+    public void hideActionButton(Runnable runnable) {
+        fullscreenActionButton.animate()
+                .scaleX(0)
+                .scaleY(0)
+                .withEndAction(runnable);
+    }
+
+    @TargetApi(21)
+    private void enableTransitions() {
+        getActivity().getWindow().getSharedElementEnterTransition().addListener(new Transition.TransitionListener() {
+            @Override
+            public void onTransitionStart(Transition transition) {
+                fullscreenActionButton.setScaleX(0);
+                fullscreenActionButton.setScaleY(0);
+            }
+
+            @Override
+            public void onTransitionEnd(Transition transition) {
+                getActivity().getWindow().getSharedElementEnterTransition().removeListener(this);
+
+                fullscreenActionButton.animate()
+                        .setInterpolator(new AccelerateInterpolator())
+                        .setStartDelay(100)
+                        .scaleX(1)
+                        .scaleY(1);
+            }
+
+            @Override
+            public void onTransitionCancel(Transition transition) {
+                // DO NOTHING.
+            }
+
+            @Override
+            public void onTransitionPause(Transition transition) {
+                // DO NOTHING.
+            }
+
+            @Override
+            public void onTransitionResume(Transition transition) {
+                // DO NOTHING.
+            }
+        });
+    }
+
+    /**
+     * Returns the shared element that should be transitioned back to the previous Activity,
+     * or null if the view is not visible on screen.
+     */
+    public View getSharedElement() {
+        if (getView() != null) {
+            return getView().findViewById(R.id.tracking_image_view);
+        }
+        return null;
     }
 }

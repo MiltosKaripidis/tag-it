@@ -34,7 +34,7 @@ public class FullScreenActivity extends Activity {
         });
 
         // Load image.
-        PictureLoader.loadBitmapWithPicasso(this, filePath, imageView);
+        PictureLoader.loadBitmapWithPicasso(this, filePath, imageView, null);
     }
 
     private void toggleSystemUI() {

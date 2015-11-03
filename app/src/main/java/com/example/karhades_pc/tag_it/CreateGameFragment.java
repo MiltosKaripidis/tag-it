@@ -164,21 +164,6 @@ public class CreateGameFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        startupAnimation();
-    }
-
-    private void startupAnimation() {
-        // Floating Action Button animation onShow after a period of time.
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!addActionButton.isShown()) {
-                    addActionButton.show();
-                }
-            }
-        }, 750);
     }
 
     public void contextDeleteSelectedItems() {
@@ -431,7 +416,7 @@ public class CreateGameFragment extends Fragment {
         public void bindRiddle(NfcTag nfcTag) {
             this.nfcTag = nfcTag;
 
-            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
+            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView, null);
 
             titleTextView.setText(nfcTag.getTitle());
             difficultyTextView.setText(nfcTag.getDifficulty());

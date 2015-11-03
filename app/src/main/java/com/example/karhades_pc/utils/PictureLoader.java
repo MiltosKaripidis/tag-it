@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.ImageView;
 
 import com.example.karhades_pc.tag_it.R;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -20,9 +21,9 @@ public class PictureLoader {
         }
     }
 
-    public static void loadBitmapWithPicasso(Context context, String filePath, ImageView imageView) {
+    public static void loadBitmapWithPicasso(Context context, String filePath, ImageView imageView, Callback callback) {
         if (filePath != null) {
-            Picasso.with(context).load(new File(filePath)).fit().centerInside().into(imageView);
+            Picasso.with(context).load(new File(filePath)).fit().centerInside().into(imageView, callback);
         } else {
             Picasso.with(context).load(R.drawable.icon_no_image).fit().centerCrop().into(imageView);
         }

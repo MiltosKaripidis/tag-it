@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private MaterialCab.Callback contextualActionBarCallback;
 
     private NfcHandler nfcHandler;
-//    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,20 +95,6 @@ public class MainActivity extends AppCompatActivity {
         // Intercept any intent that is associated with a Tag discovery.
         nfcHandler.enableForegroundDispatch();
     }
-
-//    @Override
-//    public void onActivityReenter(int resultCode, Intent data) {
-//        Log.d("MainActivity", "onActivityReenter called!");
-//        super.onActivityReenter(resultCode, data);
-//
-//        bundle = new Bundle(data.getExtras());
-//        int oldPosition = bundle.getInt(TrackingTagPagerActivity.EXTRA_OLD_ITEM_POSITION);
-//        int currentPosition = bundle.getInt(TrackingTagPagerActivity.EXTRA_OLD_ITEM_POSITION);
-//
-//        if (oldPosition != currentPosition) {
-//
-//        }
-//    }
 
     @Override
     public void onBackPressed() {
@@ -200,10 +185,6 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
 
-                if (tab.getPosition() == 2) {
-                    registerContextualActionBarListener();
-                }
-
                 Menu menu = navigationView.getMenu();
                 navigationView.setCheckedItem(menu.getItem(tab.getPosition()).getItemId());
             }
@@ -292,9 +273,9 @@ public class MainActivity extends AppCompatActivity {
         contextualActionBar.finish();
     }
 
-    private void registerContextualActionBarListener() {
+    private void registerCreateGameFragmentListener() {
         // Listen for CreateGameFragment's events.
-        CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(tabLayout.getSelectedTabPosition());
+        CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(2);
         fragment.setOnContextualActionBarEnterListener(new CreateGameFragment.OnContextualActionBarEnterListener() {
             @Override
             public void onItemLongClicked() {
@@ -371,6 +352,11 @@ public class MainActivity extends AppCompatActivity {
             Fragment fragment = (Fragment) super.instantiateItem(container, position);
             fragments.put(position, fragment);
 
+            // Register listeners for each fragment.
+            if (fragment instanceof CreateGameFragment) {
+                registerCreateGameFragmentListener();
+            }
+
             return fragment;
         }
 
@@ -382,6 +368,18 @@ public class MainActivity extends AppCompatActivity {
 
         public Fragment getFragment(int position) {
             return fragments.get(position);
+        }
+    }
+
+    // Used for transitions.
+    @Override
+    public void onActivityReenter(int resultCode, Intent data) {
+        super.onActivityReenter(resultCode, data);
+
+        // If Tab 1.
+        if (tabLayout.getSelectedTabPosition() == 0) {
+            TrackingGameFragment fragment = (TrackingGameFragment) adapter.getFragment(0);
+            fragment.prepareReenterTransition(data);
         }
     }
 }

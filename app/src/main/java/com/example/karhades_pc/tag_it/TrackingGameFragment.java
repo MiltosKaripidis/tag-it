@@ -1,6 +1,8 @@
 package com.example.karhades_pc.tag_it;
 
+import android.annotation.TargetApi;
 import android.app.ActivityOptions;
+import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -8,9 +10,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,6 +24,9 @@ import com.example.karhades_pc.utils.FontCache;
 import com.example.karhades_pc.utils.PictureLoader;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Karhades - PC on 4/15/2015.
@@ -30,11 +37,19 @@ public class TrackingGameFragment extends Fragment {
     private RecyclerView recyclerView;
     private LinearLayout emptyLinearLayout;
 
+    private Bundle bundle;
+    // Used for transitions.
+    private boolean isReentering;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         nfcTags = MyTags.get(getActivity()).getNfcTags();
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            enableTransitions();
+        }
     }
 
     @Override
@@ -95,12 +110,14 @@ public class TrackingGameFragment extends Fragment {
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), TrackingTagPagerActivity.class);
                     intent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
-                    intent.putExtra(TrackingTagPagerActivity.EXTRA_CURRENT_ITEM_POSITION, getAdapterPosition());
+                    intent.putExtra(TrackingTagPagerActivity.EXTRA_CURRENT_TAG_POSITION, getAdapterPosition());
 
-                    // if it supports transitions.
+                    // If it supports transitions.
                     if (Build.VERSION.SDK_INT >= 21) {
-                        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), imageView, imageView.getTransitionName())
-                                .toBundle();
+                        isReentering = false;
+
+                        Pair<View, String>[] pairs = createPairs(Pair.create(imageView, imageView.getTransitionName()));
+                        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), pairs).toBundle();
                         getActivity().startActivity(intent, bundle);
                     }
                     // No transitions.
@@ -129,11 +146,11 @@ public class TrackingGameFragment extends Fragment {
             this.nfcTag = nfcTag;
 
             if (Build.VERSION.SDK_INT >= 21) {
-                imageView.setTransitionName(nfcTag.getTagId());
-                imageView.setTag(nfcTag.getTagId());
+                imageView.setTransitionName("image" + nfcTag.getTagId());
+                imageView.setTag("image" + nfcTag.getTagId());
             }
 
-            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
+            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView, null);
 
             titleTextView.setText(nfcTag.getTitle());
             difficultyTextView.setText(nfcTag.getDifficulty());
@@ -150,8 +167,8 @@ public class TrackingGameFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(RiddleHolder riddleHolder, int i) {
-            NfcTag nfcTag = nfcTags.get(i);
+        public void onBindViewHolder(RiddleHolder riddleHolder, int position) {
+            NfcTag nfcTag = nfcTags.get(position);
             riddleHolder.bindRiddle(nfcTag);
         }
 
@@ -159,5 +176,85 @@ public class TrackingGameFragment extends Fragment {
         public int getItemCount() {
             return nfcTags.size();
         }
+    }
+
+    @TargetApi(21)
+    private Pair<View, String>[] createPairs(Pair... sharedViews) {
+        ArrayList<Pair> pairs = new ArrayList<>();
+
+        View navigationBar = getActivity().findViewById(android.R.id.navigationBarBackground);
+
+        if (navigationBar != null) {
+            pairs.add(Pair.create(navigationBar, navigationBar.getTransitionName()));
+        }
+
+        Collections.addAll(pairs, sharedViews);
+
+        return pairs.toArray(new Pair[pairs.size()]);
+    }
+
+    @TargetApi(21)
+    public void prepareReenterTransition(Intent data) {
+        isReentering = true;
+        bundle = new Bundle(data.getExtras());
+
+        int oldTagPosition = data.getIntExtra(TrackingTagPagerActivity.EXTRA_OLD_TAG_POSITION, -1);
+        int currentTagPosition = data.getIntExtra(TrackingTagPagerActivity.EXTRA_CURRENT_TAG_POSITION, -1);
+
+        // If user swiped to another tag.
+        if (oldTagPosition != currentTagPosition) {
+            recyclerView.scrollToPosition(currentTagPosition);
+
+            // Wait for RecyclerView to load it's layout.
+            getActivity().postponeEnterTransition();
+            recyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                    getActivity().startPostponedEnterTransition();
+                    return true;
+                }
+            });
+        }
+    }
+
+    @TargetApi(21)
+    private void enableTransitions() {
+        getActivity().setExitSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+
+                // If TrackingTagPagerActivity returns to MainActivity.
+                if (isReentering) {
+                    int oldTagPosition = bundle.getInt(TrackingTagPagerActivity.EXTRA_OLD_TAG_POSITION);
+                    int currentTagPosition = bundle.getInt(TrackingTagPagerActivity.EXTRA_CURRENT_TAG_POSITION);
+
+                    // If currentPosition != oldPosition the user must have swiped to a different
+                    // page in the ViewPager. We must update the shared element so that the
+                    // correct one falls into place.
+                    if (currentTagPosition != oldTagPosition) {
+
+                        // Get the transition name of the current tag.
+                        NfcTag nfcTag = MyTags.get(getActivity()).getNfcTags().get(currentTagPosition);
+                        String currentTransitionName = "image" + nfcTag.getTagId();
+
+                        // Get the ImageView from the RecyclerView.
+                        View currentSharedImageView = recyclerView.findViewWithTag(currentTransitionName);
+                        // If it exists.
+                        if (currentSharedImageView != null) {
+                            // Clear the previous (original) ImageView registrations.
+                            names.clear();
+                            sharedElements.clear();
+
+                            // Add the current ImageView.
+                            names.add(currentTransitionName);
+                            sharedElements.put(currentTransitionName, currentSharedImageView);
+                        }
+                    }
+                    // Delete the previous positions.
+                    bundle = null;
+                }
+            }
+        });
     }
 }
