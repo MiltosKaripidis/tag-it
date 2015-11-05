@@ -5,7 +5,6 @@ import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,6 +21,7 @@ import android.widget.TextView;
 
 import com.example.karhades_pc.utils.FontCache;
 import com.example.karhades_pc.utils.PictureLoader;
+import com.example.karhades_pc.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +47,7 @@ public class TrackingGameFragment extends Fragment {
 
         nfcTags = MyTags.get(getActivity()).getNfcTags();
 
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Utils.itSupportsTransitions()) {
             enableTransitions();
         }
     }
@@ -112,8 +112,7 @@ public class TrackingGameFragment extends Fragment {
                     intent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
                     intent.putExtra(TrackingTagPagerActivity.EXTRA_CURRENT_TAG_POSITION, getAdapterPosition());
 
-                    // If it supports transitions.
-                    if (Build.VERSION.SDK_INT >= 21) {
+                    if (Utils.itSupportsTransitions()) {
                         isReentering = false;
 
                         Pair<View, String>[] pairs = createPairs(Pair.create(imageView, imageView.getTransitionName()));
@@ -134,18 +133,18 @@ public class TrackingGameFragment extends Fragment {
             solvedCheckBox = (CheckBox) view.findViewById(R.id.row_tracking_solved_check_box);
 
             // Custom Fonts.
-            Typeface typefaceBold = FontCache.get("fonts/Capture_it.ttf", getActivity());
-            Typeface typefaceNormal = FontCache.get("fonts/amatic_bold.ttf", getActivity());
+            Typeface typefaceTitle = FontCache.get("fonts/capture_it.ttf", getActivity());
+            Typeface typefaceBold = FontCache.get("fonts/amatic_bold.ttf", getActivity());
 
-            titleTextView.setTypeface(typefaceBold);
-            difficultyTextView.setTypeface(typefaceNormal);
+            titleTextView.setTypeface(typefaceTitle);
+            difficultyTextView.setTypeface(typefaceBold);
             difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
         }
 
         public void bindRiddle(NfcTag nfcTag) {
             this.nfcTag = nfcTag;
 
-            if (Build.VERSION.SDK_INT >= 21) {
+            if (Utils.itSupportsTransitions()) {
                 imageView.setTransitionName("image" + nfcTag.getTagId());
                 imageView.setTag("image" + nfcTag.getTagId());
             }

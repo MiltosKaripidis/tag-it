@@ -1,9 +1,11 @@
 package com.example.karhades_pc.tag_it;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -18,8 +20,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -28,6 +32,7 @@ import android.widget.TextView;
 import com.example.karhades_pc.utils.AudioPlayer;
 import com.example.karhades_pc.utils.FontCache;
 import com.example.karhades_pc.utils.PictureLoader;
+import com.example.karhades_pc.utils.Utils;
 import com.squareup.picasso.Callback;
 
 import java.text.SimpleDateFormat;
@@ -51,6 +56,7 @@ public class TrackingTagFragment extends Fragment {
     private TextView dateSolvedTextView;
     private Toolbar toolbar;
     private FloatingActionButton fullscreenActionButton;
+    private ViewGroup revealContent;
 
     /**
      * Return a TrackingTagFragment with tagId as its argument.
@@ -83,7 +89,7 @@ public class TrackingTagFragment extends Fragment {
         getFragmentArguments();
         setupAudioPlayer();
 
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Utils.itSupportsTransitions()) {
             enableTransitions();
         }
     }
@@ -98,7 +104,7 @@ public class TrackingTagFragment extends Fragment {
         Callback picassoCallback = new Callback() {
             @Override
             public void onSuccess() {
-                if (Build.VERSION.SDK_INT >= 21) {
+                if (Utils.itSupportsTransitions()) {
                     imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                         @Override
                         public boolean onPreDraw() {
@@ -124,6 +130,10 @@ public class TrackingTagFragment extends Fragment {
 
         updateUI();
         showActionButton();
+
+        if (revealContent.getVisibility() == View.VISIBLE) {
+            circularHide();
+        }
     }
 
     private void updateUI() {
@@ -131,16 +141,6 @@ public class TrackingTagFragment extends Fragment {
         solvedCheckBox.setChecked(nfcTag.isSolved());
         if (nfcTag.getDateSolved() != null) {
             dateSolvedTextView.setText(nfcTag.getDateSolved());
-        }
-    }
-
-    private void showActionButton() {
-        // Floating Action Button animation on show after a period of time.
-        if (fullscreenActionButton.getScaleX() == 0 && fullscreenActionButton.getScaleY() == 0) {
-            fullscreenActionButton.animate()
-                    .setStartDelay(500)
-                    .scaleX(1)
-                    .scaleY(1);
         }
     }
 
@@ -254,7 +254,11 @@ public class TrackingTagFragment extends Fragment {
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                enterFullScreen();
+                                if (Utils.itSupportsTransitions()) {
+                                    circularShow();
+                                } else {
+                                    enterFullScreen();
+                                }
                             }
                         });
             }
@@ -268,19 +272,12 @@ public class TrackingTagFragment extends Fragment {
      */
     private void initializeWidgets(View view) {
         // Custom Fonts.
-        Typeface typefaceTitle = FontCache.get("fonts/Capture_it.ttf", getActivity());
-        Typeface typefaceBold = FontCache.get("fonts/amatic_bold.ttf", getActivity());
+        Typeface typefaceTitle = FontCache.get("fonts/capture_it.ttf", getActivity());
         Typeface typefaceNormal = FontCache.get("fonts/amatic_normal.ttf", getActivity());
 
         // NfcTag Picture ImageView.
         imageView = (ImageView) view.findViewById(R.id.tracking_image_view);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                enterFullScreen();
-            }
-        });
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Utils.itSupportsTransitions()) {
             imageView.setTransitionName("image" + nfcTag.getTagId());
         }
 
@@ -310,15 +307,43 @@ public class TrackingTagFragment extends Fragment {
         // NfcTag Date Solved TextView.
         dateSolvedTextView = (TextView) view.findViewById(R.id.tracking_date_solved_text_view);
         dateSolvedTextView.setTypeface(typefaceNormal);
+
+        revealContent = (ViewGroup) view.findViewById(R.id.tracking_reveal_content);
     }
 
     private void enterFullScreen() {
         Intent intent = new Intent(getActivity(), FullScreenActivity.class);
         String filePath = nfcTag.getPictureFilePath();
         intent.putExtra(EXTRA_FILE_PATH, filePath);
-        startActivity(intent);
+
+        if (Utils.itSupportsTransitions()) {
+            // Deactivate the default transitions for a better circular reveal experience.
+            Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), null).toBundle();
+            getActivity().startActivity(intent, bundle);
+        }
+        // No transitions.
+        else {
+            startActivity(intent);
+        }
     }
 
+    private void showActionButton() {
+        // Floating Action Button animation on show after a period of time.
+        if (fullscreenActionButton.getScaleX() == 0 && fullscreenActionButton.getScaleY() == 0) {
+            fullscreenActionButton.animate()
+                    .setStartDelay(700)
+                    .scaleX(1)
+                    .scaleY(1);
+        }
+    }
+
+    /**
+     * Called from TrackingTagPagerActivity to hide the action
+     * button before finishing the fragment.
+     *
+     * @param runnable The runnable to run after the hide animation
+     *                 of the action button.
+     */
     public void hideActionButton(Runnable runnable) {
         fullscreenActionButton.animate()
                 .scaleX(0)
@@ -373,4 +398,48 @@ public class TrackingTagFragment extends Fragment {
         }
         return null;
     }
+
+    @TargetApi(21)
+    private void circularShow() {
+        int centerX = (fullscreenActionButton.getLeft() + fullscreenActionButton.getRight()) / 2;
+        int centerY = (fullscreenActionButton.getTop() + fullscreenActionButton.getBottom()) / 2;
+        float startRadius = 0;
+        float finalRadius = (float) Math.hypot(revealContent.getWidth(), revealContent.getHeight());
+
+
+        Animator animator = ViewAnimationUtils.createCircularReveal(revealContent, centerX, centerY, startRadius, finalRadius);
+        animator.setDuration(700);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+
+                enterFullScreen();
+            }
+        });
+        revealContent.setVisibility(View.VISIBLE);
+        animator.start();
+    }
+
+    @TargetApi(21)
+    private void circularHide() {
+        int centerX = (fullscreenActionButton.getLeft() + fullscreenActionButton.getRight()) / 2;
+        int centerY = (fullscreenActionButton.getTop() + fullscreenActionButton.getBottom()) / 2;
+        float initialRadius = revealContent.getWidth();
+        float finalRadius = 0;
+
+        Animator animator = ViewAnimationUtils.createCircularReveal(revealContent, centerX, centerY, initialRadius, finalRadius);
+        animator.setDuration(700);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+
+                revealContent.setVisibility(View.INVISIBLE);
+            }
+        });
+        animator.start();
+    }
+
 }

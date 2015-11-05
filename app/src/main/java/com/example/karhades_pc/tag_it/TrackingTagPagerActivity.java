@@ -3,7 +3,6 @@ package com.example.karhades_pc.tag_it;
 import android.annotation.TargetApi;
 import android.app.SharedElementCallback;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import com.example.karhades_pc.nfc.NfcHandler;
+import com.example.karhades_pc.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
         setupViewPager();
         solveNfcTagAfterViewPagerLoad();
 
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Utils.itSupportsTransitions()) {
             enableTransitions();
         }
     }

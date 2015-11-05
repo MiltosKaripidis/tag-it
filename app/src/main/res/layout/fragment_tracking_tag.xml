@@ -124,4 +124,12 @@
 
     </LinearLayout>
 
+    <FrameLayout
+        android:id="@+id/tracking_reveal_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/accent"
+        android:visibility="invisible" />
+
 </RelativeLayout>
+

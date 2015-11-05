@@ -347,7 +347,7 @@ public class CreateGameFragment extends Fragment {
             });
 
             // Custom Fonts.
-            Typeface typefaceBold = FontCache.get("fonts/Capture_it.ttf", getActivity());
+            Typeface typefaceBold = FontCache.get("fonts/capture_it.ttf", getActivity());
             Typeface typefaceNormal = FontCache.get("fonts/amatic_bold.ttf", getActivity());
 
             imageView = (ImageView) view.findViewById(R.id.row_create_image_view);
