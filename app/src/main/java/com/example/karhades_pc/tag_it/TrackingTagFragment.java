@@ -248,19 +248,12 @@ public class TrackingTagFragment extends Fragment {
         fullscreenActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fullscreenActionButton.animate()
-                        .scaleX(0)
-                        .scaleY(0)
-                        .withEndAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (Utils.itSupportsTransitions()) {
-                                    circularShow();
-                                } else {
-                                    enterFullScreen();
-                                }
-                            }
-                        });
+                hideActionButton();
+                if (Utils.itSupportsTransitions()) {
+                    circularShow();
+                } else {
+                    enterFullScreen();
+                }
             }
         });
     }
@@ -351,13 +344,17 @@ public class TrackingTagFragment extends Fragment {
                 .withEndAction(runnable);
     }
 
+    private void hideActionButton() {
+        fullscreenActionButton.setScaleX(0);
+        fullscreenActionButton.setScaleY(0);
+    }
+
     @TargetApi(21)
     private void enableTransitions() {
         getActivity().getWindow().getSharedElementEnterTransition().addListener(new Transition.TransitionListener() {
             @Override
             public void onTransitionStart(Transition transition) {
-                fullscreenActionButton.setScaleX(0);
-                fullscreenActionButton.setScaleY(0);
+                // DO NOTHING.
             }
 
             @Override

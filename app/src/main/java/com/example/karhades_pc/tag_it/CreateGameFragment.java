@@ -1,5 +1,8 @@
 package com.example.karhades_pc.tag_it;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -9,16 +12,23 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
+import android.transition.TransitionManager;
 import android.util.SparseBooleanArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +38,7 @@ import android.widget.Toast;
 
 import com.example.karhades_pc.utils.FontCache;
 import com.example.karhades_pc.utils.PictureLoader;
+import com.example.karhades_pc.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -52,6 +63,9 @@ public class CreateGameFragment extends Fragment {
     private RecyclerView recyclerView;
     private FloatingActionButton addActionButton;
     private LinearLayout emptyLinearLayout;
+    private ViewGroup sceneRoot;
+    private ViewGroup revealContent;
+    private ViewGroup.LayoutParams originalLayoutParams;
 
     private OnContextualActionBarEnterListener onContextualActionBarEnterListener;
 
@@ -102,6 +116,7 @@ public class CreateGameFragment extends Fragment {
         setupRecyclerView(view);
         setupFloatingActionButton(view);
         setupEmptyView(view);
+        setupTransitionViews(view);
 
         return view;
     }
@@ -131,9 +146,15 @@ public class CreateGameFragment extends Fragment {
         addActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Start CreateTagActivity.
-                Intent intent = new Intent(getActivity(), CreateTagActivity.class);
-                startActivityForResult(intent, 0);
+                if (Utils.itSupportsTransitions()) {
+                    startActivityWithTransition();
+                }
+                // No transitions.
+                else {
+                    // Start CreateTagActivity.
+                    Intent intent = new Intent(getActivity(), CreateTagActivity.class);
+                    startActivityForResult(intent, 0);
+                }
             }
         });
     }
@@ -161,9 +182,18 @@ public class CreateGameFragment extends Fragment {
         }
     }
 
+    private void setupTransitionViews(View view) {
+        sceneRoot = (ViewGroup) view.findViewById(R.id.create_coordinator_layout);
+        revealContent = (ViewGroup) view.findViewById(R.id.create_reveal_content);
+        originalLayoutParams = addActionButton.getLayoutParams();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+
+        showActionButton();
+        restoreLayoutAfterTransition();
     }
 
     public void contextDeleteSelectedItems() {
@@ -431,5 +461,97 @@ public class CreateGameFragment extends Fragment {
                 recyclerView.getAdapter().notifyItemRangeChanged(0, MyTags.get(getActivity()).getNfcTags().size());
             }
         }, 1000);
+    }
+
+    @TargetApi(21)
+    private void startActivityWithTransition() {
+        Transition transition = TransitionInflater.from(getActivity()).inflateTransition(R.transition.changebounds_with_arcmotion);
+        transition.addListener(new Transition.TransitionListener() {
+            @Override
+            public void onTransitionStart(Transition transition) {
+                // DO NOTHING.
+            }
+
+            @Override
+            public void onTransitionEnd(Transition transition) {
+                hideActionButton();
+                circularShow();
+            }
+
+            @Override
+            public void onTransitionCancel(Transition transition) {
+                // DO NOTHING.
+            }
+
+            @Override
+            public void onTransitionPause(Transition transition) {
+                // DO NOTHING.
+            }
+
+            @Override
+            public void onTransitionResume(Transition transition) {
+                // DO NOTHING.
+            }
+        });
+
+        // View transition.
+        TransitionManager.beginDelayedTransition(sceneRoot, transition);
+
+        // Change the action button's gravity from bottom|right to center.
+        CoordinatorLayout.LayoutParams newLayoutParams = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.WRAP_CONTENT, CoordinatorLayout.LayoutParams.WRAP_CONTENT);
+        newLayoutParams.gravity = Gravity.CENTER;
+        addActionButton.setLayoutParams(newLayoutParams);
+    }
+
+    private void showActionButton() {
+        if (addActionButton.getScaleX() == 0 && addActionButton.getScaleY() == 0) {
+            // Using handler because the setStartDelay method glitches with
+            // the show/hide of the action button.
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    addActionButton.animate()
+                            .scaleX(1)
+                            .scaleY(1);
+                }
+            }, 700);
+        }
+    }
+
+    private void hideActionButton() {
+        addActionButton.setScaleX(0);
+        addActionButton.setScaleY(0);
+    }
+
+    private void restoreLayoutAfterTransition() {
+        if (revealContent.getVisibility() == View.VISIBLE) {
+            revealContent.setVisibility(View.INVISIBLE);
+            addActionButton.setLayoutParams(originalLayoutParams);
+        }
+    }
+
+    @TargetApi(21)
+    private void circularShow() {
+        int centerX = (addActionButton.getLeft() + addActionButton.getRight()) / 2;
+        int centerY = (addActionButton.getTop() + addActionButton.getBottom()) / 2;
+        float startRadius = 0;
+        float finalRadius = (float) Math.hypot(revealContent.getWidth(), revealContent.getHeight());
+
+
+        Animator animator = ViewAnimationUtils.createCircularReveal(revealContent, centerX, centerY, startRadius, finalRadius);
+        animator.setDuration(700);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+
+                // Start CreateTagActivity.
+                Intent intent = new Intent(getActivity(), CreateTagActivity.class);
+                startActivityForResult(intent, 0);
+            }
+        });
+        revealContent.setVisibility(View.VISIBLE);
+        animator.start();
     }
 }

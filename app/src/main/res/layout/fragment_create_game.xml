@@ -1,6 +1,6 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/coordinator_layout"
+    android:id="@+id/create_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
@@ -55,12 +55,20 @@
         android:id="@+id/add_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
+        android:scaleX="0"
+        android:scaleY="0"
         android:src="@mipmap/add"
-        android:visibility="invisible"
-        app:backgroundTint="@color/accent"
-        app:layout_anchor="@id/coordinator_layout"
-        app:layout_anchorGravity="bottom|right" />
+        app:backgroundTint="@color/accent" />
+
+    <FrameLayout
+        android:id="@+id/create_reveal_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/accent"
+        android:visibility="invisible" />
 
 </android.support.design.widget.CoordinatorLayout>
+

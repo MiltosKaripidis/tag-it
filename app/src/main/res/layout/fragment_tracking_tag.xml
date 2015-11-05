@@ -18,6 +18,8 @@
         android:layout_alignRight="@id/tracking_image_view"
         android:layout_marginBottom="-27dp"
         android:layout_marginRight="16dp"
+        android:scaleX="0"
+        android:scaleY="0"
         android:src="@mipmap/fullscreen"
         app:backgroundTint="@color/accent" />
 

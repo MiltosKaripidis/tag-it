@@ -80,11 +80,11 @@ public class MainActivity extends AppCompatActivity {
         }
         // Tab 2.
         else if (tabLayout.getSelectedTabPosition() == 1) {
-            Snackbar.make(findViewById(R.id.navigation_drawer_layout), "Approach the devices to share game.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.main_navigation_drawer_layout), "Approach the devices to share game.", Snackbar.LENGTH_LONG).show();
         }
         // Tab 3.
         else if (tabLayout.getSelectedTabPosition() == 2) {
-            Snackbar.make(findViewById(R.id.coordinator_layout), "Click the + button to create a new one.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.create_coordinator_layout), "Click the + button to create a new one.", Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupNavigationDrawer() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.navigation_drawer_layout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.main_navigation_drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
