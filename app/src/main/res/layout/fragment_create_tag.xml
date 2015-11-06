@@ -1,112 +1,123 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/create_main_relative_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white">
-
-    <ImageView
-        android:id="@+id/create_image_view"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/icon_no_image" />
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/create_tag_tool_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:background="@android:color/transparent"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark" />
-
-    <FrameLayout
-        android:id="@+id/create_title_frame_layout"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_below="@+id/create_image_view"
-        android:background="@color/primary"
-        android:paddingLeft="16dp">
-
-        <TextView
-            android:id="@+id/create_details_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|left"
-            android:text="@string/tag_details_label"
-            android:textColor="@android:color/white"
-            android:textSize="34sp" />
-    </FrameLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/camera_action_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/create_image_view"
-        android:layout_alignRight="@id/create_image_view"
-        android:layout_marginBottom="-27dp"
-        android:layout_marginRight="16dp"
-        android:src="@mipmap/camera"
-        app:backgroundTint="@color/accent" />
+    android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/create_content_relative_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/create_title_frame_layout"
-        android:orientation="vertical"
-        android:paddingBottom="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="8dp">
+        android:background="@android:color/white">
 
-        <!--Difficulty-->
-        <LinearLayout
-            android:id="@+id/create_difficulty_linear_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/create_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon_no_image" />
+
+        <FrameLayout
+            android:id="@+id/create_image_view_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@drawable/selector_touch_effect"
+            android:clickable="true" />
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/create_tag_tool_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@android:color/transparent"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+
+        <FrameLayout
+            android:id="@+id/create_title_frame_layout"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_below="@+id/create_image_view"
+            android:background="@color/primary"
+            android:paddingLeft="16dp">
 
             <TextView
-                android:id="@+id/create_difficulty_label_text_view"
+                android:id="@+id/create_details_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tag_difficulty"
-                android:textSize="16sp" />
+                android:layout_gravity="center|left"
+                android:text="@string/tag_details_label"
+                android:textColor="@android:color/white"
+                android:textSize="34sp" />
+        </FrameLayout>
 
-            <Spinner
-                android:id="@+id/spinner"
-                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-        <!-- Buttons-->
-        <LinearLayout
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/camera_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true">
+            android:layout_alignBottom="@id/create_image_view"
+            android:layout_alignRight="@id/create_image_view"
+            android:layout_marginBottom="-27dp"
+            android:layout_marginRight="16dp"
+            android:src="@mipmap/camera"
+            app:backgroundTint="@color/accent" />
 
-            <Button
-                android:id="@+id/cancel_button"
+        <RelativeLayout
+            android:id="@+id/create_content_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/create_title_frame_layout"
+            android:orientation="vertical"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp">
+
+            <!--Difficulty-->
+            <LinearLayout
+                android:id="@+id/create_difficulty_linear_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:background="@drawable/selector_raised_button_secondary"
-                android:text="@string/cancel_button"
-                android:textColor="@android:color/black" />
+                android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/tag_it_button"
+                <TextView
+                    android:id="@+id/create_difficulty_label_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tag_difficulty"
+                    android:textSize="16sp" />
+
+                <Spinner
+                    android:id="@+id/spinner"
+                    style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <!-- Buttons-->
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:background="@drawable/selector_raised_button"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:text="@string/tag_it_button"
-                android:textColor="@android:color/white" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true">
 
-        </LinearLayout>
+                <Button
+                    android:id="@+id/cancel_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:background="@drawable/selector_raised_button_secondary"
+                    android:text="@string/cancel_button"
+                    android:textColor="@android:color/black" />
+
+                <Button
+                    android:id="@+id/tag_it_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:background="@drawable/selector_raised_button"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="@string/tag_it_button"
+                    android:textColor="@android:color/white" />
+
+            </LinearLayout>
+        </RelativeLayout>
     </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
 
-</RelativeLayout>

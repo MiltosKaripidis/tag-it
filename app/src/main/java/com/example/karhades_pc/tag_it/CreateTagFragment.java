@@ -45,6 +45,7 @@ public class CreateTagFragment extends Fragment {
     private static final int REQUEST_IMAGE = 0;
 
     private ImageView imageView;
+    private ViewGroup imageViewOverlay;
     private Button cancelButton;
     private Button tagItButton;
     private Spinner difficultySpinner;
@@ -221,7 +222,9 @@ public class CreateTagFragment extends Fragment {
         setupSpinner(view);
 
         imageView = (ImageView) view.findViewById(R.id.create_image_view);
-        imageView.setOnClickListener(new View.OnClickListener() {
+
+        imageViewOverlay = (ViewGroup) view.findViewById(R.id.create_image_view_overlay);
+        imageViewOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (currentNfcTag != null) {

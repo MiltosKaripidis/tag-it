@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <!-- Main Content-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,6 +23,7 @@
                 android:background="@color/primary"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
+            <!-- Placeholder for Contextual Action Bar-->
             <ViewStub
                 android:id="@+id/view_stub"
                 android:layout_width="match_parent"
@@ -41,6 +43,7 @@
             android:layout_height="match_parent" />
     </LinearLayout>
 
+    <!-- Navigation View-->
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="300dp"

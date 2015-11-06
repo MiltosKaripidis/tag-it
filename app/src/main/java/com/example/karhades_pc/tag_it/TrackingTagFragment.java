@@ -354,7 +354,8 @@ public class TrackingTagFragment extends Fragment {
         getActivity().getWindow().getSharedElementEnterTransition().addListener(new Transition.TransitionListener() {
             @Override
             public void onTransitionStart(Transition transition) {
-                // DO NOTHING.
+                fullscreenActionButton.setScaleX(0);
+                fullscreenActionButton.setScaleY(0);
             }
 
             @Override

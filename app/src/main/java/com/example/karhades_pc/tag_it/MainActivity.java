@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         }
         // Tab 2.
         else if (tabLayout.getSelectedTabPosition() == 1) {
-            Snackbar.make(findViewById(R.id.main_navigation_drawer_layout), "Approach the devices to share game.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.share_coordinator_layout), "Approach the devices to share game.", Snackbar.LENGTH_LONG).show();
         }
         // Tab 3.
         else if (tabLayout.getSelectedTabPosition() == 2) {
