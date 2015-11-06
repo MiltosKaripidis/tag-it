@@ -15,11 +15,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
-import com.example.karhades_pc.contextual_action_bar.MaterialCab;
 import com.example.karhades_pc.nfc.NfcHandler;
 
 /**
@@ -34,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private FragmentAdapter adapter;
     private ViewPager viewPager;
-    private MaterialCab contextualActionBar;
-    private MaterialCab.Callback contextualActionBarCallback;
+    private ActionMode actionMode;
+    private ActionMode.Callback actionModeCallback;
 
     private NfcHandler nfcHandler;
 
@@ -62,10 +63,7 @@ public class MainActivity extends AppCompatActivity {
         // Save the tags to a file before leaving.
         MyTags.get(this).saveTags();
 
-        // Close the contextual action bar before leaving.
-        if (contextualActionBar != null && contextualActionBar.isActive()) {
-            disableContextualActionBar();
-        }
+        disableContextualActionBar();
     }
 
     @Override
@@ -98,13 +96,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        // Close contextual action bar.
+        disableContextualActionBar();
+
         // Close NavigationView.
         if (drawerLayout.isDrawerOpen(navigationView)) {
             drawerLayout.closeDrawer(navigationView);
-        }
-        // Close contextual action bar.
-        else if (contextualActionBar != null && contextualActionBar.isActive()) {
-            disableContextualActionBar();
         }
         // Close Activity.
         else {
@@ -191,9 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                if (contextualActionBar != null && contextualActionBar.isActive() && tab.getPosition() == 2) {
-                    disableContextualActionBar();
-                }
+                disableContextualActionBar();
             }
 
             @Override
@@ -213,23 +208,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupContextualActionBar() {
-        contextualActionBar = new MaterialCab(this, R.id.view_stub);
-        contextualActionBar.setMenu(R.menu.fragment_create_game_context);
-        contextualActionBar.setBackgroundColor(getResources().getColor(R.color.accent));
-        contextualActionBarCallback = new MaterialCab.Callback() {
+        actionModeCallback = new ActionMode.Callback() {
             @Override
-            public boolean onCabCreated(MaterialCab cab, Menu menu) {
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(R.menu.fragment_create_game_context, menu);
                 return true;
             }
 
             @Override
-            public boolean onCabItemClicked(MenuItem item) {
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 // If Tab 2 is selected.
                 if (tabLayout.getSelectedTabPosition() == 2) {
                     CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(tabLayout.getSelectedTabPosition());
 
-                    MenuItem selectAllItem = contextualActionBar.getMenu().findItem(R.id.context_bar_select_all_item);
-                    MenuItem clearSelectionItem = contextualActionBar.getMenu().findItem(R.id.context_bar_clear_selection_item);
+                    MenuItem selectAllItem = mode.getMenu().findItem(R.id.context_bar_select_all_item);
+                    MenuItem clearSelectionItem = mode.getMenu().findItem(R.id.context_bar_clear_selection_item);
 
                     switch (item.getItemId()) {
                         case R.id.context_bar_delete_item:
@@ -254,23 +253,23 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public boolean onCabFinished(MaterialCab cab) {
+            public void onDestroyActionMode(ActionMode mode) {
                 changeBarsColor(true);
 
                 if (tabLayout.getSelectedTabPosition() == 2) {
                     CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(tabLayout.getSelectedTabPosition());
                     fragment.contextFinish();
+                    disableContextualActionBar();
                 }
-                return true;
             }
         };
     }
 
     private void disableContextualActionBar() {
-        CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(tabLayout.getSelectedTabPosition());
-        fragment.contextFinish();
-
-        contextualActionBar.finish();
+        if (actionMode != null) {
+            actionMode.finish();
+            actionMode = null;
+        }
     }
 
     private void registerCreateGameFragmentListener() {
@@ -279,16 +278,19 @@ public class MainActivity extends AppCompatActivity {
         fragment.setOnContextualActionBarEnterListener(new CreateGameFragment.OnContextualActionBarEnterListener() {
             @Override
             public void onItemLongClicked() {
-                changeBarsColor(false);
+                if (actionMode == null) {
+                    changeBarsColor(false);
 
-                contextualActionBar.start(contextualActionBarCallback);
+                    // Start contextual action mode.
+                    actionMode = toolbar.startActionMode(actionModeCallback);
+                }
             }
 
             @Override
             public void onItemClicked(int tagsSelected) {
-                contextualActionBar.setTitle(tagsSelected + " selected");
+                actionMode.setTitle(tagsSelected + " selected");
 
-                MenuItem deleteItem = contextualActionBar.getMenu().findItem(R.id.context_bar_delete_item);
+                MenuItem deleteItem = actionMode.getMenu().findItem(R.id.context_bar_delete_item);
                 // If there are no selected tags.
                 if (tagsSelected == 0) {
                     deleteItem.setVisible(false);

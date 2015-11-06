@@ -126,19 +126,19 @@ public class CreateGameFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(new NfcTagAdapter());
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                // If scrolling down (dy > 0). The faster the scrolling
-                // the bigger the dy.
-                if (dy > 0) {
-                    addActionButton.hide();
-                } else {
-                    addActionButton.show();
-                }
-            }
-        });
+//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                // If scrolling down (dy > 0). The faster the scrolling
+//                // the bigger the dy.
+//                if (dy > 0) {
+//                    addActionButton.hide();
+//                } else {
+//                    addActionButton.show();
+//                }
+//            }
+//        });
     }
 
     private void setupFloatingActionButton(View view) {
