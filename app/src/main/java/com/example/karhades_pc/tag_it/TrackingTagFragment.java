@@ -1,7 +1,5 @@
 package com.example.karhades_pc.tag_it;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Intent;
@@ -20,10 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -32,6 +28,7 @@ import android.widget.TextView;
 import com.example.karhades_pc.utils.AudioPlayer;
 import com.example.karhades_pc.utils.FontCache;
 import com.example.karhades_pc.utils.PictureLoader;
+import com.example.karhades_pc.utils.TransitionHelper;
 import com.example.karhades_pc.utils.Utils;
 import com.squareup.picasso.Callback;
 
@@ -132,7 +129,7 @@ public class TrackingTagFragment extends Fragment {
         showActionButton();
 
         if (revealContent.getVisibility() == View.VISIBLE) {
-            circularHide();
+            TransitionHelper.circularHide(fullscreenActionButton, revealContent);
         }
     }
 
@@ -250,8 +247,15 @@ public class TrackingTagFragment extends Fragment {
             public void onClick(View v) {
                 hideActionButton();
                 if (Utils.itSupportsTransitions()) {
-                    circularShow();
-                } else {
+                    TransitionHelper.circularShow(fullscreenActionButton, revealContent, new Runnable() {
+                        @Override
+                        public void run() {
+                            enterFullScreen();
+                        }
+                    });
+                }
+                // No transitions.
+                else {
                     enterFullScreen();
                 }
             }
@@ -396,48 +400,4 @@ public class TrackingTagFragment extends Fragment {
         }
         return null;
     }
-
-    @TargetApi(21)
-    private void circularShow() {
-        int centerX = (fullscreenActionButton.getLeft() + fullscreenActionButton.getRight()) / 2;
-        int centerY = (fullscreenActionButton.getTop() + fullscreenActionButton.getBottom()) / 2;
-        float startRadius = 0;
-        float finalRadius = (float) Math.hypot(revealContent.getWidth(), revealContent.getHeight());
-
-
-        Animator animator = ViewAnimationUtils.createCircularReveal(revealContent, centerX, centerY, startRadius, finalRadius);
-        animator.setDuration(700);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-
-                enterFullScreen();
-            }
-        });
-        revealContent.setVisibility(View.VISIBLE);
-        animator.start();
-    }
-
-    @TargetApi(21)
-    private void circularHide() {
-        int centerX = (fullscreenActionButton.getLeft() + fullscreenActionButton.getRight()) / 2;
-        int centerY = (fullscreenActionButton.getTop() + fullscreenActionButton.getBottom()) / 2;
-        float initialRadius = revealContent.getWidth();
-        float finalRadius = 0;
-
-        Animator animator = ViewAnimationUtils.createCircularReveal(revealContent, centerX, centerY, initialRadius, finalRadius);
-        animator.setDuration(700);
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-
-                revealContent.setVisibility(View.INVISIBLE);
-            }
-        });
-        animator.start();
-    }
-
 }

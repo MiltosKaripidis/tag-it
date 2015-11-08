@@ -1,0 +1,62 @@
+package com.example.karhades_pc.utils;
+
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+
+/**
+ * Created by Karhades on 08-11-15.
+ */
+public class TransitionHelper {
+
+    private TransitionHelper() {
+        // DOES NOT GENERATE OBJECTS.
+    }
+
+    @TargetApi(21)
+    public static void circularShow(View view, ViewGroup revealContent, final Runnable runnable) {
+        int centerX = (view.getLeft() + view.getRight()) / 2;
+        int centerY = (view.getTop() + view.getBottom()) / 2;
+        float startRadius = 0;
+        float finalRadius = (float) Math.hypot(revealContent.getWidth(), revealContent.getHeight());
+
+
+        Animator animator = ViewAnimationUtils.createCircularReveal(revealContent, centerX, centerY, startRadius, finalRadius);
+        animator.setDuration(700);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+
+                runnable.run();
+            }
+        });
+        revealContent.setVisibility(View.VISIBLE);
+        animator.start();
+    }
+
+    @TargetApi(21)
+    public static void circularHide(View view, final ViewGroup revealContent) {
+        int centerX = (view.getLeft() + view.getRight()) / 2;
+        int centerY = (view.getTop() + view.getBottom()) / 2;
+        float initialRadius = revealContent.getWidth();
+        float finalRadius = 0;
+
+        Animator animator = ViewAnimationUtils.createCircularReveal(revealContent, centerX, centerY, initialRadius, finalRadius);
+        animator.setDuration(700);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+
+                revealContent.setVisibility(View.INVISIBLE);
+            }
+        });
+        animator.start();
+    }
+}

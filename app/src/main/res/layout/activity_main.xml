@@ -7,6 +7,7 @@
 
     <!-- Main Content-->
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/main_coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -20,7 +21,7 @@
                 android:layout_height="?actionBarSize"
                 android:background="@color/primary"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed" />
+                app:layout_scrollFlags="scroll|snap" />
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/main_tab_layout"
@@ -34,7 +35,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floating_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:src="@mipmap/add"
+            app:backgroundTint="@color/accent" />
     </android.support.design.widget.CoordinatorLayout>
+
+    <FrameLayout
+        android:id="@+id/main_reveal_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/accent"
+        android:visibility="invisible" />
 
     <!-- Navigation Drawer-->
     <android.support.design.widget.NavigationView
