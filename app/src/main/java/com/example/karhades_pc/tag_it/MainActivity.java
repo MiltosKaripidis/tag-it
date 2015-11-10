@@ -1,18 +1,23 @@
 package com.example.karhades_pc.tag_it;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
@@ -278,8 +283,7 @@ public class MainActivity extends AppCompatActivity {
 
                     switch (item.getItemId()) {
                         case R.id.context_bar_delete_item:
-                            fragment.contextDeleteSelectedItems();
-                            disableContextualActionBar();
+                            new DeleteDialogFragment().show(getSupportFragmentManager(), "delete");
                             return true;
                         case R.id.context_bar_select_all_item:
                             clearSelectionItem.setVisible(true);
@@ -309,6 +313,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+    }
+
+    private void doPositiveClick() {
+        CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(tabLayout.getSelectedTabPosition());
+
+        fragment.contextDeleteSelectedItems();
+        disableContextualActionBar();
     }
 
     private void disableContextualActionBar() {
@@ -426,6 +437,28 @@ public class MainActivity extends AppCompatActivity {
 
         public Fragment getFragment(int position) {
             return fragments.get(position);
+        }
+    }
+
+    public static class DeleteDialogFragment extends DialogFragment {
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            return new AlertDialog.Builder(getActivity())
+                    .setMessage("Delete tags?")
+                    .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // DO NOTHING.
+                        }
+                    })
+                    .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ((MainActivity) getActivity()).doPositiveClick();
+                        }
+                    })
+                    .create();
         }
     }
 }

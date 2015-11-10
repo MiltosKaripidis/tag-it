@@ -364,8 +364,6 @@ public class TrackingTagFragment extends Fragment {
 
             @Override
             public void onTransitionEnd(Transition transition) {
-                getActivity().getWindow().getSharedElementEnterTransition().removeListener(this);
-
                 fullscreenActionButton.animate()
                         .setInterpolator(new AccelerateInterpolator())
                         .setStartDelay(100)

@@ -132,7 +132,7 @@ public class CreateGameFragment extends Fragment {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
-                
+
                 hideRecyclerViewIfEmpty();
             }
 
