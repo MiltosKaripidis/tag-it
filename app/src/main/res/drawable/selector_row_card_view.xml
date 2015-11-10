@@ -6,6 +6,7 @@
             <solid android:color="#66FFFFFF" />
         </shape>
     </item>
+
     <!-- Normal state-->
     <item android:drawable="@drawable/selector_touch_effect"/>
 </selector>
