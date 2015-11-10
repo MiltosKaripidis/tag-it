@@ -26,7 +26,7 @@ public class CreateTagPagerActivity extends AppCompatActivity implements ViewPag
     private ArrayList<NfcTag> nfcTags;
     private String tagId;
 
-    NfcHandler nfcHandler;
+    private NfcHandler nfcHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -55,11 +55,18 @@ public class CreateGameFragment extends Fragment {
      */
     public static final String EXTRA_POSITION = "com.example.karhades_pc.tag_it.position";
 
+    /**
+     * The list with all the NFC tags.
+     */
     private ArrayList<NfcTag> nfcTags;
 
     private RecyclerView recyclerView;
     private FloatingActionButton addActionButton;
     private LinearLayout emptyLinearLayout;
+
+    /**
+     * Used for circular reveal.
+     */
     private ViewGroup sceneRoot;
     private ViewGroup revealContent;
     private ViewGroup.LayoutParams originalLayoutParams;
@@ -120,7 +127,23 @@ public class CreateGameFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.create_recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(new NfcTagAdapter());
+        NfcTagAdapter adapter = new NfcTagAdapter();
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                
+                hideRecyclerViewIfEmpty();
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+
+                hideRecyclerViewIfEmpty();
+            }
+        });
+        recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -140,14 +163,6 @@ public class CreateGameFragment extends Fragment {
 
     private void setupEmptyView(View view) {
         emptyLinearLayout = (LinearLayout) view.findViewById(R.id.create_empty_linear_layout);
-
-        // Listen for list changes to hide or show widgets.
-        MyTags.get(getActivity()).setOnListChangeListener(new MyTags.onListChangeListener() {
-            @Override
-            public void onListChanged() {
-                hideRecyclerViewIfEmpty();
-            }
-        });
         hideRecyclerViewIfEmpty();
     }
 

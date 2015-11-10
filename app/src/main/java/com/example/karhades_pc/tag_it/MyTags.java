@@ -25,25 +25,6 @@ public class MyTags {
     private ArrayList<NfcTag> nfcTags;
     private TagJSONSerializer serializer;
 
-    private onListChangeListener onListChangeListener;
-
-    /**
-     * Register a callback to be invoked when the list changes.
-     *
-     * @param onListChangeListener The callback that will run.
-     */
-    public void setOnListChangeListener(onListChangeListener onListChangeListener) {
-        this.onListChangeListener = onListChangeListener;
-    }
-
-    /**
-     * Interface definition for a callback to be invoked
-     * when the list changes.
-     */
-    public interface onListChangeListener {
-        void onListChanged();
-    }
-
     /**
      * Private constructor that gets called only
      * once by it's get(context) method.
@@ -139,9 +120,6 @@ public class MyTags {
 
         // Add to list.
         nfcTags.add(nfcTag);
-
-        // Callback event method.
-        onListChangeListener.onListChanged();
     }
 
     /**
@@ -167,9 +145,6 @@ public class MyTags {
 
         // Remove from list.
         nfcTags.remove(nfcTag);
-
-        // Callback event method.
-        onListChangeListener.onListChanged();
     }
 
     public void reorderNfcTags() {
@@ -192,14 +167,15 @@ public class MyTags {
         // First, save any changes of the tags into the model.
         saveTags();
 
+        // Create a URI array containing NFC tags picture URIs + tags.txt file URI.
         Uri[] fileUris = new Uri[nfcTags.size() + 1];
 
-        // tags.json file.
+        // Create the tags.txt file URI.
         File tagsFile = new File(context.getExternalFilesDir(null) + File.separator + "tags.txt");
         tagsFile.setReadable(true, false);
         fileUris[0] = Uri.fromFile(tagsFile);
 
-        // Picture file paths.
+        // Create the NFC tags Picture file URIs.
         for (int i = 0; i < nfcTags.size(); i++) {
             File file = new File(nfcTags.get(i).getPictureFilePath());
             file.setReadable(true, false);

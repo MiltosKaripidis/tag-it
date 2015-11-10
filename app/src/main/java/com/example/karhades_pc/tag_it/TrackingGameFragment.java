@@ -56,18 +56,8 @@ public class TrackingGameFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tracking_game, container, false);
 
-        emptyLinearLayout = (LinearLayout) view.findViewById(R.id.tracking_empty_linear_layout);
-
         setupRecyclerView(view);
-
-        // Listen for list changes to hide or show widgets.
-        MyTags.get(getActivity()).setOnListChangeListener(new MyTags.onListChangeListener() {
-            @Override
-            public void onListChanged() {
-                hideRecyclerViewIfEmpty();
-            }
-        });
-        hideRecyclerViewIfEmpty();
+        setupEmptyView(view);
 
         return view;
     }
@@ -75,7 +65,28 @@ public class TrackingGameFragment extends Fragment {
     private void setupRecyclerView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.tracking_recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
-        recyclerView.setAdapter(new RiddleAdapter());
+        RiddleAdapter adapter = new RiddleAdapter();
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+
+                hideRecyclerViewIfEmpty();
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+
+                hideRecyclerViewIfEmpty();
+            }
+        });
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void setupEmptyView(View view) {
+        emptyLinearLayout = (LinearLayout) view.findViewById(R.id.tracking_empty_linear_layout);
+        hideRecyclerViewIfEmpty();
     }
 
     private void hideRecyclerViewIfEmpty() {
