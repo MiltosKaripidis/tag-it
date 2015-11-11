@@ -31,6 +31,8 @@ import android.widget.Toast;
 
 import com.example.karhades_pc.nfc.NfcHandler;
 import com.example.karhades_pc.utils.PictureLoader;
+import com.example.karhades_pc.utils.TransitionHelper;
+import com.example.karhades_pc.utils.Utils;
 
 import java.io.File;
 
@@ -50,6 +52,7 @@ public class CreateTagFragment extends Fragment {
     private Button tagItButton;
     private Spinner difficultySpinner;
     private FloatingActionButton cameraActionButton;
+    private ViewGroup revealContent;
     private TagItDialogFragment dialogFragment;
     private Toolbar toolbar;
 
@@ -91,6 +94,11 @@ public class CreateTagFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        // Hide the reveal content view.
+        if (revealContent.getVisibility() == View.VISIBLE) {
+            TransitionHelper.circularHide(cameraActionButton, revealContent);
+        }
     }
 
     @Override
@@ -199,15 +207,18 @@ public class CreateTagFragment extends Fragment {
         cameraActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File file = createExternalStoragePrivateFile();
-
-                Uri fileUri = Uri.fromFile(file);
-
-                // Camera Intent.
-                Intent intent = new Intent();
-                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                startActivityForResult(intent, REQUEST_IMAGE);
+                if (Utils.itSupportsTransitions()) {
+                    TransitionHelper.circularShow(cameraActionButton, revealContent, new Runnable() {
+                        @Override
+                        public void run() {
+                            takePicture();
+                        }
+                    });
+                }
+                // No transitions.
+                else {
+                    takePicture();
+                }
             }
         });
     }
@@ -216,6 +227,18 @@ public class CreateTagFragment extends Fragment {
         File file = new File(getActivity().getExternalFilesDir(null), "temp_tag.jpg");
 
         return file;
+    }
+
+    private void takePicture() {
+        File file = createExternalStoragePrivateFile();
+
+        Uri fileUri = Uri.fromFile(file);
+
+        // Camera Intent.
+        Intent intent = new Intent();
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+        startActivityForResult(intent, REQUEST_IMAGE);
     }
 
     private void initializeWidgets(View view) {
@@ -251,6 +274,8 @@ public class CreateTagFragment extends Fragment {
                 getActivity().finish();
             }
         });
+
+        revealContent = (ViewGroup) view.findViewById(R.id.create_reveal_content);
     }
 
     private void setupSpinner(View view) {

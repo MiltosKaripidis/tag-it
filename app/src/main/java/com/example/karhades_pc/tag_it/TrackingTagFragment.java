@@ -128,6 +128,7 @@ public class TrackingTagFragment extends Fragment {
         updateUI();
         showActionButton();
 
+        // Hide the reveal content view.
         if (revealContent.getVisibility() == View.VISIBLE) {
             TransitionHelper.circularHide(fullscreenActionButton, revealContent);
         }

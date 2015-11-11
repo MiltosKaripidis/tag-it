@@ -119,5 +119,12 @@
             </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/create_reveal_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/accent"
+        android:visibility="invisible" />
 </android.support.design.widget.CoordinatorLayout>
 
