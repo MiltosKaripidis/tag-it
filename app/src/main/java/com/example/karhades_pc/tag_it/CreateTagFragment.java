@@ -131,7 +131,7 @@ public class CreateTagFragment extends Fragment {
             case android.R.id.home:
                 // If there is a parent activity, navigate to it.
                 if (NavUtils.getParentActivityName(getActivity()) != null) {
-                    NavUtils.navigateUpFromSameTask(getActivity());
+                    getActivity().onBackPressed();
                 }
                 return true;
             default:
