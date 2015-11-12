@@ -373,9 +373,6 @@ public class CreateTagFragment extends Fragment {
         // Overwrite current nfc tag fields.
         currentNfcTag.setDifficulty(temporaryDifficulty);
         currentNfcTag.setTagId(tagId);
-
-        // TODO: Remove this statement.
-        currentNfcTag.setSolved(false);
         currentNfcTag.setDateSolved(null);
 
         // Clear memory cache for previous image to refresh ImageView.
@@ -392,7 +389,6 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void createNewNfcTag(String tagId) {
-        // TODO: Edit the creation of the tag.
         int number = MyTags.get(getActivity()).getNfcTags().size() + 1;
 
         NfcTag newNfcTag = new NfcTag("Tag " + number, temporaryDifficulty, tagId);
