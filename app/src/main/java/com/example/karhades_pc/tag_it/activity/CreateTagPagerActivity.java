@@ -1,4 +1,4 @@
-package com.example.karhades_pc.tag_it;
+package com.example.karhades_pc.tag_it.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.karhades_pc.nfc.NfcHandler;
+import com.example.karhades_pc.tag_it.fragment.CreateTagFragment;
+import com.example.karhades_pc.tag_it.model.MyTags;
+import com.example.karhades_pc.tag_it.model.NfcTag;
+import com.example.karhades_pc.tag_it.R;
 
 import java.util.ArrayList;
 

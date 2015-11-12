@@ -6,12 +6,11 @@ import android.media.MediaPlayer;
 /**
  * Created by Karhades on 20-Aug-15.
  */
-public class AudioPlayer
-{
+public class AudioPlayer {
+
     private MediaPlayer mediaPlayer;
 
-    public void play(Context context, int sound)
-    {
+    public void play(Context context, int sound) {
         mediaPlayer = MediaPlayer.create(context, sound);
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -22,10 +21,8 @@ public class AudioPlayer
         mediaPlayer.start();
     }
 
-    public void stop()
-    {
-        if(mediaPlayer != null)
-        {
+    public void stop() {
+        if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
         }

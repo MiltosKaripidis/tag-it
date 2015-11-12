@@ -1,6 +1,5 @@
 package com.example.karhades_pc.nfc;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -15,17 +14,15 @@ import android.nfc.Tag;
 import android.nfc.tech.MifareUltralight;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NfcA;
-import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import com.example.karhades_pc.tag_it.MyTags;
-import com.example.karhades_pc.tag_it.NfcTag;
-import com.example.karhades_pc.tag_it.TrackingTagFragment;
-import com.example.karhades_pc.tag_it.TrackingTagPagerActivity;
+import com.example.karhades_pc.tag_it.activity.TrackingTagPagerActivity;
+import com.example.karhades_pc.tag_it.fragment.TrackingTagFragment;
+import com.example.karhades_pc.tag_it.model.MyTags;
+import com.example.karhades_pc.tag_it.model.NfcTag;
 import com.example.karhades_pc.utils.PictureLoader;
 
 import java.io.File;
@@ -80,8 +77,7 @@ public class NfcHandler {
     }
 
     /**
-     * Setup the NfcAdapter, the foreground tag dispatch system and
-     * the Android Beam.
+     * Setup the NfcAdapter and the foreground tag dispatch system.
      *
      * @param activity The activity needed for the android system.
      */
@@ -90,38 +86,44 @@ public class NfcHandler {
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
 
-        if (nfcAdapter == null)
-            return;
+        if (itSupportsNFC()) {
+            // Check whether NFC is enabled on device.
+            if (!nfcAdapter.isEnabled()) {
+                Toast.makeText(activity, "Please enable NFC.", Toast.LENGTH_LONG).show();
 
-        // Check whether NFC is enabled on device.
-        if (!nfcAdapter.isEnabled()) {
-            // NFC is disabled, show the settings UI
-            // to enable NFC
-            Toast.makeText(activity, "Please enable NFC.", Toast.LENGTH_SHORT).show();
-            activity.startActivity(new Intent(Settings.ACTION_NFC_SETTINGS));
-        }
-        // Check whether Android Beam feature is enabled on device.
-        else if (!nfcAdapter.isNdefPushEnabled()) {
-            // Android Beam is disabled, show the settings UI
-            // to enable Android Beam
-            Toast.makeText(activity, "Please enable Android Beam.", Toast.LENGTH_SHORT).show();
-            activity.startActivity(new Intent(Settings.ACTION_NFCSHARING_SETTINGS));
-        }
+                // NFC is disabled, show the settings UI to enable NFC.
+                Intent settingsIntent = new Intent();
+                settingsIntent.setAction(Settings.ACTION_NFC_SETTINGS);
+                activity.startActivity(settingsIntent);
+            }
+            // Check whether Android Beam feature is enabled on device.
+            else if (!nfcAdapter.isNdefPushEnabled()) {
+                Toast.makeText(activity, "Please enable Android Beam.", Toast.LENGTH_LONG).show();
 
-        setupForegroundDispatch();
+                // Android Beam is disabled, show the settings UI to enable Android Beam.
+                Intent settingsIntent = new Intent();
+                settingsIntent.setAction(Settings.ACTION_NFCSHARING_SETTINGS);
+                activity.startActivity(settingsIntent);
+            }
+
+            setupForegroundDispatch();
+        }
     }
 
     /**
      * Intercept the intent and claim priority over other activities.
-     * Block incoming intents that would launch due to the NFC NfcTag Discovery,
+     * Block incoming intents that would launch due to the NFC tag Discovery,
      * including the base activity as well (Duplicate).
      */
     private void setupForegroundDispatch() {
-        // Creates an intent with tag data and delivers it
-        // to this activity.
+        int REQUEST_TAG = 0;
+        int FLAGS = 0;
+
+        // Create an intent with tag data and deliver it
+        // to the given activity.
         Intent intent = new Intent(activity, activity.getClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        nfcPendingIntent = PendingIntent.getActivity(activity, 0, intent, 0);
+        nfcPendingIntent = PendingIntent.getActivity(activity, REQUEST_TAG, intent, FLAGS);
 
         // Listens for the NDEF_DISCOVERED intent.
         IntentFilter ndefDiscovered = new IntentFilter();
@@ -156,16 +158,18 @@ public class NfcHandler {
      * Enable a foreground tag dispatch for this activity.
      */
     public void enableForegroundDispatch() {
-        if (nfcAdapter != null)
+        if (itSupportsNFC()) {
             nfcAdapter.enableForegroundDispatch(activity, nfcPendingIntent, filters, techList);
+        }
     }
 
     /**
      * Disable the foreground tag dispatch for this activity.
      */
     public void disableForegroundDispatch() {
-        if (nfcAdapter != null)
+        if (itSupportsNFC()) {
             nfcAdapter.disableForegroundDispatch(activity);
+        }
     }
 
     /**
@@ -174,21 +178,24 @@ public class NfcHandler {
      * @param intent The NFC intent to resolve the tag discovery type.
      */
     public void enableNfcReadTag(Intent intent) {
-        if (nfcAdapter == null)
-            return;
+        if (itSupportsNFC()) {
+            try {
+                // If the discovered tag matches this application's mimeType.
+                if (intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
+                    // Get the extra from the intent containing the tag.
+                    Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
-        try {
-            if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
-                Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                // NFC tag.
-                readFromTag(tag);
-            } else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction()) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
-                throw new TagIdNotRegisteredException("Nfc tag not registered!");
+                    readFromTag(tag);
+                }
+                // The discovered tag is not registered in this application.
+                else if (intent.getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED) || intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
+                    throw new TagIdNotRegisteredException("Nfc tag not registered!");
+                }
+            } catch (TagIdNotRegisteredException e) {
+                Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Log.e(TAG, "Error reading from tag. " + e.getMessage());
             }
-        } catch (TagIdNotRegisteredException e) {
-            Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Log.e(TAG, "Error reading from tag. " + e.getMessage());
         }
     }
 
@@ -197,27 +204,29 @@ public class NfcHandler {
      *
      * @param tag The tag that will be read.
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void readFromTag(Tag tag) throws IOException, FormatException {
+        // Get the NDEF formatted tag and enable I/O operations.
         Ndef ndef = Ndef.get(tag);
         ndef.connect();
+
+        // Get the first record from the NdefMessage.
         NdefMessage ndefMessage = ndef.getNdefMessage();
         NdefRecord ndefRecord = ndefMessage.getRecords()[0];
 
-        String mimeType = ndefRecord.toMimeType();
-        //Log.d(TAG, "MIME TYPE: " + mimeType);
-
+        // Get the payload from the NdefRecord.
         String payload = new String(ndefRecord.getPayload());
-        //Log.d(TAG, "Payload: " + payload);
 
-        if (mimeType.equals(MIME_TYPE) && payload.equals("tag")) {
+        // If the discovered tag matches this application's payload.
+        if (payload.equals("tag")) {
+            // Get the tag id in hex format.
             String tagId = ByteArrayToHexString(tag.getId());
-            //Log.d(TAG, "NfcTag ID: " + tagId);
 
             // Start the solved activity.
             startActivityFromNFC(tagId);
-        } else {
-            throw new TagIdNotRegisteredException("Nfc tag not registered!");
+        }
+        // The discovered tag is not registered in this application.
+        else {
+            throw new TagIdNotRegisteredException("Discovered tag not registered!");
         }
     }
 
@@ -228,18 +237,22 @@ public class NfcHandler {
      * @param tagId The tag id to open the appropriate NfcTag.
      */
     private void startActivityFromNFC(String tagId) {
+        // Get the NFC tag from the list.
         NfcTag nfcTag = MyTags.get(activity).getNfcTag(tagId);
 
+        // If the tag exists in the application.
         if (nfcTag != null) {
             // Create an Intent and send the extra discovered NfcTag ID and
             // another extra to indicate that it's from the NFC discovery.
-            Intent intent = new Intent(activity, TrackingTagPagerActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            intent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, tagId);
-            intent.putExtra(TrackingTagFragment.EXTRA_TAG_DISCOVERED, true);
-            activity.startActivity(intent);
-        } else {
-            throw new TagIdNotRegisteredException("Nfc tag not registered!");
+            Intent tagIntent = new Intent(activity, TrackingTagPagerActivity.class);
+            tagIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            tagIntent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, tagId);
+            tagIntent.putExtra(TrackingTagFragment.EXTRA_TAG_DISCOVERED, true);
+            activity.startActivity(tagIntent);
+        }
+        // NFC tag is not registered in the model.
+        else {
+            throw new TagIdNotRegisteredException("NFC tag not registered!");
         }
     }
 
@@ -300,66 +313,54 @@ public class NfcHandler {
      * Listen for an android beam event and send the data.
      */
     public void enableAndroidBeamShareFiles() {
-        if (nfcAdapter == null)
-            return;
+        if (itSupportsNFC()) {
+            nfcAdapter.setBeamPushUrisCallback(new NfcAdapter.CreateBeamUrisCallback() {
+                @Override
+                public Uri[] createBeamUris(NfcEvent event) {
+                    // Get the URIs array that android beam is going to send.
+                    Uri[] filesUris = MyTags.get(activity).createFileUrisArray();
 
-        nfcAdapter.setBeamPushUrisCallback(new NfcAdapter.CreateBeamUrisCallback() {
-            @Override
-            public Uri[] createBeamUris(NfcEvent event) {
-                Uri[] filesUris = MyTags.get(activity).createFileUrisArray();
-
-                String mimeType = getMimeType(filesUris[0].getPath());
-                Log.d("NfcHandler", "MIME_TYPE: " + mimeType);
-
-                return filesUris;
-            }
-        }, activity);
-    }
-
-    public static String getMimeType(String url) {
-        String type = null;
-        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-        if (extension != null) {
-            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+                    return filesUris;
+                }
+            }, activity);
         }
-        return type;
     }
 
     /**
      * Handle the Intent.ACTION_VIEW action and move the files
      * from the android beam folder to the external private storage.
      *
-     * @param intent The intent to get the cation.
+     * @param intent The intent to get the action.
      */
     public void handleAndroidBeamReceivedFiles(Intent intent) {
-        if (nfcAdapter == null)
-            return;
+        if (itSupportsNFC()) {
+            String action = intent.getAction();
 
-        String action = intent.getAction();
+            // If the intent action is ACTION_VIEW.
+            if (TextUtils.equals(action, Intent.ACTION_VIEW)) {
+                // Get the URI from the Intent.
+                Uri beamUri = intent.getData();
 
-        // For ACTION_VIEW, the Activity is being asked to display data.
-        // Get the URI.
-        if (TextUtils.equals(action, Intent.ACTION_VIEW)) {
-            // Get the URI from the Intent.
-            Uri beamUri = intent.getData();
+                String parentFilePath = null;
+                // If the URI has a scheme of file.
+                if (TextUtils.equals(beamUri.getScheme(), "file")) {
+                    parentFilePath = getParentFileFromURI(beamUri);
+                }
 
-            String parentFilePath = null;
-            // Test for the type of URI, by getting its scheme value.
-            if (TextUtils.equals(beamUri.getScheme(), "file")) {
-                parentFilePath = handleFileUri(beamUri);
+                moveFilesToPrivateExternalStorage(parentFilePath);
             }
-
-            moveFilesToPrivateExternalStorage(parentFilePath);
         }
     }
 
-    private String handleFileUri(Uri beamUri) {
+    private String getParentFileFromURI(Uri beamUri) {
         // Get the path part of the URI.
         String fileName = beamUri.getPath();
+
         // Create a File object for this filename.
-        File copiedFile = new File(fileName);
+        File file = new File(fileName);
+
         // Get a string containing the file's parent directory.
-        return copiedFile.getParent();
+        return file.getParent();
     }
 
     private void moveFilesToPrivateExternalStorage(String parentFilePath) {
@@ -374,16 +375,20 @@ public class NfcHandler {
         MyTags.get(activity).loadTags();
 
         // Get pictures from android beam through the newly tags.txt file.
+        // Get the size of the received tags.txt file.
         int size = MyTags.get(activity).getNfcTags().size();
+
+        // For each NFC tag in the received tags.txt file.
         for (int i = 0; i < size; i++) {
+            // Get the nfc tag.
             NfcTag nfcTag = MyTags.get(activity).getNfcTags().get(i);
 
-            // Delete memory cache.
+            // Delete memory cache for the old image.
             PictureLoader.invalidateWithPicasso(activity, nfcTag.getPictureFilePath());
 
-            // Beam picture file path.
+            // Get the Beam picture file path.
             File beamPictureFile = new File(parentFilePath + File.separator + "Tag" + nfcTag.getTagId() + ".jpg");
-            // Existing picture file path.
+            // Get the existing picture file path.
             File existingPictureFile = new File(nfcTag.getPictureFilePath());
             // Overwrite the existing file with the beam file.
             beamPictureFile.renameTo(existingPictureFile);
@@ -396,16 +401,19 @@ public class NfcHandler {
      * @param intent The NFC intent to resolve the tag discovery type.
      */
     public boolean enableNfcWriteTag(Intent intent) {
-        if (nfcAdapter == null)
-            return false;
+        if (itSupportsNFC()) {
+            // If any tag technology is discovered.
+            if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())
+                    || NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())
+                    || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
+                // If the write mode is enabled.
+                if (writeMode) {
+                    // Get the extra from the intent containing the tag.
+                    Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())
-                || NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())
-                || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
-            if (writeMode) {
-                Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                writeToTag(tag);
-                return true;
+                    writeToTag(tag);
+                    return true;
+                }
             }
         }
         return false;
@@ -416,10 +424,9 @@ public class NfcHandler {
      *
      * @param tag The tag that will be written.
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void writeToTag(Tag tag) {
         try {
-            // Get discovered tag id.
+            // Get discovered tag id in hex format.
             String tagId = ByteArrayToHexString(tag.getId());
 
             // If it's a new tag.
@@ -438,6 +445,7 @@ public class NfcHandler {
             }
 
             /* START WRITING */
+            // Get the byte array from the string.
             byte[] payload = "tag".getBytes();
 
             // Encapsulate a NdefRecord inside a NdefMessage.
@@ -510,5 +518,9 @@ public class NfcHandler {
         TagIdNotRegisteredException(String message) {
             super(message);
         }
+    }
+
+    private boolean itSupportsNFC() {
+        return nfcAdapter != null;
     }
 }

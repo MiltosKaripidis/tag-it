@@ -1,4 +1,4 @@
-package com.example.karhades_pc.tag_it;
+package com.example.karhades_pc.tag_it.model;
 
 import android.content.Context;
 import android.net.Uri;

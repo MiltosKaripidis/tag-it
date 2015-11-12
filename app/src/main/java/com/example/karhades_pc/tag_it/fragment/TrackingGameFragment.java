@@ -1,4 +1,4 @@
-package com.example.karhades_pc.tag_it;
+package com.example.karhades_pc.tag_it.fragment;
 
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
@@ -19,9 +19,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.karhades_pc.tag_it.model.MyTags;
+import com.example.karhades_pc.tag_it.model.NfcTag;
+import com.example.karhades_pc.tag_it.R;
+import com.example.karhades_pc.tag_it.activity.TrackingTagPagerActivity;
 import com.example.karhades_pc.utils.FontCache;
 import com.example.karhades_pc.utils.PictureLoader;
-import com.example.karhades_pc.utils.Utils;
+import com.example.karhades_pc.utils.TransitionHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +51,7 @@ public class TrackingGameFragment extends Fragment {
 
         nfcTags = MyTags.get(getActivity()).getNfcTags();
 
-        if (Utils.itSupportsTransitions()) {
+        if (TransitionHelper.itSupportsTransitions()) {
             enableTransitions();
         }
     }
@@ -123,7 +127,7 @@ public class TrackingGameFragment extends Fragment {
                     intent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
                     intent.putExtra(TrackingTagPagerActivity.EXTRA_CURRENT_TAG_POSITION, getAdapterPosition());
 
-                    if (Utils.itSupportsTransitions()) {
+                    if (TransitionHelper.itSupportsTransitions()) {
                         isReentering = false;
 
                         Pair<View, String>[] pairs = createPairs(Pair.create(imageView, imageView.getTransitionName()));
@@ -155,7 +159,7 @@ public class TrackingGameFragment extends Fragment {
         public void bindRiddle(NfcTag nfcTag) {
             this.nfcTag = nfcTag;
 
-            if (Utils.itSupportsTransitions()) {
+            if (TransitionHelper.itSupportsTransitions()) {
                 imageView.setTransitionName("image" + nfcTag.getTagId());
                 imageView.setTag("image" + nfcTag.getTagId());
             }

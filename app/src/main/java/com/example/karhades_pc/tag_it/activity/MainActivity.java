@@ -1,4 +1,4 @@
-package com.example.karhades_pc.tag_it;
+package com.example.karhades_pc.tag_it.activity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -27,7 +27,12 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import com.example.karhades_pc.nfc.NfcHandler;
-import com.example.karhades_pc.utils.Utils;
+import com.example.karhades_pc.tag_it.fragment.CreateGameFragment;
+import com.example.karhades_pc.tag_it.model.MyTags;
+import com.example.karhades_pc.tag_it.R;
+import com.example.karhades_pc.tag_it.fragment.ShareGameFragment;
+import com.example.karhades_pc.tag_it.fragment.TrackingGameFragment;
+import com.example.karhades_pc.utils.TransitionHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -332,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
         CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(2);
         fragment.setupFloatingActionButton(floatingActionButton);
 
-        if (Utils.itSupportsTransitions()) {
+        if (TransitionHelper.itSupportsTransitions()) {
             ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.main_navigation_drawer_layout);
             ViewGroup revealContent = (ViewGroup) findViewById(R.id.main_reveal_content);
             fragment.setupTransitionViews(sceneRoot, revealContent);

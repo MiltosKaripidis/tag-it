@@ -1,4 +1,4 @@
-package com.example.karhades_pc.tag_it;
+package com.example.karhades_pc.tag_it.fragment;
 
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
@@ -25,11 +25,13 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.karhades_pc.utils.AudioPlayer;
+import com.example.karhades_pc.tag_it.R;
+import com.example.karhades_pc.tag_it.activity.FullScreenActivity;
+import com.example.karhades_pc.tag_it.model.MyTags;
+import com.example.karhades_pc.tag_it.model.NfcTag;
 import com.example.karhades_pc.utils.FontCache;
 import com.example.karhades_pc.utils.PictureLoader;
 import com.example.karhades_pc.utils.TransitionHelper;
-import com.example.karhades_pc.utils.Utils;
 import com.squareup.picasso.Callback;
 
 import java.text.SimpleDateFormat;
@@ -45,7 +47,6 @@ public class TrackingTagFragment extends Fragment {
     public static final String EXTRA_FILE_PATH = "com.example.karhades_pc.tag_it.file_path";
 
     private NfcTag nfcTag;
-    private AudioPlayer audioPlayer;
 
     private ImageView imageView;
     private TextView difficultyTextView;
@@ -84,9 +85,8 @@ public class TrackingTagFragment extends Fragment {
         setHasOptionsMenu(true);
 
         getFragmentArguments();
-        setupAudioPlayer();
 
-        if (Utils.itSupportsTransitions()) {
+        if (TransitionHelper.itSupportsTransitions()) {
             enableTransitions();
         }
     }
@@ -101,7 +101,7 @@ public class TrackingTagFragment extends Fragment {
         Callback picassoCallback = new Callback() {
             @Override
             public void onSuccess() {
-                if (Utils.itSupportsTransitions()) {
+                if (TransitionHelper.itSupportsTransitions()) {
                     imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                         @Override
                         public boolean onPreDraw() {
@@ -142,10 +142,6 @@ public class TrackingTagFragment extends Fragment {
         }
     }
 
-    private void setupAudioPlayer() {
-        audioPlayer = new AudioPlayer();
-    }
-
     /**
      * Solve the NfcTag with the given tag id.
      *
@@ -162,9 +158,9 @@ public class TrackingTagFragment extends Fragment {
         String formattedDate = simpleDateFormat.format(date);
         nfcTag.setDateSolved(formattedDate);
 
-        // Play winning sound.
-        // TODO: Uncomment the cheering sound.
-        //audioPlayer.play(context, R.raw.cheering);
+//        // Play winning sound.
+//        Intent audioService = new Intent(getActivity(), AudioService.class);
+//        getActivity().startService(audioService);
 
         // Inform user.
         Snackbar snackbar = Snackbar.make(getView(), nfcTag.getTitle() + " was successfully solved!", Snackbar.LENGTH_INDEFINITE);
@@ -247,7 +243,7 @@ public class TrackingTagFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 hideActionButton();
-                if (Utils.itSupportsTransitions()) {
+                if (TransitionHelper.itSupportsTransitions()) {
                     TransitionHelper.circularShow(fullscreenActionButton, revealContent, new Runnable() {
                         @Override
                         public void run() {
@@ -275,7 +271,7 @@ public class TrackingTagFragment extends Fragment {
 
         // NfcTag Picture ImageView.
         imageView = (ImageView) view.findViewById(R.id.tracking_image_view);
-        if (Utils.itSupportsTransitions()) {
+        if (TransitionHelper.itSupportsTransitions()) {
             imageView.setTransitionName("image" + nfcTag.getTagId());
         }
 
@@ -314,7 +310,7 @@ public class TrackingTagFragment extends Fragment {
         String filePath = nfcTag.getPictureFilePath();
         intent.putExtra(EXTRA_FILE_PATH, filePath);
 
-        if (Utils.itSupportsTransitions()) {
+        if (TransitionHelper.itSupportsTransitions()) {
             // Deactivate the default transitions for a better circular reveal experience.
             Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), null).toBundle();
             getActivity().startActivity(intent, bundle);

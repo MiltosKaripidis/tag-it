@@ -1,4 +1,4 @@
-package com.example.karhades_pc.tag_it;
+package com.example.karhades_pc.tag_it.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -30,9 +30,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.karhades_pc.nfc.NfcHandler;
+import com.example.karhades_pc.tag_it.model.MyTags;
+import com.example.karhades_pc.tag_it.model.NfcTag;
+import com.example.karhades_pc.tag_it.R;
+import com.example.karhades_pc.tag_it.activity.FullScreenActivity;
 import com.example.karhades_pc.utils.PictureLoader;
 import com.example.karhades_pc.utils.TransitionHelper;
-import com.example.karhades_pc.utils.Utils;
 
 import java.io.File;
 
@@ -207,7 +210,7 @@ public class CreateTagFragment extends Fragment {
         cameraActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Utils.itSupportsTransitions()) {
+                if (TransitionHelper.itSupportsTransitions()) {
                     TransitionHelper.circularShow(cameraActionButton, revealContent, new Runnable() {
                         @Override
                         public void run() {

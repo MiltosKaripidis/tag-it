@@ -1,10 +1,12 @@
-package com.example.karhades_pc.tag_it;
+package com.example.karhades_pc.tag_it.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.karhades_pc.tag_it.R;
+import com.example.karhades_pc.tag_it.fragment.TrackingTagFragment;
 import com.example.karhades_pc.utils.PictureLoader;
 
 /**

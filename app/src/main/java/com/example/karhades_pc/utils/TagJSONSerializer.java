@@ -3,7 +3,7 @@ package com.example.karhades_pc.utils;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.karhades_pc.tag_it.NfcTag;
+import com.example.karhades_pc.tag_it.model.NfcTag;
 
 import org.json.JSONArray;
 import org.json.JSONException;

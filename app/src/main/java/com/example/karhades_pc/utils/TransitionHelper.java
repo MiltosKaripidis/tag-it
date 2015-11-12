@@ -3,6 +3,7 @@ package com.example.karhades_pc.utils;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -15,6 +16,10 @@ public class TransitionHelper {
 
     private TransitionHelper() {
         // DOES NOT GENERATE OBJECTS.
+    }
+
+    public static boolean itSupportsTransitions() {
+        return Build.VERSION.SDK_INT >= 21;
     }
 
     @TargetApi(21)

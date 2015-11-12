@@ -1,9 +1,11 @@
-package com.example.karhades_pc.tag_it;
+package com.example.karhades_pc.tag_it.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+
+import com.example.karhades_pc.tag_it.R;
 
 public abstract class SingleFragmentActivity extends AppCompatActivity {
     protected abstract Fragment createFragment();

@@ -1,4 +1,4 @@
-package com.example.karhades_pc.tag_it;
+package com.example.karhades_pc.tag_it.fragment;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -32,10 +32,14 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.karhades_pc.tag_it.model.MyTags;
+import com.example.karhades_pc.tag_it.model.NfcTag;
+import com.example.karhades_pc.tag_it.R;
+import com.example.karhades_pc.tag_it.activity.CreateTagActivity;
+import com.example.karhades_pc.tag_it.activity.CreateTagPagerActivity;
 import com.example.karhades_pc.utils.FontCache;
 import com.example.karhades_pc.utils.PictureLoader;
 import com.example.karhades_pc.utils.TransitionHelper;
-import com.example.karhades_pc.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -458,7 +462,7 @@ public class CreateGameFragment extends Fragment {
         addActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Utils.itSupportsTransitions()) {
+                if (TransitionHelper.itSupportsTransitions()) {
                     startActivityWithTransition();
                 }
                 // No transitions.
