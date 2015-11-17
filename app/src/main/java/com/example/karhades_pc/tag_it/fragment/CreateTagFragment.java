@@ -320,7 +320,7 @@ public class CreateTagFragment extends Fragment {
 
         // If it's a new tag and there's no picture taken.
         if (currentNfcTag == null && temporaryPictureFilename == null) {
-            Snackbar.make(getView(), "Tap the camera button first.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(getView(), "Take a picture first.", Snackbar.LENGTH_LONG).show();
             return;
         }
 
@@ -360,7 +360,7 @@ public class CreateTagFragment extends Fragment {
                     renameTempFile();
 
                     // Inform user.
-                    Toast.makeText(getActivity(), "Nfc Tag was successfully written!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "NFC tag written!", Toast.LENGTH_SHORT).show();
 
                     // Close activity.
                     getActivity().finish();
@@ -426,7 +426,7 @@ public class CreateTagFragment extends Fragment {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return new AlertDialog.Builder(getActivity())
                     .setTitle("Nfc Write Mode")
-                    .setMessage("Touch the nfc tag to write the information inserted.")
+                    .setMessage("Touch the NFC tag to write the information inserted.")
                     .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -444,6 +444,6 @@ public class CreateTagFragment extends Fragment {
     }
 
     public void makeSnackbar() {
-        Snackbar.make(getView(), "Press the \"TAG IT!\" button to write! ", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(getView(), "Click \"TAG IT!\" to write.", Snackbar.LENGTH_LONG).show();
     }
 }

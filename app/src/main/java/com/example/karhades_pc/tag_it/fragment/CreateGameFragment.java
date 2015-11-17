@@ -197,7 +197,7 @@ public class CreateGameFragment extends Fragment {
         reorderNfcTags();
 
         // Inform user.
-        Toast.makeText(getActivity(), "Items deleted", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Tags deleted", Toast.LENGTH_SHORT).show();
     }
 
     public void contextSelectAll() {

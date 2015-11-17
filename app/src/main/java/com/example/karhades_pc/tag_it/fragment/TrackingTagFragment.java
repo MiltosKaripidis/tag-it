@@ -154,7 +154,7 @@ public class TrackingTagFragment extends Fragment {
 
         // Format the Date into custom string.
         Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM (HH:mm:ss)");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM (HH:mm)");
         String formattedDate = simpleDateFormat.format(date);
         nfcTag.setDateSolved(formattedDate);
 
@@ -163,7 +163,7 @@ public class TrackingTagFragment extends Fragment {
 //        getActivity().startService(audioService);
 
         // Inform user.
-        Snackbar snackbar = Snackbar.make(getView(), nfcTag.getTitle() + " was successfully solved!", Snackbar.LENGTH_INDEFINITE);
+        Snackbar snackbar = Snackbar.make(getView(), nfcTag.getTitle() + " solved", Snackbar.LENGTH_INDEFINITE);
         snackbar.setActionTextColor(getResources().getColor(R.color.accent));
         snackbar.setAction("DISMISS", new View.OnClickListener() {
             @Override

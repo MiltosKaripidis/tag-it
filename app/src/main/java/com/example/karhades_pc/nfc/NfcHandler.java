@@ -89,7 +89,7 @@ public class NfcHandler {
         if (itSupportsNFC()) {
             // Check whether NFC is enabled on device.
             if (!nfcAdapter.isEnabled()) {
-                Toast.makeText(activity, "Please enable NFC.", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, "Turn on NFC.", Toast.LENGTH_LONG).show();
 
                 // NFC is disabled, show the settings UI to enable NFC.
                 Intent settingsIntent = new Intent();
@@ -98,7 +98,7 @@ public class NfcHandler {
             }
             // Check whether Android Beam feature is enabled on device.
             else if (!nfcAdapter.isNdefPushEnabled()) {
-                Toast.makeText(activity, "Please enable Android Beam.", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, "Turn on Android Beam.", Toast.LENGTH_LONG).show();
 
                 // Android Beam is disabled, show the settings UI to enable Android Beam.
                 Intent settingsIntent = new Intent();
@@ -189,7 +189,7 @@ public class NfcHandler {
                 }
                 // The discovered tag is not registered in this application.
                 else if (intent.getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED) || intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
-                    throw new TagIdNotRegisteredException("Nfc tag not registered!");
+                    throw new TagIdNotRegisteredException("NFC tag not registered!");
                 }
             } catch (TagIdNotRegisteredException e) {
                 Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -436,7 +436,7 @@ public class NfcHandler {
 
                 // If NFC tag exists, don't create another one.
                 if (nfcTag != null) {
-                    throw new TagIdExistsException("Nfc tag already exists!");
+                    throw new TagIdExistsException("NFC tag already exists!");
                 }
             }
             // If it exists.
@@ -475,7 +475,7 @@ public class NfcHandler {
             Log.e(TAG, "Error when writing NdefMessage to NfcTag. " + e.getMessage());
 
             // Inform user.
-            Toast.makeText(activity, "Could not write to nfc tag!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Couldn't write to NFC tag!", Toast.LENGTH_SHORT).show();
 
             // Set STATUS_ERROR.
             onTagWriteListener.onTagWritten(OnTagWriteListener.STATUS_ERROR, null);

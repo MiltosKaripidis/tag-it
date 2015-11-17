@@ -94,11 +94,11 @@ public class MainActivity extends AppCompatActivity {
         }
         // Tab 2.
         else if (tabLayout.getSelectedTabPosition() == 1) {
-            Snackbar.make(findViewById(R.id.main_coordinator_layout), "Approach the devices to share game.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.main_coordinator_layout), "Approach devices to share game.", Snackbar.LENGTH_LONG).show();
         }
         // Tab 3.
         else if (tabLayout.getSelectedTabPosition() == 2) {
-            Snackbar.make(findViewById(R.id.main_coordinator_layout), "Click the + button to create a new one.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.main_coordinator_layout), "Click + to create a new one.", Snackbar.LENGTH_LONG).show();
         }
     }
 
