@@ -5,7 +5,7 @@
     android:background="@color/background"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -13,10 +13,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="160dp"
+            android:gravity="center"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="32dp"
-            android:text="Approach devices to share a created game."
+            android:text="Approach devices to share a created game"
             android:textSize="24sp" />
 
         <ImageView
@@ -24,6 +26,6 @@
             android:layout_height="match_parent"
             android:scaleType="centerInside"
             android:src="@drawable/icon_android_beam" />
-    </RelativeLayout>
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>
