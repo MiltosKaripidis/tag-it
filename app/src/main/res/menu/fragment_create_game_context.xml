@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/context_bar_delete_item"
-        android:icon="@mipmap/delete"
+        android:icon="@drawable/delete"
         android:showAsAction="ifRoom"
         android:title="Delete" />
     <item

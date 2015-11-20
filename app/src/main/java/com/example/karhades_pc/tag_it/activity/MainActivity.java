@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(getResources().getDrawable(R.mipmap.hamburger_menu));
+            actionBar.setHomeAsUpIndicator(getResources().getDrawable(R.drawable.hamburger_menu));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
