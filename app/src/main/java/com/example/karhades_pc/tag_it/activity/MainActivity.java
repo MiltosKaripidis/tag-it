@@ -27,11 +27,11 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import com.example.karhades_pc.nfc.NfcHandler;
-import com.example.karhades_pc.tag_it.fragment.CreateGameFragment;
-import com.example.karhades_pc.tag_it.model.MyTags;
 import com.example.karhades_pc.tag_it.R;
+import com.example.karhades_pc.tag_it.fragment.CreateGameFragment;
 import com.example.karhades_pc.tag_it.fragment.ShareGameFragment;
 import com.example.karhades_pc.tag_it.fragment.TrackingGameFragment;
+import com.example.karhades_pc.tag_it.model.MyTags;
 import com.example.karhades_pc.utils.TransitionHelper;
 
 import java.util.ArrayList;
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(getResources().getDrawable(R.drawable.hamburger_menu));
+            actionBar.setHomeAsUpIndicator(getResources().getDrawable(R.drawable.icon_hamburger_menu));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }

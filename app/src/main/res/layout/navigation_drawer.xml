@@ -12,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/icon_navigation" />
+            android:src="@drawable/image_navigation" />
 
         <LinearLayout
             android:layout_width="match_parent"

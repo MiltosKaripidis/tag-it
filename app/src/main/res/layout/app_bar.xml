@@ -3,4 +3,4 @@
     android:layout_height="wrap_content"
     android:background="@color/primary"
     android:elevation="10dp"
-    android:navigationIcon="@drawable/hamburger_menu" />
+    android:navigationIcon="@drawable/icon_hamburger_menu" />

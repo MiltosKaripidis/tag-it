@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/icon_no_image" />
+            android:src="@drawable/image_no_image" />
 
         <FrameLayout
             android:id="@+id/create_image_view_overlay"
@@ -56,7 +56,7 @@
             android:layout_alignRight="@id/create_image_view"
             android:layout_marginBottom="-27dp"
             android:layout_marginRight="16dp"
-            android:src="@drawable/camera"
+            android:src="@drawable/icon_camera"
             app:backgroundTint="@color/accent" />
 
         <RelativeLayout
@@ -64,7 +64,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/create_title_frame_layout"
-            android:orientation="vertical"
             android:paddingBottom="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"

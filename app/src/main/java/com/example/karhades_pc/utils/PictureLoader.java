@@ -25,7 +25,7 @@ public class PictureLoader {
         if (filePath != null) {
             Picasso.with(context).load(new File(filePath)).fit().centerInside().into(imageView, callback);
         } else {
-            Picasso.with(context).load(R.drawable.icon_no_image).fit().centerCrop().into(imageView);
+            Picasso.with(context).load(R.drawable.image_no_image).fit().centerCrop().into(imageView);
         }
     }
 

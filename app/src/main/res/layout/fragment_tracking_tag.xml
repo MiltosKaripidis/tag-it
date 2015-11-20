@@ -18,7 +18,7 @@
         android:layout_alignRight="@id/tracking_image_view"
         android:layout_marginBottom="-27dp"
         android:layout_marginRight="16dp"
-        android:src="@drawable/fullscreen"
+        android:src="@drawable/icon_fullscreen"
         app:backgroundTint="@color/accent" />
 
     <android.support.v7.widget.Toolbar
