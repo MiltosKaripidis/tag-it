@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupTabLayout() {
         tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
-        tabLayout.setTabTextColors(getResources().getColorStateList(R.color.tab_selector));
+        tabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_normal));
         tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setText("TRACKING");
@@ -380,14 +380,14 @@ public class MainActivity extends AppCompatActivity {
                 getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
             }
 
-            tabLayout.setTabTextColors(getResources().getColorStateList(R.color.tab_selector));
+            tabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_normal));
             tabLayout.setBackgroundColor(getResources().getColor(R.color.primary));
             tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
         } else {
             if (Build.VERSION.SDK_INT >= 21) {
                 getWindow().setStatusBarColor(getResources().getColor(R.color.accent_dark));
             }
-            tabLayout.setTabTextColors(getResources().getColorStateList(R.color.tab_selector_context));
+            tabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_activated));
             tabLayout.setBackgroundColor(getResources().getColor(R.color.accent));
             tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.primary));
         }
