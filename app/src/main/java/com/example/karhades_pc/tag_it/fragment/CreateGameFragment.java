@@ -1,5 +1,7 @@
 package com.example.karhades_pc.tag_it.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -23,6 +25,7 @@ import android.transition.TransitionManager;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -32,11 +35,11 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.karhades_pc.tag_it.model.MyTags;
-import com.example.karhades_pc.tag_it.model.NfcTag;
 import com.example.karhades_pc.tag_it.R;
 import com.example.karhades_pc.tag_it.activity.CreateTagActivity;
 import com.example.karhades_pc.tag_it.activity.CreateTagPagerActivity;
+import com.example.karhades_pc.tag_it.model.MyTags;
+import com.example.karhades_pc.tag_it.model.NfcTag;
 import com.example.karhades_pc.utils.FontCache;
 import com.example.karhades_pc.utils.PictureLoader;
 import com.example.karhades_pc.utils.TransitionHelper;
@@ -331,44 +334,14 @@ public class CreateGameFragment extends Fragment {
         private NfcTagAdapter adapter;
 
         @SuppressWarnings("deprecation")
-        public NfcTagHolder(final View view) {
+        public NfcTagHolder(View view) {
             super(view);
 
             adapter = (NfcTagAdapter) recyclerView.getAdapter();
 
-            // CardView OnClickListener.
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // If Contextual Action Bar is disabled.
-                    if (!adapter.isSelectionMode()) {
-                        // Start CreateTagPagerActivity.
-                        Intent intent = new Intent(getActivity(), CreateTagPagerActivity.class);
-                        intent.putExtra(CreateTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
-                        startActivityForResult(intent, REQUEST_EDIT);
-                    }
-                    // If Contextual Action Bar is enabled.
-                    else {
-                        // Toggle the selected view.
-                        selectItem(view);
-                    }
-                }
-            });
-            // CardView OnLongClickListener.
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    onContextualActionBarEnterListener.onItemLongClicked();
-
-                    // Enable selection mode.
-                    adapter.setSelectionMode(true);
-
-                    // Toggle selected view.
-                    selectItem(view);
-
-                    return true;
-                }
-            });
+            setupTouchListener(view);
+            setupClickListener(view);
+            setupLongClickListener(view);
 
             // Custom Fonts.
             Typeface typefaceBold = FontCache.get("fonts/capture_it.ttf", getActivity());
@@ -435,6 +408,72 @@ public class CreateGameFragment extends Fragment {
                 popupWindow.setElevation(24);
             }
             popupWindow.showAsDropDown(view, 25, -265);
+        }
+
+        /**
+         * Card resting elevation is 2dp and Card raised elevation is 8dp. Animate the changes between them.
+         *
+         * @param view The CardView to animate.
+         */
+        private void setupTouchListener(View view) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                Animator startAnimator = AnimatorInflater.loadAnimator(getActivity(), R.animator.start);
+                Animator endAnimator = AnimatorInflater.loadAnimator(getActivity(), R.animator.end);
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            startAnimator.setTarget(v);
+                            startAnimator.start();
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
+                        case MotionEvent.ACTION_UP:
+                            endAnimator.setTarget(v);
+                            endAnimator.start();
+                            break;
+                    }
+                    return false;
+                }
+            });
+        }
+
+        private void setupClickListener(final View view) {
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // If Contextual Action Bar is disabled.
+                    if (!adapter.isSelectionMode()) {
+                        // Start CreateTagPagerActivity.
+                        Intent intent = new Intent(getActivity(), CreateTagPagerActivity.class);
+                        intent.putExtra(CreateTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
+                        startActivityForResult(intent, REQUEST_EDIT);
+                    }
+                    // If Contextual Action Bar is enabled.
+                    else {
+                        // Toggle the selected view.
+                        selectItem(view);
+                    }
+                }
+            });
+        }
+
+        private void setupLongClickListener(final View view) {
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    onContextualActionBarEnterListener.onItemLongClicked();
+
+                    // Enable selection mode.
+                    adapter.setSelectionMode(true);
+
+                    // Toggle selected view.
+                    selectItem(view);
+
+                    return true;
+                }
+            });
         }
 
         public void bindRiddle(NfcTag nfcTag) {

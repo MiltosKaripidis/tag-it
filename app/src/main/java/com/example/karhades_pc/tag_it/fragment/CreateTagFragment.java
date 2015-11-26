@@ -283,7 +283,7 @@ public class CreateTagFragment extends Fragment {
 
     private void setupSpinner(View view) {
         difficultySpinner = (Spinner) view.findViewById(R.id.spinner);
-        ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.difficulty, android.R.layout.simple_spinner_item);
+        ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.array_difficulty, android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         difficultySpinner.setAdapter(arrayAdapter);
         difficultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

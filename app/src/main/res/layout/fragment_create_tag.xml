@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|left"
-                android:text="@string/tag_details_label"
+                android:text="@string/label_details"
                 android:textColor="@android:color/white"
                 android:textSize="34sp" />
         </FrameLayout>
@@ -79,7 +79,7 @@
                     android:id="@+id/create_difficulty_label_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/tag_difficulty"
+                    android:text="@string/label_difficulty"
                     android:textSize="16sp" />
 
                 <Spinner
@@ -103,7 +103,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:background="@drawable/selector_raised_button_secondary"
-                    android:text="@string/cancel_button"
+                    android:text="@string/button_cancel"
                     android:textColor="@android:color/black" />
 
                 <Button
@@ -113,7 +113,7 @@
                     android:background="@drawable/selector_raised_button"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:text="@string/tag_it_button"
+                    android:text="@string/button_tag_it"
                     android:textColor="@android:color/white" />
 
             </LinearLayout>

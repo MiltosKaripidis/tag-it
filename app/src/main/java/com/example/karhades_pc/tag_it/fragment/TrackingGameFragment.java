@@ -1,5 +1,7 @@
 package com.example.karhades_pc.tag_it.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
@@ -11,6 +13,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -19,10 +22,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.karhades_pc.tag_it.model.MyTags;
-import com.example.karhades_pc.tag_it.model.NfcTag;
 import com.example.karhades_pc.tag_it.R;
 import com.example.karhades_pc.tag_it.activity.TrackingTagPagerActivity;
+import com.example.karhades_pc.tag_it.model.MyTags;
+import com.example.karhades_pc.tag_it.model.NfcTag;
 import com.example.karhades_pc.utils.FontCache;
 import com.example.karhades_pc.utils.PictureLoader;
 import com.example.karhades_pc.utils.TransitionHelper;
@@ -120,6 +123,56 @@ public class TrackingGameFragment extends Fragment {
 
         public RiddleHolder(View view) {
             super(view);
+
+            setupTouchListener(view);
+            setupClickListener(view);
+
+            // Custom Fonts.
+            Typeface typefaceTitle = FontCache.get("fonts/capture_it.ttf", getActivity());
+            Typeface typefaceBold = FontCache.get("fonts/amatic_bold.ttf", getActivity());
+
+            imageView = (ImageView) view.findViewById(R.id.row_tracking_image_view);
+
+            titleTextView = (TextView) view.findViewById(R.id.row_tracking_title_text_view);
+            titleTextView.setTypeface(typefaceTitle);
+
+            difficultyTextView = (TextView) view.findViewById(R.id.row_tracking_difficulty_text_view);
+            difficultyTextView.setTypeface(typefaceBold);
+            difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
+
+            solvedCheckBox = (CheckBox) view.findViewById(R.id.row_tracking_solved_check_box);
+        }
+
+        /**
+         * Card resting elevation is 2dp and Card raised elevation is 8dp. Animate the changes between them.
+         *
+         * @param view The CardView to animate.
+         */
+        private void setupTouchListener(View view) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                Animator startAnimator = AnimatorInflater.loadAnimator(getActivity(), R.animator.start);
+                Animator endAnimator = AnimatorInflater.loadAnimator(getActivity(), R.animator.end);
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            startAnimator.setTarget(v);
+                            startAnimator.start();
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
+                        case MotionEvent.ACTION_UP:
+                            endAnimator.setTarget(v);
+                            endAnimator.start();
+                            break;
+                    }
+                    return false;
+                }
+            });
+        }
+
+        private void setupClickListener(View view) {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -140,20 +193,6 @@ public class TrackingGameFragment extends Fragment {
                     }
                 }
             });
-
-            imageView = (ImageView) view.findViewById(R.id.row_tracking_image_view);
-
-            titleTextView = (TextView) view.findViewById(R.id.row_tracking_title_text_view);
-            difficultyTextView = (TextView) view.findViewById(R.id.row_tracking_difficulty_text_view);
-            solvedCheckBox = (CheckBox) view.findViewById(R.id.row_tracking_solved_check_box);
-
-            // Custom Fonts.
-            Typeface typefaceTitle = FontCache.get("fonts/capture_it.ttf", getActivity());
-            Typeface typefaceBold = FontCache.get("fonts/amatic_bold.ttf", getActivity());
-
-            titleTextView.setTypeface(typefaceTitle);
-            difficultyTextView.setTypeface(typefaceBold);
-            difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
         }
 
         public void bindRiddle(NfcTag nfcTag) {

@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|left"
-            android:text="@string/tag_details_label"
+            android:text="@string/label_details"
             android:textColor="@android:color/white"
             android:textSize="34sp" />
     </FrameLayout>
@@ -65,7 +65,7 @@
                 android:id="@+id/tracking_difficulty_label_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tag_difficulty"
+                android:text="@string/label_difficulty"
                 android:textSize="34sp" />
 
             <TextView
@@ -87,7 +87,7 @@
                 android:id="@+id/tracking_solved_label_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tag_solved"
+                android:text="@string/label_solved"
                 android:textSize="34sp" />
 
             <CheckBox
@@ -111,7 +111,7 @@
                 android:id="@+id/tracking_date_solved_label_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Date Solved:  \"
+                android:text="@string/label_date_solved"
                 android:textSize="34sp" />
 
             <TextView

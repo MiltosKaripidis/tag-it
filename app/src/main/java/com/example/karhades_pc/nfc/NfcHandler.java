@@ -50,8 +50,8 @@ public class NfcHandler {
 
     private static Mode mode;
 
-    public static void setMode(Mode newMode) {
-        mode = newMode;
+    public static void setMode(Mode mode) {
+        NfcHandler.mode = mode;
     }
 
     private static OnTagWriteListener onTagWriteListener;
@@ -150,8 +150,8 @@ public class NfcHandler {
     /**
      * Indicate that the application is ready to write to a nfc tag.
      */
-    public static void toggleTagWriteMode(boolean value) {
-        writeMode = value;
+    public static void toggleTagWriteMode(boolean writeMode) {
+        NfcHandler.writeMode = writeMode;
     }
 
     /**
