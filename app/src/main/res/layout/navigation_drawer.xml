@@ -1,40 +1,35 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:background="@android:color/white">
 
-    <FrameLayout
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/primary">
+        android:scaleType="centerCrop"
+        android:src="@drawable/image_navigation"
+        tools:ignore="ContentDescription" />
 
-        <ImageView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/image_navigation" />
+            android:layout_height="wrap_content"
+            android:text="@string/dummy_username"
+            android:textColor="@android:color/white" />
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_gravity="bottom|left"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingLeft="16dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Karhades"
-                android:textColor="@android:color/white" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="xbroodlordx@gmail.com"
-                android:textColor="@android:color/white" />
-        </LinearLayout>
-
-    </FrameLayout>
-
-</LinearLayout>
+            android:layout_height="wrap_content"
+            android:text="@string/dummy_email"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+</FrameLayout>

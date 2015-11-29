@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <!-- Main Content-->
+    <!-- Main content-->
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_coordinator_layout"
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/main_tool_bar"
                 android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
+                android:layout_height="?attr/actionBarSize"
                 android:background="@color/primary"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark"
                 app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap" />
@@ -27,9 +27,11 @@
                 android:id="@+id/main_tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/primary" />
+                android:background="@color/primary"
+                app:layout_scrollFlags="scroll|enterAlways|snap" />
         </android.support.design.widget.AppBarLayout>
 
+        <!-- Fragment container-->
         <android.support.v4.view.ViewPager
             android:id="@+id/main_view_pager"
             android:layout_width="match_parent"
@@ -40,12 +42,13 @@
             android:id="@+id/floating_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
             android:src="@drawable/icon_add"
             app:backgroundTint="@color/accent" />
     </android.support.design.widget.CoordinatorLayout>
 
+    <!-- Circular reveal content-->
     <FrameLayout
         android:id="@+id/main_reveal_content"
         android:layout_width="match_parent"
@@ -53,7 +56,7 @@
         android:background="@color/accent"
         android:visibility="invisible" />
 
-    <!-- Navigation Drawer-->
+    <!-- Navigation drawer-->
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="300dp"

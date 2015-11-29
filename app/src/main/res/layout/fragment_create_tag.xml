@@ -1,125 +1,145 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <!-- Main content-->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/create_image_view"
+        <!-- Image and touch effect-->
+        <LinearLayout
+            android:id="@+id/create_image_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/image_no_image" />
+            android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/create_image_view_overlay"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:background="@drawable/selector_touch_effect"
-            android:clickable="true" />
+            <!-- Tag picture-->
+            <ImageView
+                android:id="@+id/create_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image_no_image"
+                tools:ignore="ContentDescription" />
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/create_tag_tool_bar"
+            <!-- Picture's touch effect-->
+            <FrameLayout
+                android:id="@+id/create_image_view_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_touch_effect"
+                android:clickable="true" />
+        </LinearLayout>
+
+        <!-- Secondary content-->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:background="@android:color/transparent"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+            android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/create_title_frame_layout"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_below="@+id/create_image_view"
-            android:background="@color/primary"
-            android:paddingLeft="16dp">
-
-            <TextView
-                android:id="@+id/create_details_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|left"
-                android:text="@string/label_details"
-                android:textColor="@android:color/white"
-                android:textSize="34sp" />
-        </FrameLayout>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/camera_action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/create_image_view"
-            android:layout_alignRight="@id/create_image_view"
-            android:layout_marginBottom="-27dp"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/icon_camera"
-            app:backgroundTint="@color/accent" />
-
-        <RelativeLayout
-            android:id="@+id/create_content_relative_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/create_title_frame_layout"
-            android:paddingBottom="8dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="8dp">
-
-            <!--Difficulty-->
-            <LinearLayout
-                android:id="@+id/create_difficulty_linear_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+            <!-- Details title-->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/primary"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
 
                 <TextView
-                    android:id="@+id/create_difficulty_label_text_view"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/create_details_text_view"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_difficulty"
-                    android:textSize="16sp" />
+                    android:layout_gravity="center"
+                    android:text="@string/label_details"
+                    android:textColor="@android:color/white"
+                    android:textSize="34sp" />
+            </FrameLayout>
 
-                <Spinner
-                    android:id="@+id/spinner"
-                    style="@style/Base.Widget.AppCompat.Spinner.Underlined"
-                    android:layout_width="wrap_content"
+            <!-- Content-->
+            <RelativeLayout
+                android:id="@+id/create_content_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="8dp">
+
+                <!-- Difficulty-->
+                <LinearLayout
+                    android:id="@+id/create_difficulty_linear_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/create_difficulty_label_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_difficulty"
+                        android:textSize="16sp" />
+
+                    <Spinner
+                        android:id="@+id/spinner"
+                        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:popupBackground="@android:color/white" />
+
+                </LinearLayout>
+
+                <!-- Buttons-->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:popupBackground="@android:color/white" />
+                    android:layout_alignParentBottom="true"
+                    android:gravity="end">
 
-            </LinearLayout>
+                    <Button
+                        android:id="@+id/cancel_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector_raised_button_secondary"
+                        android:text="@string/button_cancel"
+                        android:textColor="@android:color/black"
+                        tools:ignore="ButtonStyle" />
 
-            <!-- Buttons-->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true">
+                    <Button
+                        android:id="@+id/tag_it_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector_raised_button"
+                        android:text="@string/button_tag_it"
+                        android:textColor="@android:color/white"
+                        tools:ignore="ButtonStyle" />
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
 
-                <Button
-                    android:id="@+id/cancel_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:background="@drawable/selector_raised_button_secondary"
-                    android:text="@string/button_cancel"
-                    android:textColor="@android:color/black" />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/create_tag_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginTop="24dp"
+        android:background="@android:color/transparent"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
-                <Button
-                    android:id="@+id/tag_it_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:background="@drawable/selector_raised_button"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:text="@string/button_tag_it"
-                    android:textColor="@android:color/white" />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/camera_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/icon_camera"
+        app:backgroundTint="@color/accent"
+        app:layout_anchor="@id/create_image_linear_layout"
+        app:layout_anchorGravity="bottom|end" />
 
-            </LinearLayout>
-        </RelativeLayout>
-    </RelativeLayout>
-
+    <!-- Circular reveal content-->
     <FrameLayout
         android:id="@+id/create_reveal_content"
         android:layout_width="match_parent"

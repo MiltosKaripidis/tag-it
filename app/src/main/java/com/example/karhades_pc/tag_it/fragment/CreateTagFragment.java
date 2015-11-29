@@ -98,10 +98,8 @@ public class CreateTagFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        // Hide the reveal content view.
-        if (revealContent.getVisibility() == View.VISIBLE) {
-            TransitionHelper.circularHide(cameraActionButton, revealContent);
-        }
+        showActionButton();
+        hideCircularReveal();
     }
 
     @Override
@@ -211,12 +209,8 @@ public class CreateTagFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (TransitionHelper.itSupportsTransitions()) {
-                    TransitionHelper.circularShow(cameraActionButton, revealContent, new Runnable() {
-                        @Override
-                        public void run() {
-                            takePicture();
-                        }
-                    });
+                    hideActionButton();
+                    showCircularReveal();
                 }
                 // No transitions.
                 else {
@@ -445,5 +439,36 @@ public class CreateTagFragment extends Fragment {
 
     public void makeSnackbar() {
         Snackbar.make(getView(), "Click \"TAG IT!\" to write.", Snackbar.LENGTH_LONG).show();
+    }
+
+    private void hideActionButton() {
+        cameraActionButton.setScaleX(0);
+        cameraActionButton.setScaleY(0);
+    }
+
+    private void showActionButton() {
+        // Floating Action Button animation on show after a period of time.
+        if (cameraActionButton.getScaleX() == 0 && cameraActionButton.getScaleY() == 0) {
+            cameraActionButton.animate()
+                    .setStartDelay(700)
+                    .scaleX(1)
+                    .scaleY(1);
+        }
+    }
+
+    private void hideCircularReveal() {
+        // Hide the reveal content view.
+        if (revealContent.getVisibility() == View.VISIBLE) {
+            TransitionHelper.circularHide(cameraActionButton, revealContent);
+        }
+    }
+
+    private void showCircularReveal() {
+        TransitionHelper.circularShow(cameraActionButton, revealContent, new Runnable() {
+            @Override
+            public void run() {
+                takePicture();
+            }
+        });
     }
 }

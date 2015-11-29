@@ -1,25 +1,116 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/tracking_image_view"
+    <!-- Main content-->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:scaleType="centerCrop" />
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/full_screen_action_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/tracking_image_view"
-        android:layout_alignRight="@id/tracking_image_view"
-        android:layout_marginBottom="-27dp"
-        android:layout_marginRight="16dp"
-        android:src="@drawable/icon_fullscreen"
-        app:backgroundTint="@color/accent" />
+        <!-- Tag picture-->
+        <ImageView
+            android:id="@+id/tracking_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:scaleType="centerCrop"
+            tools:ignore="ContentDescription" />
+
+        <!-- Details title-->
+        <FrameLayout
+            android:id="@+id/tracking_title_frame_layout"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <TextView
+                android:id="@+id/tracking_details_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/label_details"
+                android:textColor="@android:color/white"
+                android:textSize="34sp" />
+        </FrameLayout>
+
+        <!-- Secondary content-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp">
+
+            <!-- Difficulty-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tracking_difficulty_label_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_difficulty"
+                    android:textSize="34sp" />
+
+                <TextView
+                    android:id="@+id/tracking_difficulty_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/accent"
+                    android:textSize="34sp" />
+            </LinearLayout>
+
+            <!-- Solved-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tracking_solved_label_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_solved"
+                    android:textSize="34sp" />
+
+                <CheckBox
+                    android:id="@+id/tracking_solved_check_box"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:button="@drawable/selector_solved_check_box"
+                    android:enabled="false"
+                    android:paddingTop="8dp" />
+            </LinearLayout>
+
+            <!-- Date solved-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tracking_date_solved_label_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_date_solved"
+                    android:textSize="34sp" />
+
+                <TextView
+                    android:id="@+id/tracking_date_solved_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_empty_date"
+                    android:textSize="34sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/tracking_tool_bar"
@@ -29,107 +120,22 @@
         android:background="@android:color/transparent"
         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
-    <FrameLayout
-        android:id="@+id/tracking_title_frame_layout"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_below="@id/tracking_image_view"
-        android:background="@color/primary"
-        android:paddingLeft="16dp">
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/full_screen_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/icon_fullscreen"
+        app:backgroundTint="@color/accent"
+        app:layout_anchor="@id/tracking_image_view"
+        app:layout_anchorGravity="bottom|end" />
 
-        <TextView
-            android:id="@+id/tracking_details_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|left"
-            android:text="@string/label_details"
-            android:textColor="@android:color/white"
-            android:textSize="34sp" />
-    </FrameLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/tracking_title_frame_layout"
-        android:orientation="vertical"
-        android:paddingLeft="16dp"
-        android:paddingTop="8dp">
-
-        <!--Difficulty-->
-        <LinearLayout
-            android:id="@+id/tracking_difficulty_linear_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/tracking_difficulty_label_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_difficulty"
-                android:textSize="34sp" />
-
-            <TextView
-                android:id="@+id/tracking_difficulty_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/accent"
-                android:textSize="34sp" />
-
-        </LinearLayout>
-
-        <!--Solved-->
-        <LinearLayout
-            android:id="@+id/tracking_solved_linear_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/tracking_solved_label_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_solved"
-                android:textSize="34sp" />
-
-            <CheckBox
-                android:id="@+id/tracking_solved_check_box"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:button="@drawable/selector_solved_check_box"
-                android:enabled="false"
-                android:paddingTop="8dp" />
-
-        </LinearLayout>
-
-        <!--Date Solved-->
-        <LinearLayout
-            android:id="@+id/tracking_date_solved_linear_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/tracking_date_solved_label_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_date_solved"
-                android:textSize="34sp" />
-
-            <TextView
-                android:id="@+id/tracking_date_solved_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="N/A"
-                android:textSize="34sp" />
-        </LinearLayout>
-
-    </LinearLayout>
-
+    <!-- Circular reveal content-->
     <FrameLayout
         android:id="@+id/tracking_reveal_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/accent"
         android:visibility="invisible" />
-
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
 

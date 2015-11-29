@@ -338,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
         fragment.setupFloatingActionButton(floatingActionButton);
 
         if (TransitionHelper.itSupportsTransitions()) {
-            ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.main_navigation_drawer_layout);
+            ViewGroup sceneRoot = drawerLayout;
             ViewGroup revealContent = (ViewGroup) findViewById(R.id.main_reveal_content);
             fragment.setupTransitionViews(sceneRoot, revealContent);
         }

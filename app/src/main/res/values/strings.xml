@@ -1,5 +1,13 @@
 <resources>
 
+    <string name="dummy_title">TITLE</string>
+    <string name="dummy_difficulty">HARD</string>
+    <string name="dummy_empty_text">No NFC Tags.</string>
+    <string name="dummy_empty_text1">Tap</string>
+    <string name="dummy_empty_text2">to add one.</string>
+    <string name="dummy_username">Karhades</string>
+    <string name="dummy_email">broodlord@gmail.com</string>
+
     <string name="app_name">Tag it!</string>
     <string name="label_details">Details</string>
     <string name="label_solved">Solved: </string>
@@ -8,9 +16,10 @@
     <string name="popup_window_delete">Delete</string>
     <string name="button_cancel">CANCEL</string>
     <string name="button_tag_it">TAG IT!</string>
-
-    <string name="dummy_title">TITLE</string>
-    <string name="dummy_difficulty">HARD</string>
+    <string name="text_share_hint">Approach devices to share a created game</string>
+    <string name="text_empty1">Nothing to track.</string>
+    <string name="text_empty2">Tap \'CREATE\' tab to add one.</string>
+    <string name="label_empty_date">N/A</string>
 
     <string-array name="array_difficulty">
         <item>Easy</item>
