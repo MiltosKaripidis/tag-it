@@ -2,17 +2,21 @@
 
     <!-- Default app style.-->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- App colors-->
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primary_dark</item>
         <item name="android:colorAccent">@color/accent</item>
         <item name="android:colorControlNormal">@color/primary</item>
         <item name="android:colorControlActivated">@color/accent</item>
 
+        <!-- Contextual action bar-->
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeBackground">@color/accent</item>
 
+        <!-- Status bar-->
         <item name="android:statusBarColor">@android:color/transparent</item>
 
+        <!-- Transitions-->
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowSharedElementEnterTransition">@transition/tracking_shared_element</item>
         <item name="android:windowSharedElementReturnTransition">@transition/tracking_shared_element</item>
@@ -22,5 +26,4 @@
     <style name="AppThemeTranslucent" parent="AppTheme">
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
-
 </resources>

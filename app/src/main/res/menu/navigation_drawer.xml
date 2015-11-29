@@ -7,15 +7,15 @@
             android:id="@+id/navigation_tracking"
             android:checked="true"
             android:icon="@drawable/icon_tracking"
-            android:title="Tracking" />
+            android:title="@string/navigation_tracking" />
         <item
             android:id="@+id/navigation_share"
             android:icon="@drawable/icon_share"
-            android:title="Share" />
+            android:title="@string/navigation_share" />
         <item
             android:id="@+id/navigation_create"
             android:icon="@drawable/icon_add"
-            android:title="Create" />
+            android:title="@string/navigation_create" />
     </group>
 
     <group
@@ -24,6 +24,6 @@
         <item
             android:id="@+id/navigation_settings"
             android:icon="@drawable/icon_settings"
-            android:title="Settings" />
+            android:title="@string/navigation_settings" />
     </group>
 </menu>

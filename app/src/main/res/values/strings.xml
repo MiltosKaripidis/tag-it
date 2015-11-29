@@ -20,6 +20,13 @@
     <string name="text_empty1">Nothing to track.</string>
     <string name="text_empty2">Tap \'CREATE\' tab to add one.</string>
     <string name="label_empty_date">N/A</string>
+    <string name="context_delete">Delete</string>
+    <string name="context_select_all">Select all</string>
+    <string name="context_clear_selection">Clear selection</string>
+    <string name="navigation_tracking">Tracking</string>
+    <string name="navigation_share">Share</string>
+    <string name="navigation_create">Create</string>
+    <string name="navigation_settings">Settings</string>
 
     <string-array name="array_difficulty">
         <item>Easy</item>

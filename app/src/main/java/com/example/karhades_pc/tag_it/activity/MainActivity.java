@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 MenuInflater inflater = mode.getMenuInflater();
-                inflater.inflate(R.menu.fragment_create_game_context, menu);
+                inflater.inflate(R.menu.contextual_action_bar, menu);
                 return true;
             }
 

@@ -589,7 +589,7 @@ public class CreateGameFragment extends Fragment {
     }
 
     private void restoreLayoutAfterTransition() {
-        if (revealContent.getVisibility() == View.VISIBLE) {
+        if (revealContent != null && revealContent.getVisibility() == View.VISIBLE) {
             revealContent.setVisibility(View.INVISIBLE);
             addActionButton.setLayoutParams(originalLayoutParams);
         }

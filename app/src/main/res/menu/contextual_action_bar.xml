@@ -4,14 +4,14 @@
         android:id="@+id/context_bar_delete_item"
         android:icon="@drawable/icon_delete"
         android:showAsAction="ifRoom"
-        android:title="Delete" />
+        android:title="@string/context_delete" />
     <item
         android:id="@+id/context_bar_select_all_item"
         android:showAsAction="never"
-        android:title="Select all" />
+        android:title="@string/context_select_all" />
     <item
         android:id="@+id/context_bar_clear_selection_item"
         android:showAsAction="never"
-        android:title="Clear selection"
+        android:title="@string/context_clear_selection"
         android:visible="false" />
 </menu>
