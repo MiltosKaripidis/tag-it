@@ -36,6 +36,7 @@ import com.squareup.picasso.Callback;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Karhades - PC on 4/14/2015.
@@ -147,6 +148,7 @@ public class TrackingTagFragment extends Fragment {
      *
      * @param tagId The id of the NfcTag to solve.
      */
+    @SuppressWarnings("deprecation")
     public void solveNfcTag(String tagId) {
         // Get tag from list and solve.
         NfcTag nfcTag = MyTags.get(getActivity()).getNfcTag(tagId);
@@ -154,7 +156,7 @@ public class TrackingTagFragment extends Fragment {
 
         // Format the Date into custom string.
         Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM (HH:mm)");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM (HH:mm)", Locale.getDefault());
         String formattedDate = simpleDateFormat.format(date);
         nfcTag.setDateSolved(formattedDate);
 
@@ -163,15 +165,18 @@ public class TrackingTagFragment extends Fragment {
 //        getActivity().startService(audioService);
 
         // Inform user.
-        Snackbar snackbar = Snackbar.make(getView(), nfcTag.getTitle() + " solved", Snackbar.LENGTH_INDEFINITE);
-        snackbar.setActionTextColor(getResources().getColor(R.color.accent));
-        snackbar.setAction("DISMISS", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // DO NOTHING.
-            }
-        });
-        snackbar.show();
+        View parentView = getView();
+        if (parentView != null) {
+            Snackbar snackbar = Snackbar.make(parentView, nfcTag.getTitle() + " solved", Snackbar.LENGTH_INDEFINITE);
+            snackbar.setActionTextColor(getResources().getColor(R.color.accent));
+            snackbar.setAction("DISMISS", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // DO NOTHING.
+                }
+            });
+            snackbar.show();
+        }
         updateUI();
     }
 
@@ -305,6 +310,7 @@ public class TrackingTagFragment extends Fragment {
         revealContent = (ViewGroup) view.findViewById(R.id.tracking_reveal_content);
     }
 
+    @SuppressWarnings("NullArgumentToVariableArgMethod")
     private void enterFullScreen() {
         Intent intent = new Intent(getActivity(), FullScreenActivity.class);
         String filePath = nfcTag.getPictureFilePath();

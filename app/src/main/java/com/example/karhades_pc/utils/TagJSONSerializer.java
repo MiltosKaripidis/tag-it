@@ -42,6 +42,7 @@ public class TagJSONSerializer {
      * @throws JSONException
      * @throws IOException
      */
+    @SuppressWarnings("unused")
     public void saveTagsInternal(ArrayList<NfcTag> nfcTags) throws JSONException, IOException {
         // Build an array in JSON.
         JSONArray jsonArray = new JSONArray();
@@ -70,6 +71,7 @@ public class TagJSONSerializer {
      * @throws IOException
      * @throws JSONException
      */
+    @SuppressWarnings("unused")
     public ArrayList<NfcTag> loadTagsInternal() throws IOException, JSONException {
         ArrayList<NfcTag> tags = new ArrayList<>();
 

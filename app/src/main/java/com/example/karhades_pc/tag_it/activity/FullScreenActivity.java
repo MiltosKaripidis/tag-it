@@ -19,14 +19,14 @@ public class FullScreenActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         toggleSystemUI();
-
         setContentView(R.layout.activity_fullscreen);
 
-        // Get file path from intent extra.
-        String filePath = getIntent().getStringExtra(TrackingTagFragment.EXTRA_FILE_PATH);
+        initializeWidgets();
+        loadImage();
+    }
 
+    private void initializeWidgets() {
         imageView = (ImageView) findViewById(R.id.full_screen_image_view);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,6 +34,11 @@ public class FullScreenActivity extends Activity {
                 toggleSystemUI();
             }
         });
+    }
+
+    private void loadImage() {
+        // Get file path from intent extra.
+        String filePath = getIntent().getStringExtra(TrackingTagFragment.EXTRA_FILE_PATH);
 
         // Load image.
         PictureLoader.loadBitmapWithPicasso(this, filePath, imageView, null);

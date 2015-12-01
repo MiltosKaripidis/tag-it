@@ -318,9 +318,7 @@ public class NfcHandler {
                 @Override
                 public Uri[] createBeamUris(NfcEvent event) {
                     // Get the URIs array that android beam is going to send.
-                    Uri[] filesUris = MyTags.get(activity).createFileUrisArray();
-
-                    return filesUris;
+                    return MyTags.get(activity).createFileUrisArray();
                 }
             }, activity);
         }
@@ -369,7 +367,7 @@ public class NfcHandler {
         // Existing file path.
         File existingTagsJSONFile = new File(activity.getExternalFilesDir(null) + File.separator + "tags.txt");
         // Overwrite the existing file with the beam file.
-        beamTagsJSONFile.renameTo(existingTagsJSONFile);
+        renameFile(beamTagsJSONFile, existingTagsJSONFile);
 
         // Load the skeleton from the tags.txt file, received from Android beam.
         MyTags.get(activity).loadTags();
@@ -391,7 +389,16 @@ public class NfcHandler {
             // Get the existing picture file path.
             File existingPictureFile = new File(nfcTag.getPictureFilePath());
             // Overwrite the existing file with the beam file.
-            beamPictureFile.renameTo(existingPictureFile);
+            renameFile(beamPictureFile, existingPictureFile);
+        }
+    }
+
+    private boolean renameFile(File source, File destination) {
+        if (source.renameTo(destination)) {
+            return true;
+        } else {
+            Log.e(TAG, "Unable to rename file.");
+            return false;
         }
     }
 
@@ -438,10 +445,6 @@ public class NfcHandler {
                 if (nfcTag != null) {
                     throw new TagIdExistsException("NFC tag already exists!");
                 }
-            }
-            // If it exists.
-            else if (mode == Mode.OVERWRITE) {
-                // DO NOTHING.
             }
 
             /* START WRITING */

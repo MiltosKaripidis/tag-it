@@ -221,9 +221,7 @@ public class CreateTagFragment extends Fragment {
     }
 
     private File createExternalStoragePrivateFile() {
-        File file = new File(getActivity().getExternalFilesDir(null), "temp_tag.jpg");
-
-        return file;
+        return new File(getActivity().getExternalFilesDir(null), "temp_tag.jpg");
     }
 
     private void takePicture() {
@@ -314,7 +312,10 @@ public class CreateTagFragment extends Fragment {
 
         // If it's a new tag and there's no picture taken.
         if (currentNfcTag == null && temporaryPictureFilename == null) {
-            Snackbar.make(getView(), "Take a picture first.", Snackbar.LENGTH_LONG).show();
+            View parentView = getView();
+            if (parentView != null) {
+                Snackbar.make(parentView, "Take a picture first.", Snackbar.LENGTH_LONG).show();
+            }
             return;
         }
 
@@ -437,8 +438,11 @@ public class CreateTagFragment extends Fragment {
         }
     }
 
-    public void makeSnackbar() {
-        Snackbar.make(getView(), "Click \"TAG IT!\" to write.", Snackbar.LENGTH_LONG).show();
+    public void makeSnackBar() {
+        View parentView = getView();
+        if (parentView != null) {
+            Snackbar.make(parentView, "Click \"TAG IT!\" to write.", Snackbar.LENGTH_LONG).show();
+        }
     }
 
     private void hideActionButton() {

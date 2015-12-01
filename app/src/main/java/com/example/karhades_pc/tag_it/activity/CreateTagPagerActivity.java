@@ -74,7 +74,7 @@ public class CreateTagPagerActivity extends AppCompatActivity implements ViewPag
         boolean isWritten = nfcHandler.enableNfcWriteTag(intent);
 
         if (!isWritten) {
-            fragmentAdapter.getCurrentFragment().makeSnackbar();
+            fragmentAdapter.getCurrentFragment().makeSnackBar();
         }
     }
 

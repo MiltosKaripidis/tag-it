@@ -1,5 +1,6 @@
 package com.example.karhades_pc.tag_it.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -172,18 +173,30 @@ public class MyTags {
 
         // Create the tags.txt file URI.
         File tagsFile = new File(context.getExternalFilesDir(null) + File.separator + "tags.txt");
-        tagsFile.setReadable(true, false);
-        fileUris[0] = Uri.fromFile(tagsFile);
+        if (isSetWorldReadable(tagsFile)) {
+            fileUris[0] = Uri.fromFile(tagsFile);
+        }
 
         // Create the NFC tags Picture file URIs.
         for (int i = 0; i < nfcTags.size(); i++) {
             File file = new File(nfcTags.get(i).getPictureFilePath());
-            file.setReadable(true, false);
-            Uri uri = Uri.fromFile(file);
-            fileUris[i + 1] = uri;
+            if (isSetWorldReadable(file)) {
+                Uri uri = Uri.fromFile(file);
+                fileUris[i + 1] = uri;
+            }
         }
 
         return fileUris;
+    }
+
+    @SuppressLint("SetWorldReadable")
+    private boolean isSetWorldReadable(File file) {
+        if (file.setReadable(true, false)) {
+            return true;
+        } else {
+            Log.e(TAG, "Unable to set file to world readable.");
+            return false;
+        }
     }
 
     private class AsyncTaskSaver extends AsyncTask<Void, Void, Void> {

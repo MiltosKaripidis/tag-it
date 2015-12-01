@@ -40,7 +40,6 @@ import java.util.List;
 /**
  * Created by Karhades on 20-Aug-15.
  */
-@SuppressWarnings("deprecation")
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
@@ -149,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
         floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_action_button);
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void setupNavigationDrawer() {
         drawerLayout = (DrawerLayout) findViewById(R.id.main_navigation_drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
@@ -162,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navigation_tracking:
                         tabLayout.getTabAt(0).select();
                         return true;
+
                     case R.id.navigation_share:
                         tabLayout.getTabAt(1).select();
                         return true;
@@ -169,9 +170,11 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navigation_create:
                         tabLayout.getTabAt(2).select();
                         return true;
+
                     case R.id.navigation_settings:
                         // DO NOTHING.
                         return true;
+
                     default:
                         return false;
                 }
@@ -179,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressWarnings("deprecation")
     private void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.main_tool_bar);
         // Substitute the action bar for this toolbar.
@@ -190,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("deprecation, ConstantConditions")
     private void setupTabLayout() {
         tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
         tabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_normal));
@@ -373,6 +378,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressWarnings("deprecation")
     private void changeBarsColor(boolean isVisible) {
         if (isVisible) {
             if (Build.VERSION.SDK_INT >= 21) {

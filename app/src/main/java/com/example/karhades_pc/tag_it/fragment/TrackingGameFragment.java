@@ -114,6 +114,7 @@ public class TrackingGameFragment extends Fragment {
         recyclerView.getAdapter().notifyDataSetChanged();
     }
 
+    @SuppressWarnings("deprecation")
     private class RiddleHolder extends RecyclerView.ViewHolder {
         private NfcTag nfcTag;
         private ImageView imageView;
@@ -172,6 +173,7 @@ public class TrackingGameFragment extends Fragment {
             });
         }
 
+        @SuppressWarnings("unchecked")
         private void setupClickListener(View view) {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -231,6 +233,7 @@ public class TrackingGameFragment extends Fragment {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @TargetApi(21)
     private Pair<View, String>[] createPairs(Pair... sharedViews) {
         ArrayList<Pair> pairs = new ArrayList<>();

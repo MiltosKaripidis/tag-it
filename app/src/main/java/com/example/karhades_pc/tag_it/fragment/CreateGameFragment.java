@@ -2,6 +2,7 @@ package com.example.karhades_pc.tag_it.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -377,6 +378,7 @@ public class CreateGameFragment extends Fragment {
             onContextualActionBarEnterListener.onItemClicked(adapter.getSelectionSize());
         }
 
+        @SuppressLint("InflateParams")
         private void setupPopupWindow(View view) {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View layout = inflater.inflate(R.layout.popup_window, null);

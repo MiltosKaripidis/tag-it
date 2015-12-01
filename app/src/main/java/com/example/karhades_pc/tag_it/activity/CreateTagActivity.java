@@ -61,7 +61,7 @@ public class CreateTagActivity extends SingleFragmentActivity {
         boolean isWritten = nfcHandler.enableNfcWriteTag(intent);
 
         if (!isWritten) {
-            currentFragment.makeSnackbar();
+            currentFragment.makeSnackBar();
         }
     }
 }
