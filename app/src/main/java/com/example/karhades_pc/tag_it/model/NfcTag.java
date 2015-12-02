@@ -8,6 +8,9 @@ import org.json.JSONObject;
  */
 public class NfcTag {
 
+    /**
+     * JSON map keys.
+     */
     private static final String JSON_DIFFICULTY = "difficulty";
     private static final String JSON_TAG_ID = "tag_id";
     private static final String JSON_TITLE = "title";
@@ -15,6 +18,9 @@ public class NfcTag {
     private static final String JSON_SOLVED = "solved";
     private static final String JSON_DATE_SOLVED = "date_solved";
 
+    /**
+     * Instance fields.
+     */
     private String tagId;
     private String title;
     private String pictureFilePath;
@@ -22,6 +28,13 @@ public class NfcTag {
     private boolean solved;
     private String dateSolved;
 
+    /**
+     * Simple constructor of NfcTag.
+     *
+     * @param title A String indicating the title of the tag.
+     * @param difficulty A String indicating the difficulty of the tag.
+     * @param tagId A String indicating the id of the tag.
+     */
     public NfcTag(String title, String difficulty, String tagId) {
         this.title = title;
         this.difficulty = difficulty;

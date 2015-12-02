@@ -393,12 +393,9 @@ public class NfcHandler {
         }
     }
 
-    private boolean renameFile(File source, File destination) {
-        if (source.renameTo(destination)) {
-            return true;
-        } else {
-            Log.e(TAG, "Unable to rename file.");
-            return false;
+    private void renameFile(File source, File destination) {
+        if (!source.renameTo(destination)) {
+            Log.e(TAG, "Unable to rename " + source.getAbsolutePath());
         }
     }
 

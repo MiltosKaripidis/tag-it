@@ -55,7 +55,7 @@ public class MyTags {
     }
 
     /**
-     * Save the tags to external storage.
+     * Save the tags asynchronously to external storage.
      */
     public void saveTags() {
         new AsyncTaskSaver().execute();
@@ -173,29 +173,24 @@ public class MyTags {
 
         // Create the tags.txt file URI.
         File tagsFile = new File(context.getExternalFilesDir(null) + File.separator + "tags.txt");
-        if (isSetWorldReadable(tagsFile)) {
-            fileUris[0] = Uri.fromFile(tagsFile);
-        }
+        setWorldReadable(tagsFile);
+        fileUris[0] = Uri.fromFile(tagsFile);
 
         // Create the NFC tags Picture file URIs.
         for (int i = 0; i < nfcTags.size(); i++) {
             File file = new File(nfcTags.get(i).getPictureFilePath());
-            if (isSetWorldReadable(file)) {
-                Uri uri = Uri.fromFile(file);
-                fileUris[i + 1] = uri;
-            }
+            setWorldReadable(file);
+            Uri uri = Uri.fromFile(file);
+            fileUris[i + 1] = uri;
         }
 
         return fileUris;
     }
 
     @SuppressLint("SetWorldReadable")
-    private boolean isSetWorldReadable(File file) {
-        if (file.setReadable(true, false)) {
-            return true;
-        } else {
-            Log.e(TAG, "Unable to set file to world readable.");
-            return false;
+    private void setWorldReadable(File file) {
+        if (!file.setReadable(true, false)) {
+            Log.e(TAG, "Unable to set " + file.getAbsolutePath() + " to world readable.");
         }
     }
 

@@ -94,5 +94,4 @@
         <service android:name="com.example.karhades_pc.utils.AudioService" />
 
     </application>
-
 </manifest>
