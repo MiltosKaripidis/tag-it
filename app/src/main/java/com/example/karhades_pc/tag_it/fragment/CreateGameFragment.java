@@ -508,9 +508,7 @@ public class CreateGameFragment extends Fragment {
                 }
                 // No transitions.
                 else {
-                    // Start CreateTagActivity.
-                    Intent intent = new Intent(getActivity(), CreateTagActivity.class);
-                    startActivityForResult(intent, 0);
+                    startActivity();
                 }
             }
         });
@@ -538,9 +536,7 @@ public class CreateGameFragment extends Fragment {
                 TransitionHelper.circularShow(addActionButton, revealContent, new Runnable() {
                     @Override
                     public void run() {
-                        // Start CreateTagActivity.
-                        Intent intent = new Intent(getActivity(), CreateTagActivity.class);
-                        startActivityForResult(intent, 0);
+                        startActivity();
                     }
                 });
             }
@@ -568,6 +564,11 @@ public class CreateGameFragment extends Fragment {
         CoordinatorLayout.LayoutParams newLayoutParams = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.WRAP_CONTENT, CoordinatorLayout.LayoutParams.WRAP_CONTENT);
         newLayoutParams.gravity = Gravity.CENTER;
         addActionButton.setLayoutParams(newLayoutParams);
+    }
+
+    private void startActivity() {
+        Intent intent = new Intent(getActivity(), CreateTagActivity.class);
+        startActivityForResult(intent, 0);
     }
 
     private void showActionButton() {

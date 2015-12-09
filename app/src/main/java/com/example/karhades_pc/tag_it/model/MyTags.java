@@ -10,6 +10,7 @@ import com.example.karhades_pc.utils.PictureLoader;
 import com.example.karhades_pc.utils.TagJSONSerializer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
@@ -18,12 +19,30 @@ import java.util.ArrayList;
 public class MyTags {
 
     private static final String TAG = "MyTags";
+
+    /**
+     * JSON file name.
+     */
     private static final String FILENAME = "tags.txt";
 
+    /**
+     * Singleton instance.
+     */
     private static MyTags myTags;
+
+    /**
+     * Context for starting activities, using private storage, etc.
+     */
     private Context context;
 
+    /**
+     * List of NfcTag objects.
+     */
     private ArrayList<NfcTag> nfcTags;
+
+    /**
+     * Helper class for saving and loading NfcTag objects in JSON format.
+     */
     private TagJSONSerializer serializer;
 
     /**
@@ -68,9 +87,12 @@ public class MyTags {
         try {
             nfcTags = serializer.loadTagsExternal();
             Log.d(TAG, "Nfc Tags were loaded!");
+        } catch (FileNotFoundException e) {
+            nfcTags = new ArrayList<>();
+            Log.e(TAG, "File tags.txt not found.");
         } catch (Exception e) {
             nfcTags = new ArrayList<>();
-            Log.e(TAG, "Error loading tags: ", e);
+            Log.e(TAG, "Error loading tags: " + e.getMessage());
         }
     }
 
@@ -148,6 +170,9 @@ public class MyTags {
         nfcTags.remove(nfcTag);
     }
 
+    /**
+     * Reorder the whole list starting from 1 to length list.
+     */
     public void reorderNfcTags() {
         int title = 1;
 
@@ -194,6 +219,9 @@ public class MyTags {
         }
     }
 
+    /**
+     * AsyncTask class for saving on a background thread.
+     */
     private class AsyncTaskSaver extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -202,7 +230,7 @@ public class MyTags {
                 serializer.saveTagsExternal(nfcTags);
                 Log.d(TAG, "Tags saved to file!");
             } catch (Exception e) {
-                Log.e(TAG, "Error saving tags: ", e);
+                Log.e(TAG, "Error saving tags: " + e.getMessage());
             }
 
             return null;
