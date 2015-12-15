@@ -34,7 +34,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.karhades_pc.tag_it.R;
 import com.example.karhades_pc.tag_it.activity.CreateTagActivity;
@@ -64,21 +63,27 @@ public class CreateGameFragment extends Fragment {
     public static final String EXTRA_POSITION = "com.example.karhades_pc.tag_it.position";
 
     /**
-     * The list with all the NFC tags.
+     * Widget variables.
      */
-    private ArrayList<NfcTag> nfcTags;
-
     private RecyclerView recyclerView;
     private FloatingActionButton addActionButton;
     private LinearLayout emptyLinearLayout;
 
     /**
-     * Used for circular reveal.
+     * Instance variables.
+     */
+    private ArrayList<NfcTag> nfcTags;
+
+    /**
+     * Transition variables.
      */
     private ViewGroup sceneRoot;
     private ViewGroup revealContent;
     private ViewGroup.LayoutParams originalLayoutParams;
 
+    /**
+     * Interface variable.
+     */
     private OnContextualActionBarEnterListener onContextualActionBarEnterListener;
 
     /**
@@ -199,9 +204,6 @@ public class CreateGameFragment extends Fragment {
         adapter.deleteSelectedItems();
 
         reorderNfcTags();
-
-        // Inform user.
-        Toast.makeText(getActivity(), "Tags deleted", Toast.LENGTH_SHORT).show();
     }
 
     public void contextSelectAll() {
@@ -237,7 +239,6 @@ public class CreateGameFragment extends Fragment {
         // Create new views (invoked by the layout manager).
         @Override
         public NfcTagHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            //Log.d("CreateGameFragment", "onCreateViewHolder called");
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_create_game_fragment, viewGroup, false);
 
             return new NfcTagHolder(view);
@@ -481,7 +482,7 @@ public class CreateGameFragment extends Fragment {
         public void bindRiddle(NfcTag nfcTag) {
             this.nfcTag = nfcTag;
 
-            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView, null);
+            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
 
             titleTextView.setText(nfcTag.getTitle());
             difficultyTextView.setText(nfcTag.getDifficulty());

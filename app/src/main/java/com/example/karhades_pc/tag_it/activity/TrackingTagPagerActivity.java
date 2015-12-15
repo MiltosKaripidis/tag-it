@@ -29,19 +29,38 @@ import java.util.Map;
  */
 public class TrackingTagPagerActivity extends AppCompatActivity implements ViewPager.PageTransformer {
 
+    /**
+     * Extras constants.
+     */
     public static final String EXTRA_CURRENT_TAG_POSITION = "com.example.karhades_pc.tag_it.current_tag_position";
     public static final String EXTRA_OLD_TAG_POSITION = "com.example.karhades_pc.tag_it.old_tag_position";
 
+    /**
+     * ViewPager.PageTransformer constant.
+     */
     private static final float MIN_SCALE = 0.75f;
 
+    /**
+     * Widget reference.
+     */
     private ViewPager viewPager;
-    private FragmentAdapter fragmentAdapter;
 
+    /**
+     * Instance variables.
+     */
+    private FragmentAdapter fragmentAdapter;
     private String tagId;
     private boolean isTagDiscovered;
     private ArrayList<NfcTag> nfcTags;
+
+    /**
+     * NFC adapter.
+     */
     private NfcHandler nfcHandler;
 
+    /**
+     * Transition variables.
+     */
     private int currentTagPosition;
     private int originalTagPosition;
     private boolean isReturning;

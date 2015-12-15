@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -42,16 +43,27 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * Widget references.
+     */
     private DrawerLayout drawerLayout;
+    private CoordinatorLayout coordinatorLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
     private TabLayout tabLayout;
-    private FragmentAdapter adapter;
     private ViewPager viewPager;
     private FloatingActionButton floatingActionButton;
+
+    /**
+     * Instance variables.
+     */
+    private TabsAdapter adapter;
     private ActionMode actionMode;
     private ActionMode.Callback actionModeCallback;
 
+    /**
+     * NFC adapter.
+     */
     private NfcHandler nfcHandler;
 
     @Override
@@ -61,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         setupNFC();
         setupFloatingActionButton();
+        setupCoordinatorLayout();
         setupNavigationDrawer();
         setupToolbar();
         setupViewPager();
@@ -93,11 +106,11 @@ public class MainActivity extends AppCompatActivity {
         }
         // Tab 2.
         else if (tabLayout.getSelectedTabPosition() == 1) {
-            Snackbar.make(findViewById(R.id.main_coordinator_layout), "Approach devices to share game.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(coordinatorLayout, "Approach devices to share game.", Snackbar.LENGTH_LONG).show();
         }
         // Tab 3.
         else if (tabLayout.getSelectedTabPosition() == 2) {
-            Snackbar.make(findViewById(R.id.main_coordinator_layout), "Click + to create a new one.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(coordinatorLayout, "Click + to create a new one.", Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -146,6 +159,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupFloatingActionButton() {
         floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_action_button);
+    }
+
+    private void setupCoordinatorLayout() {
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_layout);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -225,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupViewPager() {
-        adapter = new FragmentAdapter(getSupportFragmentManager());
+        adapter = new TabsAdapter(getSupportFragmentManager());
         adapter.addFragment(new TrackingGameFragment());
         adapter.addFragment(new ShareGameFragment());
         adapter.addFragment(new CreateGameFragment());
@@ -314,6 +331,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDestroyActionMode(ActionMode mode) {
+                // If Tab 2 is selected.
                 if (tabLayout.getSelectedTabPosition() == 2) {
                     changeBarsColor(true);
 
@@ -330,6 +348,10 @@ public class MainActivity extends AppCompatActivity {
 
         fragment.contextDeleteSelectedItems();
         disableContextualActionBar();
+
+        // Inform user.
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "Tags deleted", Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     private void disableContextualActionBar() {
@@ -379,8 +401,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressWarnings("deprecation")
-    private void changeBarsColor(boolean isVisible) {
-        if (isVisible) {
+    private void changeBarsColor(boolean isContextualActionBarVisible) {
+        if (isContextualActionBarVisible) {
             if (Build.VERSION.SDK_INT >= 21) {
                 getWindow().setStatusBarColor(getResources().getColor(R.color.primary_dark));
                 getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
@@ -411,11 +433,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class FragmentAdapter extends FragmentPagerAdapter {
+    private class TabsAdapter extends FragmentPagerAdapter {
 
         private List<Fragment> fragments = new ArrayList<>();
 
-        public FragmentAdapter(FragmentManager fragmentManager) {
+        public TabsAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 

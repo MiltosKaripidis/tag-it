@@ -44,24 +44,40 @@ import java.io.File;
  */
 public class CreateTagFragment extends Fragment {
 
+    /**
+     * Extras constants.
+     */
     public static final String EXTRA_TAG_ID = "com.example.karhades_pc.tag_it.tag_id";
     public static final String EXTRA_FILE_PATH = "com.example.karhades_pc.tag_it.file_path";
 
+    /**
+     * Request constant.
+     */
     private static final int REQUEST_IMAGE = 0;
 
+    /**
+     * Widget references.
+     */
     private ImageView imageView;
     private ViewGroup imageViewOverlay;
     private Button cancelButton;
     private Button tagItButton;
     private Spinner difficultySpinner;
     private FloatingActionButton cameraActionButton;
-    private ViewGroup revealContent;
-    private TagItDialogFragment dialogFragment;
     private Toolbar toolbar;
 
+    /**
+     * Instance variables.
+     */
     private NfcTag currentNfcTag;
     private String temporaryDifficulty;
     private String temporaryPictureFilename;
+    private TagItDialogFragment dialogFragment;
+
+    /**
+     * Transition variable.
+     */
+    private ViewGroup revealContent;
 
     /**
      * Return a CreateTagFragment with tagId as its argument.
@@ -150,7 +166,7 @@ public class CreateTagFragment extends Fragment {
         }
         // Load saved picture.
         else if (currentNfcTag != null) {
-            PictureLoader.loadBitmapWithPicasso(getActivity(), currentNfcTag.getPictureFilePath(), imageView, null);
+            PictureLoader.loadBitmapWithPicasso(getActivity(), currentNfcTag.getPictureFilePath(), imageView);
         }
     }
 
@@ -209,8 +225,7 @@ public class CreateTagFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (TransitionHelper.itSupportsTransitions()) {
-                    hideActionButton();
-                    showCircularReveal();
+                    takePictureWithTransition();
                 }
                 // No transitions.
                 else {
@@ -222,6 +237,11 @@ public class CreateTagFragment extends Fragment {
 
     private File createExternalStoragePrivateFile() {
         return new File(getActivity().getExternalFilesDir(null), "temp_tag.jpg");
+    }
+
+    private void takePictureWithTransition() {
+        hideActionButton();
+        showCircularReveal();
     }
 
     private void takePicture() {

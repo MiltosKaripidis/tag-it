@@ -41,7 +41,7 @@ public class FullScreenActivity extends Activity {
         String filePath = getIntent().getStringExtra(TrackingTagFragment.EXTRA_FILE_PATH);
 
         // Load image.
-        PictureLoader.loadBitmapWithPicasso(this, filePath, imageView, null);
+        PictureLoader.loadBitmapWithPicasso(this, filePath, imageView);
     }
 
     private void toggleSystemUI() {

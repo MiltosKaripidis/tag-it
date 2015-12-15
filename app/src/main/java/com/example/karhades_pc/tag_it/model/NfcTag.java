@@ -9,7 +9,7 @@ import org.json.JSONObject;
 public class NfcTag {
 
     /**
-     * JSON map keys.
+     * JSON map keys constants.
      */
     private static final String JSON_DIFFICULTY = "difficulty";
     private static final String JSON_TAG_ID = "tag_id";

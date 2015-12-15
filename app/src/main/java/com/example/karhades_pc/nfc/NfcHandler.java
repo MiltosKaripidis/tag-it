@@ -403,6 +403,7 @@ public class NfcHandler {
      * Listen for a tag discovery that needs to be written.
      *
      * @param intent The NFC intent to resolve the tag discovery type.
+     * @return A boolean indicating whether the write operation succeeded.
      */
     public boolean enableNfcWriteTag(Intent intent) {
         if (itSupportsNFC()) {

@@ -23,13 +23,26 @@ import java.util.ArrayList;
  */
 public class CreateTagPagerActivity extends AppCompatActivity implements ViewPager.PageTransformer {
 
+    /**
+     * ViewPager.PageTransformer constant.
+     */
     private static final float MIN_SCALE = 0.75f;
 
+    /**
+     * Widget references.
+     */
     private ViewPager viewPager;
+
+    /**
+     * Instance variables.
+     */
     private FragmentAdapter fragmentAdapter;
     private ArrayList<NfcTag> nfcTags;
     private String tagId;
 
+    /**
+     * NFC adapter.
+     */
     private NfcHandler nfcHandler;
 
     @Override

@@ -43,18 +43,31 @@ import java.util.Locale;
  */
 public class TrackingTagFragment extends Fragment {
 
+    /**
+     * Extras constants.
+     */
     public static final String EXTRA_TAG_ID = "com.example.karhades_pc.tag_it.tag_id";
     public static final String EXTRA_TAG_DISCOVERED = "com.example.karhades_pc.tag_it.tag_discovered";
     public static final String EXTRA_FILE_PATH = "com.example.karhades_pc.tag_it.file_path";
 
+    /**
+     * Instance variable.
+     */
     private NfcTag nfcTag;
 
+    /**
+     * Widget references.
+     */
     private ImageView imageView;
     private TextView difficultyTextView;
     private CheckBox solvedCheckBox;
     private TextView dateSolvedTextView;
     private Toolbar toolbar;
     private FloatingActionButton fullscreenActionButton;
+
+    /**
+     * Transition variable.
+     */
     private ViewGroup revealContent;
 
     /**
@@ -97,29 +110,35 @@ public class TrackingTagFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        // Register a callback to be invoked when the image has been loaded
-        // to inform the activity to start the shared element transition.
-        Callback picassoCallback = new Callback() {
-            @Override
-            public void onSuccess() {
-                if (TransitionHelper.itSupportsTransitions()) {
+        if (TransitionHelper.itSupportsTransitions()) {
+            // Register a callback to be invoked when the image has been loaded
+            // to inform the activity to start the shared element transition.
+            Callback picassoCallback = new Callback() {
+                @Override
+                public void onSuccess() {
                     imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                         @Override
                         public boolean onPreDraw() {
                             imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+
                             getActivity().startPostponedEnterTransition();
+
                             return true;
                         }
                     });
                 }
-            }
 
-            @Override
-            public void onError() {
-                Log.e("TrackingTagFragment", "There was an error at loading image with Picasso");
-            }
-        };
-        PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView, picassoCallback);
+                @Override
+                public void onError() {
+                    Log.e("TrackingTagFragment", "There was an error at loading image with Picasso");
+                }
+            };
+            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView, picassoCallback);
+        }
+        // No transitions.
+        else {
+            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
+        }
     }
 
     @Override
@@ -248,20 +267,39 @@ public class TrackingTagFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 hideActionButton();
+
                 if (TransitionHelper.itSupportsTransitions()) {
-                    TransitionHelper.circularShow(fullscreenActionButton, revealContent, new Runnable() {
-                        @Override
-                        public void run() {
-                            enterFullScreen();
-                        }
-                    });
+                    startFullScreenActivityWithTransition();
                 }
                 // No transitions.
                 else {
-                    enterFullScreen();
+                    startFullScreenActivity();
                 }
             }
         });
+    }
+
+    @TargetApi(21)
+    @SuppressWarnings("NullArgumentToVariableArgMethod")
+    private void startFullScreenActivityWithTransition() {
+        TransitionHelper.circularShow(fullscreenActionButton, revealContent, new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(getActivity(), FullScreenActivity.class);
+                String filePath = nfcTag.getPictureFilePath();
+                intent.putExtra(EXTRA_FILE_PATH, filePath);
+                // Deactivate the default transitions for a better circular reveal experience.
+                Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), null).toBundle();
+                getActivity().startActivity(intent, bundle);
+            }
+        });
+    }
+
+    private void startFullScreenActivity() {
+        Intent intent = new Intent(getActivity(), FullScreenActivity.class);
+        String filePath = nfcTag.getPictureFilePath();
+        intent.putExtra(EXTRA_FILE_PATH, filePath);
+        startActivity(intent);
     }
 
     /**
@@ -307,24 +345,8 @@ public class TrackingTagFragment extends Fragment {
         dateSolvedTextView = (TextView) view.findViewById(R.id.tracking_date_solved_text_view);
         dateSolvedTextView.setTypeface(typefaceNormal);
 
+        // A hidden FrameLayout that will cover the whole screen on transition start.
         revealContent = (ViewGroup) view.findViewById(R.id.tracking_reveal_content);
-    }
-
-    @SuppressWarnings("NullArgumentToVariableArgMethod")
-    private void enterFullScreen() {
-        Intent intent = new Intent(getActivity(), FullScreenActivity.class);
-        String filePath = nfcTag.getPictureFilePath();
-        intent.putExtra(EXTRA_FILE_PATH, filePath);
-
-        if (TransitionHelper.itSupportsTransitions()) {
-            // Deactivate the default transitions for a better circular reveal experience.
-            Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), null).toBundle();
-            getActivity().startActivity(intent, bundle);
-        }
-        // No transitions.
-        else {
-            startActivity(intent);
-        }
     }
 
     private void showActionButton() {

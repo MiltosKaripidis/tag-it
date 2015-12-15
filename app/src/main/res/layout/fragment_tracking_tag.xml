@@ -138,4 +138,3 @@
         android:background="@color/accent"
         android:visibility="invisible" />
 </android.support.design.widget.CoordinatorLayout>
-

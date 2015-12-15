@@ -12,11 +12,10 @@
         android:orientation="vertical">
 
         <!-- Image and touch effect-->
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/create_image_linear_layout"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:orientation="vertical">
+            android:layout_height="300dp">
 
             <!-- Tag picture-->
             <ImageView
@@ -34,7 +33,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/selector_touch_effect"
                 android:clickable="true" />
-        </LinearLayout>
+        </FrameLayout>
 
         <!-- Secondary content-->
         <LinearLayout

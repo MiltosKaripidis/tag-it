@@ -21,6 +21,14 @@ public class PictureLoader {
         }
     }
 
+    public static void loadBitmapWithPicasso(Context context, String filePath, ImageView imageView) {
+        if (filePath != null) {
+            Picasso.with(context).load(new File(filePath)).fit().centerInside().into(imageView);
+        } else {
+            Picasso.with(context).load(R.drawable.image_no_image).fit().centerCrop().into(imageView);
+        }
+    }
+
     public static void loadBitmapWithPicasso(Context context, String filePath, ImageView imageView, Callback callback) {
         if (filePath != null) {
             Picasso.with(context).load(new File(filePath)).fit().centerInside().into(imageView, callback);

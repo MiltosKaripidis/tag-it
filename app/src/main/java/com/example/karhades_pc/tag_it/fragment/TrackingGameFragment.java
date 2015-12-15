@@ -40,18 +40,29 @@ import java.util.Map;
  */
 public class TrackingGameFragment extends Fragment {
 
-    private ArrayList<NfcTag> nfcTags;
+    /**
+     * Widget references.
+     */
     private RecyclerView recyclerView;
     private LinearLayout emptyLinearLayout;
 
+    /**
+     * Instance variable.
+     */
+    private ArrayList<NfcTag> nfcTags;
+    private RiddleAdapter adapter;
+
+    /**
+     * Transition variables.
+     */
     private Bundle bundle;
-    // Used for transitions.
     private boolean isReentering;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Get the list of NFC tags.
         nfcTags = MyTags.get(getActivity()).getNfcTags();
 
         if (TransitionHelper.itSupportsTransitions()) {
@@ -72,7 +83,7 @@ public class TrackingGameFragment extends Fragment {
     private void setupRecyclerView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.tracking_recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
-        RiddleAdapter adapter = new RiddleAdapter();
+        adapter = new RiddleAdapter();
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
@@ -111,7 +122,7 @@ public class TrackingGameFragment extends Fragment {
         super.onResume();
 
         // Refresh the NfcTag list.
-        recyclerView.getAdapter().notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     @SuppressWarnings("deprecation")
@@ -173,28 +184,40 @@ public class TrackingGameFragment extends Fragment {
             });
         }
 
-        @SuppressWarnings("unchecked")
         private void setupClickListener(View view) {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), TrackingTagPagerActivity.class);
-                    intent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
-                    intent.putExtra(TrackingTagPagerActivity.EXTRA_CURRENT_TAG_POSITION, getAdapterPosition());
-
                     if (TransitionHelper.itSupportsTransitions()) {
-                        isReentering = false;
-
-                        Pair<View, String>[] pairs = createPairs(Pair.create(imageView, imageView.getTransitionName()));
-                        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), pairs).toBundle();
-                        getActivity().startActivity(intent, bundle);
+                        startTrackingTagPagerActivityWithTransition();
                     }
                     // No transitions.
                     else {
-                        startActivity(intent);
+                        startTrackingTagPagerActivity();
                     }
                 }
             });
+        }
+
+        @TargetApi(21)
+        @SuppressWarnings("unchecked")
+        private void startTrackingTagPagerActivityWithTransition() {
+            Intent intent = new Intent(getActivity(), TrackingTagPagerActivity.class);
+            intent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
+            intent.putExtra(TrackingTagPagerActivity.EXTRA_CURRENT_TAG_POSITION, getAdapterPosition());
+
+            isReentering = false;
+
+            Pair<View, String>[] pairs = createPairs(Pair.create(imageView, imageView.getTransitionName()));
+            Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), pairs).toBundle();
+            getActivity().startActivity(intent, bundle);
+        }
+
+        private void startTrackingTagPagerActivity() {
+            Intent intent = new Intent(getActivity(), TrackingTagPagerActivity.class);
+            intent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
+            intent.putExtra(TrackingTagPagerActivity.EXTRA_CURRENT_TAG_POSITION, getAdapterPosition());
+            startActivity(intent);
         }
 
         public void bindRiddle(NfcTag nfcTag) {
@@ -205,7 +228,7 @@ public class TrackingGameFragment extends Fragment {
                 imageView.setTag("image" + nfcTag.getTagId());
             }
 
-            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView, null);
+            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
 
             titleTextView.setText(nfcTag.getTitle());
             difficultyTextView.setText(nfcTag.getDifficulty());
