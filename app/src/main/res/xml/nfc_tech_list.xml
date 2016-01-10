@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- A Custom technology list for the TECH_DISCOVERED filter-->
+    <!-- A custom technology list for the TECH_DISCOVERED filter.
+    The tech-list must have a subset of the tech-list set.-->
     <tech-list>
         <tech>android.nfc.tech.MifareUltralight</tech>
         <tech>android.nfc.tech.NfcA</tech>
         <tech>android.nfc.tech.Ndef</tech>
     </tech-list>
 
-    <tech-list>
-        <tech>android.nfc.tech.NfcA</tech>
-        <tech>android.nfc.tech.Ndef</tech>
-    </tech-list>
-
-    <!-- All the nfcTag technologies. The tech-list must have the exact number
-    of technologies to match-->
+    <!-- All the nfcTag technologies. The tech-list must have
+     a subset of the tech-list set.-->
     <!--<tech_list>-->
         <!--<tech>android.nfc.tech.IsoDep</tech>-->
         <!--<tech>android.nfc.tech.NfcA</tech>-->

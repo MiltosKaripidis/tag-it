@@ -1,25 +1,24 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerInside"
+        android:src="@drawable/image_android_beam"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="160dp"
+        android:layout_marginTop="-60dp"
         android:gravity="center"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingTop="32dp"
         android:text="@string/text_share_hint"
         android:textSize="24sp" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerInside"
-        android:src="@drawable/image_android_beam"
-        tools:ignore="ContentDescription" />
-</FrameLayout>
+</LinearLayout>

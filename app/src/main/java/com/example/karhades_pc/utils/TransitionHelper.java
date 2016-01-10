@@ -18,7 +18,7 @@ public class TransitionHelper {
         // DOES NOT GENERATE OBJECTS.
     }
 
-    public static boolean itSupportsTransitions() {
+    public static boolean isTransitionSupported() {
         return Build.VERSION.SDK_INT >= 21;
     }
 

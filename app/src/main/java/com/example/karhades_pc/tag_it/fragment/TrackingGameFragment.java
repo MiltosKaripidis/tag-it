@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -47,10 +47,10 @@ public class TrackingGameFragment extends Fragment {
     private LinearLayout emptyLinearLayout;
 
     /**
-     * Instance variable.
+     * Instance variables.
      */
     private ArrayList<NfcTag> nfcTags;
-    private RiddleAdapter adapter;
+    private NfcTagAdapter adapter;
 
     /**
      * Transition variables.
@@ -65,7 +65,7 @@ public class TrackingGameFragment extends Fragment {
         // Get the list of NFC tags.
         nfcTags = MyTags.get(getActivity()).getNfcTags();
 
-        if (TransitionHelper.itSupportsTransitions()) {
+        if (TransitionHelper.isTransitionSupported()) {
             enableTransitions();
         }
     }
@@ -81,9 +81,7 @@ public class TrackingGameFragment extends Fragment {
     }
 
     private void setupRecyclerView(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.tracking_recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
-        adapter = new RiddleAdapter();
+        adapter = new NfcTagAdapter();
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
@@ -99,6 +97,9 @@ public class TrackingGameFragment extends Fragment {
                 hideRecyclerViewIfEmpty();
             }
         });
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.tracking_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
     }
 
@@ -125,15 +126,33 @@ public class TrackingGameFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Describes the view and it's child views that
+     * will bind the data for an adapter item.
+     */
     @SuppressWarnings("deprecation")
-    private class RiddleHolder extends RecyclerView.ViewHolder {
+    private class NfcTagHolder extends RecyclerView.ViewHolder {
+
+        /**
+         * Instance variable.
+         */
         private NfcTag nfcTag;
+
+        /**
+         * Widget references.
+         */
         private ImageView imageView;
         private TextView titleTextView;
         private TextView difficultyTextView;
         private CheckBox solvedCheckBox;
 
-        public RiddleHolder(View view) {
+        /**
+         * Constructor that registers any listeners and make calls
+         * to findViewById() for each adapter item.
+         *
+         * @param view The view describing an adapter item (CardView).
+         */
+        public NfcTagHolder(View view) {
             super(view);
 
             setupTouchListener(view);
@@ -188,7 +207,7 @@ public class TrackingGameFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (TransitionHelper.itSupportsTransitions()) {
+                    if (TransitionHelper.isTransitionSupported()) {
                         startTrackingTagPagerActivityWithTransition();
                     }
                     // No transitions.
@@ -220,10 +239,16 @@ public class TrackingGameFragment extends Fragment {
             startActivity(intent);
         }
 
-        public void bindRiddle(NfcTag nfcTag) {
+        /**
+         * Helper method for binding data on the adapter's
+         * onBindViewHolder() method.
+         *
+         * @param nfcTag The NfcTag object to bind data to views.
+         */
+        public void bindNfcTag(NfcTag nfcTag) {
             this.nfcTag = nfcTag;
 
-            if (TransitionHelper.itSupportsTransitions()) {
+            if (TransitionHelper.isTransitionSupported()) {
                 imageView.setTransitionName("image" + nfcTag.getTagId());
                 imageView.setTag("image" + nfcTag.getTagId());
             }
@@ -236,18 +261,23 @@ public class TrackingGameFragment extends Fragment {
         }
     }
 
-    private class RiddleAdapter extends RecyclerView.Adapter<RiddleHolder> {
+    /**
+     * Wraps the data set and creates views for individual items. It's the
+     * intermediate that sits between the RecyclerView and the data set.
+     */
+    private class NfcTagAdapter extends RecyclerView.Adapter<NfcTagHolder> {
+
         @Override
-        public RiddleHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        public NfcTagHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_tracking_game_fragment, viewGroup, false);
 
-            return new RiddleHolder(view);
+            return new NfcTagHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(RiddleHolder riddleHolder, int position) {
+        public void onBindViewHolder(NfcTagHolder nfcTagHolder, int position) {
             NfcTag nfcTag = nfcTags.get(position);
-            riddleHolder.bindRiddle(nfcTag);
+            nfcTagHolder.bindNfcTag(nfcTag);
         }
 
         @Override

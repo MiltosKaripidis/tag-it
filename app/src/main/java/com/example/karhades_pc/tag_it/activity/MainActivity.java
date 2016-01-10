@@ -32,6 +32,7 @@ import com.example.karhades_pc.tag_it.R;
 import com.example.karhades_pc.tag_it.fragment.CreateGameFragment;
 import com.example.karhades_pc.tag_it.fragment.ShareGameFragment;
 import com.example.karhades_pc.tag_it.fragment.TrackingGameFragment;
+import com.example.karhades_pc.tag_it.fragment.TrackingTagFragment;
 import com.example.karhades_pc.tag_it.model.MyTags;
 import com.example.karhades_pc.utils.TransitionHelper;
 
@@ -42,6 +43,11 @@ import java.util.List;
  * Created by Karhades on 20-Aug-15.
  */
 public class MainActivity extends AppCompatActivity {
+
+    /**
+     * Constant references.
+     */
+    private static final String[] TAB_NAMES = {"TRACKING", "SHARE", "CREATE"};
 
     /**
      * Widget references.
@@ -102,7 +108,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Tab 1.
         if (tabLayout.getSelectedTabPosition() == 0) {
-            nfcHandler.enableNfcReadTag(intent);
+            // Get the ID of the discovered tag.
+            String tagId = nfcHandler.handleNfcReadTag(intent);
+            // If there was no error.
+            if (tagId != null) {
+                startTrackingTagPagerActivity(tagId);
+            }
         }
         // Tab 2.
         else if (tabLayout.getSelectedTabPosition() == 1) {
@@ -112,6 +123,16 @@ public class MainActivity extends AppCompatActivity {
         else if (tabLayout.getSelectedTabPosition() == 2) {
             Snackbar.make(coordinatorLayout, "Click + to create a new one.", Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    private void startTrackingTagPagerActivity(String tagId) {
+        // Create an Intent and send the extra discovered NfcTag ID and
+        // another extra to indicate that it's from the NFC discovery.
+        Intent tagIntent = new Intent(this, TrackingTagPagerActivity.class);
+        tagIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        tagIntent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, tagId);
+        tagIntent.putExtra(TrackingTagFragment.EXTRA_TAG_DISCOVERED, true);
+        this.startActivity(tagIntent);
     }
 
     @Override
@@ -151,9 +172,15 @@ public class MainActivity extends AppCompatActivity {
     private void setupNFC() {
         nfcHandler = new NfcHandler();
         nfcHandler.setupNfcHandler(this);
-        nfcHandler.enableNfcReadTag(getIntent());
-        nfcHandler.enableAndroidBeamShareFiles();
 
+        // Get the ID of the discovered tag.
+        String tagId = nfcHandler.handleNfcReadTag(getIntent());
+        // If there was no error.
+        if (tagId != null) {
+            startTrackingTagPagerActivity(tagId);
+        }
+
+        nfcHandler.registerAndroidBeamShareFiles();
         nfcHandler.handleAndroidBeamReceivedFiles(getIntent());
     }
 
@@ -217,9 +244,10 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_normal));
         tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setText("TRACKING");
-        tabLayout.getTabAt(1).setText("SHARE");
-        tabLayout.getTabAt(2).setText("CREATE");
+        // Set tab names.
+        for (int i = 0; i < TAB_NAMES.length; i++) {
+            tabLayout.getTabAt(i).setText(TAB_NAMES[i]);
+        }
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -364,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
         CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(2);
         fragment.setupFloatingActionButton(floatingActionButton);
 
-        if (TransitionHelper.itSupportsTransitions()) {
+        if (TransitionHelper.isTransitionSupported()) {
             ViewGroup sceneRoot = drawerLayout;
             ViewGroup revealContent = (ViewGroup) findViewById(R.id.main_reveal_content);
             fragment.setupTransitionViews(sceneRoot, revealContent);

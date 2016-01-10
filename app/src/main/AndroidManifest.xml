@@ -2,10 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.karhades_pc.tag_it">
 
-    <!-- Permission to use NFC -->
+    <!-- Permission to use NFC and external storage-->
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <!-- Application requires NFC-->
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="true" />
@@ -15,16 +16,19 @@
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
+        <!-- MainActivity-->
         <activity
             android:name=".activity.MainActivity"
-            android:label="@string/app_name"
             android:screenOrientation="portrait">
 
+            <!-- Launcher intent filter-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!-- VIEW intent filter (Android Beam)-->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -43,30 +47,29 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="application/com.example.karhades_pc.nfchandler" />
             </intent-filter>
-
         </activity>
 
+        <!-- TrackingTagPagerActivity-->
         <activity
             android:name=".activity.TrackingTagPagerActivity"
-            android:label="@string/app_name"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity" />
         </activity>
 
+        <!-- CreateTagPagerActivity-->
         <activity
             android:name=".activity.CreateTagPagerActivity"
-            android:label="@string/app_name"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity" />
         </activity>
 
+        <!-- CreateTagActivity-->
         <activity
             android:name=".activity.CreateTagActivity"
-            android:label="@string/app_name"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -76,9 +79,10 @@
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
             </intent-filter>
+            <!-- Tech list-->
             <meta-data
                 android:name="android.nfc.action.TECH_DISCOVERED"
-                android:resource="@xml/nfc_tech_filter" />
+                android:resource="@xml/nfc_tech_list" />
 
             <!--TAG_DISCOVERED-->
             <intent-filter>
@@ -86,12 +90,13 @@
             </intent-filter>
         </activity>
 
+        <!-- FullScreenActivity-->
         <activity
             android:name=".activity.FullScreenActivity"
             android:label="@string/app_name"
             android:theme="@style/AppThemeTranslucent" />
 
+        <!-- Audio Service-->
         <service android:name="com.example.karhades_pc.utils.AudioService" />
-
     </application>
 </manifest>

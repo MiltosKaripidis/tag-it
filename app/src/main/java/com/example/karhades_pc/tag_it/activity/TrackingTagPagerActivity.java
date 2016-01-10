@@ -14,10 +14,10 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import com.example.karhades_pc.nfc.NfcHandler;
-import com.example.karhades_pc.tag_it.model.MyTags;
-import com.example.karhades_pc.tag_it.model.NfcTag;
 import com.example.karhades_pc.tag_it.R;
 import com.example.karhades_pc.tag_it.fragment.TrackingTagFragment;
+import com.example.karhades_pc.tag_it.model.MyTags;
+import com.example.karhades_pc.tag_it.model.NfcTag;
 import com.example.karhades_pc.utils.TransitionHelper;
 
 import java.util.ArrayList;
@@ -48,10 +48,10 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
     /**
      * Instance variables.
      */
+    private ArrayList<NfcTag> nfcTags;
     private FragmentAdapter fragmentAdapter;
     private String tagId;
     private boolean isTagDiscovered;
-    private ArrayList<NfcTag> nfcTags;
 
     /**
      * NFC adapter.
@@ -73,15 +73,18 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
         // Make content appear behind status bar.
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-        // Get the nfcTags from MyTags.
+        // Get the list of NFC tags.
         nfcTags = MyTags.get(this).getNfcTags();
 
         getIntentExtras(getIntent());
         setupNFC();
         setupViewPager();
-        solveNfcTagAfterViewPagerLoad();
 
-        if (TransitionHelper.itSupportsTransitions()) {
+        if (isTagDiscovered) {
+            solveNfcTagAfterViewPagerLoad();
+        }
+
+        if (TransitionHelper.isTransitionSupported()) {
             enableTransitions();
         }
     }
@@ -97,19 +100,19 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        nfcHandler.enableNfcReadTag(intent);
-
-        getIntentExtras(intent);
-        setCurrentTagPage();
-        solveNfcTag();
+        // Get the ID of the discovered tag.
+        tagId = nfcHandler.handleNfcReadTag(intent);
+        // If there was no error.
+        if (tagId != null) {
+            setCurrentTagPage();
+            solveNfcTag();
+        }
     }
 
     private void solveNfcTag() {
-        if (isTagDiscovered) {
-            TrackingTagFragment fragment = fragmentAdapter.getCurrentFragment();
-            if (fragment != null) {
-                fragment.solveNfcTag(tagId);
-            }
+        TrackingTagFragment fragment = fragmentAdapter.getCurrentFragment();
+        if (fragment != null) {
+            fragment.solveNfcTag(tagId);
         }
     }
 
@@ -122,7 +125,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
 
     private void getIntentExtras(Intent intent) {
         // Gets the NfcTag ID either from the onListClick() of TrackingGameFragment
-        // or the startActivityFromNfc() of NfcHandler.
+        // or from NFC tag discovery.
         tagId = intent.getStringExtra(TrackingTagFragment.EXTRA_TAG_ID);
 
         isTagDiscovered = intent.getBooleanExtra(TrackingTagFragment.EXTRA_TAG_DISCOVERED, false);
@@ -136,17 +139,9 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
         nfcHandler.setupNfcHandler(this);
     }
 
-    private void setCurrentTagPage() {
-        NfcTag nfcTag = MyTags.get(this).getNfcTag(tagId);
-        int position = MyTags.get(this).getNfcTags().indexOf(nfcTag);
-        if (position != -1) {
-            viewPager.setCurrentItem(position);
-        }
-    }
-
     /**
      * Wait for the ViewPager to finish loading it's content
-     * and then start the transition for the shared element.
+     * before solving the NFC tag.
      */
     private void solveNfcTagAfterViewPagerLoad() {
         viewPager.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -172,7 +167,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
         viewPager.setPageTransformer(true, this);
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int i, float v, int i2) {
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 // DO NOTHING
             }
 
@@ -190,13 +185,15 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
             }
         });
 
-        // Search for the same tag id and set it as current.
-        for (int i = 0; i < nfcTags.size(); i++) {
-            NfcTag nfcTag = nfcTags.get(i);
+        setCurrentTagPage();
+    }
 
-            if (nfcTag.getTagId().equals(tagId)) {
-                viewPager.setCurrentItem(i);
-            }
+    private void setCurrentTagPage() {
+        NfcTag nfcTag = MyTags.get(this).getNfcTag(tagId);
+        int position = MyTags.get(this).getNfcTags().indexOf(nfcTag);
+
+        if (position != -1) {
+            viewPager.setCurrentItem(position);
         }
     }
 

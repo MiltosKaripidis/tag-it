@@ -58,10 +58,12 @@ public class CreateTagActivity extends SingleFragmentActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         CreateTagFragment currentFragment = (CreateTagFragment) fragmentManager.findFragmentById(R.id.fragmentContainer);
 
-        boolean isWritten = nfcHandler.enableNfcWriteTag(intent);
-
-        if (!isWritten) {
+        // Indicates whether the write operation can start.
+        boolean isReady = NfcHandler.getWriteMode();
+        if (!isReady) {
             currentFragment.makeSnackBar();
+        } else {
+            nfcHandler.handleNfcWriteTag(intent);
         }
     }
 }

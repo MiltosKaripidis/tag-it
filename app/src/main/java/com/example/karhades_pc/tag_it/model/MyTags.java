@@ -89,10 +89,10 @@ public class MyTags {
             Log.d(TAG, "Nfc Tags were loaded!");
         } catch (FileNotFoundException e) {
             nfcTags = new ArrayList<>();
-            Log.e(TAG, "File tags.txt not found.");
+            Log.e(TAG, "File tags.txt not found.", e);
         } catch (Exception e) {
             nfcTags = new ArrayList<>();
-            Log.e(TAG, "Error loading tags: " + e.getMessage());
+            Log.e(TAG, "Error loading tags: " + e.getMessage(), e);
         }
     }
 
@@ -183,17 +183,17 @@ public class MyTags {
     }
 
     /**
-     * Create a Uri array with the uris of the tags.txt and the pictures
+     * Create a URI array with the URIs of the tags.txt and the pictures
      * associated with every NfcTag object.
      *
-     * @return Return the Uri array containing the uris of tags.json and
+     * @return Return the URI array containing the URIs of tags.txt and
      * the images.
      */
     public Uri[] createFileUrisArray() {
         // First, save any changes of the tags into the model.
         saveTags();
 
-        // Create a URI array containing NFC tags picture URIs + tags.txt file URI.
+        // Create a URI array with a size of [NFC tag picture URIs + tags.txt file URI].
         Uri[] fileUris = new Uri[nfcTags.size() + 1];
 
         // Create the tags.txt file URI.
@@ -201,7 +201,7 @@ public class MyTags {
         setWorldReadable(tagsFile);
         fileUris[0] = Uri.fromFile(tagsFile);
 
-        // Create the NFC tags Picture file URIs.
+        // Create the NFC tag picture file URIs.
         for (int i = 0; i < nfcTags.size(); i++) {
             File file = new File(nfcTags.get(i).getPictureFilePath());
             setWorldReadable(file);

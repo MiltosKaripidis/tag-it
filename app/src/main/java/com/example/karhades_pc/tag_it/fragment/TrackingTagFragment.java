@@ -58,7 +58,7 @@ public class TrackingTagFragment extends Fragment {
     /**
      * Widget references.
      */
-    private ImageView imageView;
+    private ImageView pictureImageView;
     private TextView difficultyTextView;
     private CheckBox solvedCheckBox;
     private TextView dateSolvedTextView;
@@ -100,7 +100,7 @@ public class TrackingTagFragment extends Fragment {
 
         getFragmentArguments();
 
-        if (TransitionHelper.itSupportsTransitions()) {
+        if (TransitionHelper.isTransitionSupported()) {
             enableTransitions();
         }
     }
@@ -110,16 +110,16 @@ public class TrackingTagFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if (TransitionHelper.itSupportsTransitions()) {
+        if (TransitionHelper.isTransitionSupported()) {
             // Register a callback to be invoked when the image has been loaded
             // to inform the activity to start the shared element transition.
             Callback picassoCallback = new Callback() {
                 @Override
                 public void onSuccess() {
-                    imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                    pictureImageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                         @Override
                         public boolean onPreDraw() {
-                            imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                            pictureImageView.getViewTreeObserver().removeOnPreDrawListener(this);
 
                             getActivity().startPostponedEnterTransition();
 
@@ -133,11 +133,11 @@ public class TrackingTagFragment extends Fragment {
                     Log.e("TrackingTagFragment", "There was an error at loading image with Picasso");
                 }
             };
-            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView, picassoCallback);
+            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), pictureImageView, picassoCallback);
         }
         // No transitions.
         else {
-            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
+            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), pictureImageView);
         }
     }
 
@@ -167,7 +167,6 @@ public class TrackingTagFragment extends Fragment {
      *
      * @param tagId The id of the NfcTag to solve.
      */
-    @SuppressWarnings("deprecation")
     public void solveNfcTag(String tagId) {
         // Get tag from list and solve.
         NfcTag nfcTag = MyTags.get(getActivity()).getNfcTag(tagId);
@@ -200,7 +199,7 @@ public class TrackingTagFragment extends Fragment {
     }
 
     private void getFragmentArguments() {
-        // Get the tag ID either from the TrackingGameFragment (onListClick) or
+        // Get the tag ID either from the TrackingGameFragment or
         // the NFC tag Discovery.
         String tagId = getArguments().getString(EXTRA_TAG_ID);
 
@@ -268,7 +267,7 @@ public class TrackingTagFragment extends Fragment {
             public void onClick(View v) {
                 hideActionButton();
 
-                if (TransitionHelper.itSupportsTransitions()) {
+                if (TransitionHelper.isTransitionSupported()) {
                     startFullScreenActivityWithTransition();
                 }
                 // No transitions.
@@ -313,9 +312,9 @@ public class TrackingTagFragment extends Fragment {
         Typeface typefaceNormal = FontCache.get("fonts/amatic_normal.ttf", getActivity());
 
         // NfcTag Picture ImageView.
-        imageView = (ImageView) view.findViewById(R.id.tracking_image_view);
-        if (TransitionHelper.itSupportsTransitions()) {
-            imageView.setTransitionName("image" + nfcTag.getTagId());
+        pictureImageView = (ImageView) view.findViewById(R.id.tracking_image_view);
+        if (TransitionHelper.isTransitionSupported()) {
+            pictureImageView.setTransitionName("image" + nfcTag.getTagId());
         }
 
         // NfcTag Details Title TextView.

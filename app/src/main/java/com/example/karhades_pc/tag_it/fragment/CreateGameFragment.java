@@ -504,7 +504,7 @@ public class CreateGameFragment extends Fragment {
         addActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TransitionHelper.itSupportsTransitions()) {
+                if (TransitionHelper.isTransitionSupported()) {
                     startActivityWithTransition();
                 }
                 // No transitions.

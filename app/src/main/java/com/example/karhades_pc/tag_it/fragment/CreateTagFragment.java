@@ -224,7 +224,7 @@ public class CreateTagFragment extends Fragment {
         cameraActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TransitionHelper.itSupportsTransitions()) {
+                if (TransitionHelper.isTransitionSupported()) {
                     takePictureWithTransition();
                 }
                 // No transitions.
@@ -340,7 +340,7 @@ public class CreateTagFragment extends Fragment {
         }
 
         // Enter write mode.
-        NfcHandler.toggleTagWriteMode(true);
+        NfcHandler.setWriteMode(true);
 
         // If it's a new tag.
         if (currentNfcTag == null) {
@@ -363,7 +363,7 @@ public class CreateTagFragment extends Fragment {
                 // Close dialog.
                 dialogFragment.dismiss();
 
-                // If NFC write was successful.
+                // If NFC write operation was successful.
                 if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
                     if (currentNfcTag != null) {
                         overwriteNfcTag(tagId);
@@ -380,6 +380,11 @@ public class CreateTagFragment extends Fragment {
                     // Close activity.
                     getActivity().finish();
                 }
+                // If NFC write operation was unsuccessful.
+                else if (status == NfcHandler.OnTagWriteListener.STATUS_ERROR) {
+                    // Inform user.
+                    Toast.makeText(getActivity(), "Couldn't write to NFC tag!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -388,6 +393,7 @@ public class CreateTagFragment extends Fragment {
         // Overwrite current nfc tag fields.
         currentNfcTag.setDifficulty(temporaryDifficulty);
         currentNfcTag.setTagId(tagId);
+        currentNfcTag.setSolved(false);
         currentNfcTag.setDateSolved(null);
 
         // Clear memory cache for previous image to refresh ImageView.
@@ -445,7 +451,7 @@ public class CreateTagFragment extends Fragment {
                     .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            NfcHandler.toggleTagWriteMode(false);
+                            NfcHandler.setWriteMode(false);
                         }
                     }).create();
         }
@@ -454,7 +460,7 @@ public class CreateTagFragment extends Fragment {
         public void onCancel(DialogInterface dialog) {
             super.onCancel(dialog);
 
-            NfcHandler.toggleTagWriteMode(false);
+            NfcHandler.setWriteMode(false);
         }
     }
 

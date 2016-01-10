@@ -11,10 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.karhades_pc.nfc.NfcHandler;
+import com.example.karhades_pc.tag_it.R;
 import com.example.karhades_pc.tag_it.fragment.CreateTagFragment;
 import com.example.karhades_pc.tag_it.model.MyTags;
 import com.example.karhades_pc.tag_it.model.NfcTag;
-import com.example.karhades_pc.tag_it.R;
 
 import java.util.ArrayList;
 
@@ -84,10 +84,12 @@ public class CreateTagPagerActivity extends AppCompatActivity implements ViewPag
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        boolean isWritten = nfcHandler.enableNfcWriteTag(intent);
-
-        if (!isWritten) {
+        // Indicates whether the write operation can start.
+        boolean isReady = NfcHandler.getWriteMode();
+        if (!isReady) {
             fragmentAdapter.getCurrentFragment().makeSnackBar();
+        } else {
+            nfcHandler.handleNfcWriteTag(intent);
         }
     }
 
