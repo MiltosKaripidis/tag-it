@@ -32,9 +32,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data
-                    android:mimeType="text/plain"
-                    android:scheme="file" />
+                <data android:mimeType="text/plain" />
             </intent-filter>
 
             <!-- The android system searches for these filters-->

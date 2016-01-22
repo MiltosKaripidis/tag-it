@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.net.Uri;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
@@ -14,6 +15,7 @@ import android.nfc.Tag;
 import android.nfc.tech.MifareUltralight;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NfcA;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -27,7 +29,10 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- * Created by Karhades on 18-Aug-15.
+ * A wrapper class of NfcAdapter that can be bound to a given activity, to
+ * enable NFC capabilities. It encapsulates the read/write tag and peer-to-peer
+ * (Android Beam) operations of the NFC technology as well as more advanced
+ * topics such as the foreground dispatch system.
  */
 public class NfcHandler {
 
@@ -541,17 +546,29 @@ public class NfcHandler {
         // that points to the first file.
         Uri firstFileUri = intent.getData();
 
-        // If the URI hasn't a scheme of file.
-        if (!firstFileUri.getScheme().equals("file")) {
-            return;
+        String parentPath = null;
+
+        // If the URI has a scheme of file.
+        if (firstFileUri.getScheme().equals("file")) {
+            parentPath = getParentFromFileUri(firstFileUri);
+        }
+        // If the URI has a scheme of content.
+        else if (firstFileUri.getScheme().equals("content")) {
+            parentPath = getParentFromContentUri(firstFileUri);
         }
 
-        String parentFilePath = getParentFileFromUri(firstFileUri);
-
-        moveFilesToPrivateExternalStorage(parentFilePath);
+        moveFilesToPrivateExternalStorage(parentPath);
     }
 
-    private String getParentFileFromUri(Uri uri) {
+    /**
+     * Return the parent file directory of the given URI
+     * that has a file scheme.
+     *
+     * @param uri A URI object to retrieve the path.
+     * @return A String representing the parent file
+     * directory.
+     */
+    private String getParentFromFileUri(Uri uri) {
         // Get the path of the URI.
         String fileName = uri.getPath();
 
@@ -562,6 +579,53 @@ public class NfcHandler {
         return file.getParent();
     }
 
+    /**
+     * Return the parent file directory of the given URI
+     * that has a content scheme.
+     *
+     * @param uri A URI object needed by the cursor.
+     * @return A String representing the parent file directory or
+     * null if the authority is not from a media provider.
+     */
+    private String getParentFromContentUri(Uri uri) {
+        // If it is not a media authority representing the Media Provider.
+        if (!uri.getAuthority().equals(MediaStore.AUTHORITY)) {
+            return null;
+        }
+
+        // Get the column that contains the filename.
+        String[] projection = {MediaStore.MediaColumns.DATA};
+        // Get the cursor that corresponds to the given query (SELECT _data FROM MediaStore).
+        Cursor cursor = activity.getContentResolver().query(uri, projection, null, null, null);
+
+        if (cursor == null) {
+            return null;
+        }
+        // If the cursor is empty.
+        if (!cursor.moveToFirst()) {
+            return null;
+        }
+
+        // Get the index of DATA column that corresponds to the filename.
+        int columnIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
+        // Get the full file name, including path.
+        String fileName = cursor.getString(columnIndex);
+        // Close the cursor.
+        cursor.close();
+
+        // Create a File object for the filename to retrieve the parent directory.
+        File copiedFile = new File(fileName);
+        // Return the parent directory of the file.
+        return new File(copiedFile.getParent()).toString();
+    }
+
+    /**
+     * Move files to the private external storage of the device from the
+     * specified file path.
+     *
+     * @param parentFilePath A String representing the parent file directory
+     *                       where the files reside.
+     */
     private void moveFilesToPrivateExternalStorage(String parentFilePath) {
         // Get tags.txt from Android Beam.
         File beamTagsJSONFile = new File(parentFilePath + File.separator + "tags.txt");
@@ -594,18 +658,30 @@ public class NfcHandler {
         }
     }
 
+    /**
+     * Renames the given source file to the specified destination file.
+     *
+     * @param source      A File object representing the source file.
+     * @param destination A File object representing the destination file.
+     */
     private void renameFile(File source, File destination) {
         if (!source.renameTo(destination)) {
             Log.e(TAG, "Unable to rename " + source.getAbsolutePath());
         }
     }
 
+    /**
+     * Thrown when an NFC tag is not registered in the application.
+     */
     public class TagNotRegisteredException extends RuntimeException {
         TagNotRegisteredException(String message) {
             super(message);
         }
     }
 
+    /**
+     * Thrown when an NFC tag already exists within the application.
+     */
     public class TagExistsException extends RuntimeException {
         TagExistsException(String message) {
             super(message);
