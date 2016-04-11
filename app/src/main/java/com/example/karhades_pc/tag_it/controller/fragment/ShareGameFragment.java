@@ -1,4 +1,4 @@
-package com.example.karhades_pc.tag_it.fragment;
+package com.example.karhades_pc.tag_it.controller.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

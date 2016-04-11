@@ -1,4 +1,4 @@
-package com.example.karhades_pc.tag_it.activity;
+package com.example.karhades_pc.tag_it.controller.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.View;
 
 import com.example.karhades_pc.nfc.NfcHandler;
-import com.example.karhades_pc.tag_it.fragment.CreateTagFragment;
+import com.example.karhades_pc.tag_it.controller.fragment.CreateTagFragment;
 import com.example.karhades_pc.tag_it.R;
 
 /**

@@ -14,10 +14,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
  */
 public class TransitionHelper {
 
-    private TransitionHelper() {
-        // DOES NOT GENERATE OBJECTS.
-    }
-
     public static boolean isTransitionSupported() {
         return Build.VERSION.SDK_INT >= 21;
     }

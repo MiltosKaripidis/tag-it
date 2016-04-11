@@ -1,4 +1,4 @@
-package com.example.karhades_pc.tag_it.activity;
+package com.example.karhades_pc.tag_it.controller.activity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -29,10 +29,10 @@ import android.view.ViewGroup;
 
 import com.example.karhades_pc.nfc.NfcHandler;
 import com.example.karhades_pc.tag_it.R;
-import com.example.karhades_pc.tag_it.fragment.CreateGameFragment;
-import com.example.karhades_pc.tag_it.fragment.ShareGameFragment;
-import com.example.karhades_pc.tag_it.fragment.TrackingGameFragment;
-import com.example.karhades_pc.tag_it.fragment.TrackingTagFragment;
+import com.example.karhades_pc.tag_it.controller.fragment.CreateGameFragment;
+import com.example.karhades_pc.tag_it.controller.fragment.ShareGameFragment;
+import com.example.karhades_pc.tag_it.controller.fragment.TrackingGameFragment;
+import com.example.karhades_pc.tag_it.controller.fragment.TrackingTagFragment;
 import com.example.karhades_pc.tag_it.model.MyTags;
 import com.example.karhades_pc.utils.TransitionHelper;
 
@@ -43,11 +43,6 @@ import java.util.List;
  * Created by Karhades on 20-Aug-15.
  */
 public class MainActivity extends AppCompatActivity {
-
-    /**
-     * Constant references.
-     */
-    private static final String[] TAB_NAMES = {"TRACKING", "SHARE", "CREATE"};
 
     /**
      * Widget references.
@@ -245,8 +240,9 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
         tabLayout.setupWithViewPager(viewPager);
         // Set tab names.
-        for (int i = 0; i < TAB_NAMES.length; i++) {
-            tabLayout.getTabAt(i).setText(TAB_NAMES[i]);
+        String[] tabNames = getResources().getStringArray(R.array.tab_names);
+        for (int i = 0; i < tabNames.length; i++) {
+            tabLayout.getTabAt(i).setText(tabNames[i]);
         }
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

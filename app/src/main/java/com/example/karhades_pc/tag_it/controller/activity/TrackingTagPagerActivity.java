@@ -1,4 +1,4 @@
-package com.example.karhades_pc.tag_it.activity;
+package com.example.karhades_pc.tag_it.controller.activity;
 
 import android.annotation.TargetApi;
 import android.app.SharedElementCallback;
@@ -15,7 +15,7 @@ import android.view.ViewTreeObserver;
 
 import com.example.karhades_pc.nfc.NfcHandler;
 import com.example.karhades_pc.tag_it.R;
-import com.example.karhades_pc.tag_it.fragment.TrackingTagFragment;
+import com.example.karhades_pc.tag_it.controller.fragment.TrackingTagFragment;
 import com.example.karhades_pc.tag_it.model.MyTags;
 import com.example.karhades_pc.tag_it.model.NfcTag;
 import com.example.karhades_pc.utils.TransitionHelper;

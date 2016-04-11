@@ -1,4 +1,4 @@
-package com.example.karhades_pc.tag_it.fragment;
+package com.example.karhades_pc.tag_it.controller.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
@@ -23,7 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.karhades_pc.tag_it.R;
-import com.example.karhades_pc.tag_it.activity.TrackingTagPagerActivity;
+import com.example.karhades_pc.tag_it.controller.activity.TrackingTagPagerActivity;
 import com.example.karhades_pc.tag_it.model.MyTags;
 import com.example.karhades_pc.tag_it.model.NfcTag;
 import com.example.karhades_pc.utils.FontCache;

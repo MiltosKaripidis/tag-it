@@ -1,4 +1,4 @@
-package com.example.karhades_pc.tag_it.fragment;
+package com.example.karhades_pc.tag_it.controller.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -33,7 +33,7 @@ import com.example.karhades_pc.nfc.NfcHandler;
 import com.example.karhades_pc.tag_it.model.MyTags;
 import com.example.karhades_pc.tag_it.model.NfcTag;
 import com.example.karhades_pc.tag_it.R;
-import com.example.karhades_pc.tag_it.activity.FullScreenActivity;
+import com.example.karhades_pc.tag_it.controller.activity.FullScreenActivity;
 import com.example.karhades_pc.utils.PictureLoader;
 import com.example.karhades_pc.utils.TransitionHelper;
 

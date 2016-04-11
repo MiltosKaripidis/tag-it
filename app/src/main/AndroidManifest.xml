@@ -19,7 +19,7 @@
 
         <!-- MainActivity-->
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".controller.activity.MainActivity"
             android:screenOrientation="portrait">
 
             <!-- Launcher intent filter-->
@@ -49,29 +49,29 @@
 
         <!-- TrackingTagPagerActivity-->
         <activity
-            android:name=".activity.TrackingTagPagerActivity"
+            android:name=".controller.activity.TrackingTagPagerActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+                android:value=".controller.activity.MainActivity" />
         </activity>
 
         <!-- CreateTagPagerActivity-->
         <activity
-            android:name=".activity.CreateTagPagerActivity"
+            android:name=".controller.activity.CreateTagPagerActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+                android:value=".controller.activity.MainActivity" />
         </activity>
 
         <!-- CreateTagActivity-->
         <activity
-            android:name=".activity.CreateTagActivity"
+            android:name=".controller.activity.CreateTagActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+                android:value=".controller.activity.MainActivity" />
 
             <!--TECH_DISCOVERED-->
             <intent-filter>
@@ -90,7 +90,7 @@
 
         <!-- FullScreenActivity-->
         <activity
-            android:name=".activity.FullScreenActivity"
+            android:name=".controller.activity.FullScreenActivity"
             android:label="@string/app_name"
             android:theme="@style/AppThemeTranslucent" />
 
