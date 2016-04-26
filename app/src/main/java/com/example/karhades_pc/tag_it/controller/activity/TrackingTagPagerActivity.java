@@ -70,9 +70,6 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking_tag_pager);
 
-        // Make content appear behind status bar.
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
         // Get the list of NFC tags.
         nfcTags = MyTags.get(this).getNfcTags();
 
@@ -84,7 +81,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
             solveNfcTagAfterViewPagerLoad();
         }
 
-        if (TransitionHelper.isTransitionSupported()) {
+        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
             enableTransitions();
         }
     }
@@ -273,21 +270,25 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
     @TargetApi(21)
     @Override
     public void finishAfterTransition() {
-        isReturning = true;
+        if (TransitionHelper.isTransitionEnabled) {
+            isReturning = true;
 
-        // Hide the fragment's action button and pass a runnable to run after
-        // the animation ends.
-        fragmentAdapter.getCurrentFragment().hideActionButton(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent();
-                intent.putExtra(EXTRA_OLD_TAG_POSITION, originalTagPosition);
-                intent.putExtra(EXTRA_CURRENT_TAG_POSITION, currentTagPosition);
-                setResult(RESULT_OK, intent);
+            // Hide the fragment's action button and pass a runnable to run after
+            // the animation ends.
+            fragmentAdapter.getCurrentFragment().hideActionButton(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent();
+                    intent.putExtra(EXTRA_OLD_TAG_POSITION, originalTagPosition);
+                    intent.putExtra(EXTRA_CURRENT_TAG_POSITION, currentTagPosition);
+                    setResult(RESULT_OK, intent);
 
-                TrackingTagPagerActivity.super.finishAfterTransition();
-            }
-        });
+                    TrackingTagPagerActivity.super.finishAfterTransition();
+                }
+            });
+        } else {
+            TrackingTagPagerActivity.super.finishAfterTransition();
+        }
     }
 
     @TargetApi(21)

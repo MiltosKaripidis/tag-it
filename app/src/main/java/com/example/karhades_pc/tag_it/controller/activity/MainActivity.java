@@ -450,6 +450,9 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityReenter(int resultCode, Intent data) {
         super.onActivityReenter(resultCode, data);
 
+        if (!TransitionHelper.isTransitionEnabled)
+            return;
+
         // If Tab 1.
         if (tabLayout.getSelectedTabPosition() == 0) {
             TrackingGameFragment fragment = (TrackingGameFragment) adapter.getFragment(0);

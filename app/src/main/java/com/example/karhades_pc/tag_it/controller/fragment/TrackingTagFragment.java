@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -100,7 +101,7 @@ public class TrackingTagFragment extends Fragment {
 
         getFragmentArguments();
 
-        if (TransitionHelper.isTransitionSupported()) {
+        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
             enableTransitions();
         }
     }
@@ -110,7 +111,7 @@ public class TrackingTagFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if (TransitionHelper.isTransitionSupported()) {
+        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
             // Register a callback to be invoked when the image has been loaded
             // to inform the activity to start the shared element transition.
             Callback picassoCallback = new Callback() {
@@ -130,7 +131,7 @@ public class TrackingTagFragment extends Fragment {
 
                 @Override
                 public void onError() {
-                    Log.e("TrackingTagFragment", "There was an error at loading image with Picasso");
+                    Log.e("TrackingTagFragment", "There was an error loading image with Picasso");
                 }
             };
             PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), pictureImageView, picassoCallback);
@@ -146,11 +147,14 @@ public class TrackingTagFragment extends Fragment {
         super.onResume();
 
         updateUI();
-        showActionButton();
 
-        // Hide the reveal content view.
-        if (revealContent.getVisibility() == View.VISIBLE) {
-            TransitionHelper.circularHide(fullscreenActionButton, revealContent);
+        if (TransitionHelper.isTransitionEnabled) {
+            showActionButton();
+
+            // Hide the reveal content view.
+            if (revealContent.getVisibility() == View.VISIBLE) {
+                TransitionHelper.circularHide(fullscreenActionButton, revealContent);
+            }
         }
     }
 
@@ -224,9 +228,10 @@ public class TrackingTagFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tracking_tag, container, false);
+        View view = inflater.inflate(R.layout.fragment_tracking_tag2, container, false);
 
         setupToolbar(view);
+        setupCollapsingToolbar(view);
         setupFloatingActionButton(view);
         initializeWidgets(view);
 
@@ -254,10 +259,15 @@ public class TrackingTagFragment extends Fragment {
             // Display the caret for an ancestral navigation.
             if (NavUtils.getParentActivityName(getActivity()) != null)
                 actionBar.setDisplayHomeAsUpEnabled(true);
-            if (nfcTag != null) {
-                actionBar.setTitle(nfcTag.getTitle());
-            }
+//            if (nfcTag != null) {
+//                actionBar.setTitle(nfcTag.getTitle());
+//            }
         }
+    }
+
+    private void setupCollapsingToolbar(View view) {
+        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_tool_bar_layout);
+        collapsingToolbarLayout.setTitle(nfcTag.getTitle());
     }
 
     private void setupFloatingActionButton(View view) {
@@ -265,9 +275,11 @@ public class TrackingTagFragment extends Fragment {
         fullscreenActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideActionButton();
+                if (TransitionHelper.isTransitionEnabled) {
+                    hideActionButton();
+                }
 
-                if (TransitionHelper.isTransitionSupported()) {
+                if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
                     startFullScreenActivityWithTransition();
                 }
                 // No transitions.
@@ -313,7 +325,7 @@ public class TrackingTagFragment extends Fragment {
 
         // NfcTag Picture ImageView.
         pictureImageView = (ImageView) view.findViewById(R.id.tracking_image_view);
-        if (TransitionHelper.isTransitionSupported()) {
+        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
             pictureImageView.setTransitionName("image" + nfcTag.getTagId());
         }
 

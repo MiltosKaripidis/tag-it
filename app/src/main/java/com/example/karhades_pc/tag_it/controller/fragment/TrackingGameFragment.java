@@ -65,7 +65,7 @@ public class TrackingGameFragment extends Fragment {
         // Get the list of NFC tags.
         nfcTags = MyTags.get(getActivity()).getNfcTags();
 
-        if (TransitionHelper.isTransitionSupported()) {
+        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
             enableTransitions();
         }
     }
@@ -207,7 +207,7 @@ public class TrackingGameFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (TransitionHelper.isTransitionSupported()) {
+                    if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
                         startTrackingTagPagerActivityWithTransition();
                     }
                     // No transitions.

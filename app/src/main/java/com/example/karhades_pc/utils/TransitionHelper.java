@@ -14,6 +14,11 @@ import android.view.animation.AccelerateDecelerateInterpolator;
  */
 public class TransitionHelper {
 
+    /**
+     * Toggle application transitions.
+     */
+    public static boolean isTransitionEnabled = true;
+
     public static boolean isTransitionSupported() {
         return Build.VERSION.SDK_INT >= 21;
     }
