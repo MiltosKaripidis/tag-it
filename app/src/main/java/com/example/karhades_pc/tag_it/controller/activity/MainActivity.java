@@ -25,6 +25,7 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.karhades_pc.nfc.NfcHandler;
@@ -315,6 +316,9 @@ public class MainActivity extends AppCompatActivity {
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 MenuInflater inflater = mode.getMenuInflater();
                 inflater.inflate(R.menu.contextual_action_bar, menu);
+
+                disableActionModeFadeInAnimation();
+
                 return true;
             }
 
@@ -361,10 +365,27 @@ public class MainActivity extends AppCompatActivity {
 
                     CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(tabLayout.getSelectedTabPosition());
                     fragment.contextFinish();
+
+                    disableActionModeFadeOutAnimation();
+
                     actionMode = null;
                 }
             }
         };
+    }
+
+    private void disableActionModeFadeInAnimation() {
+        // Workaround to disable fade in animation of the Action Mode.
+        toolbar.setBackgroundColor(getResources().getColor(R.color.accent));
+    }
+
+    private void disableActionModeFadeOutAnimation() {
+        // Workaround to disable fade out animation of the Action Mode.
+        View actionModeBar = findViewById(R.id.action_mode_bar);
+        if (actionModeBar != null) {
+            actionModeBar.setVisibility(View.INVISIBLE);
+        }
+        toolbar.setBackgroundColor(getResources().getColor(R.color.primary));
     }
 
     private void doPositiveClick() {

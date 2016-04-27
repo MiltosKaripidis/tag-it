@@ -179,6 +179,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/accent"
+        android:fitsSystemWindows="true"
         android:visibility="invisible" />
 </android.support.design.widget.CoordinatorLayout>
 
