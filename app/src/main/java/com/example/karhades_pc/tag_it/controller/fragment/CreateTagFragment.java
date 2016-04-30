@@ -114,7 +114,6 @@ public class CreateTagFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        showActionButton();
         hideCircularReveal();
     }
 
@@ -477,19 +476,20 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void showActionButton() {
-        // Floating Action Button animation on show after a period of time.
-        if (cameraActionButton.getScaleX() == 0 && cameraActionButton.getScaleY() == 0) {
-            cameraActionButton.animate()
-                    .setStartDelay(700)
-                    .scaleX(1)
-                    .scaleY(1);
-        }
+        cameraActionButton.animate()
+                .scaleX(1)
+                .scaleY(1);
     }
 
     private void hideCircularReveal() {
         // Hide the reveal content view.
         if (revealContent.getVisibility() == View.VISIBLE) {
-            TransitionHelper.circularHide(cameraActionButton, revealContent);
+            TransitionHelper.circularHide(cameraActionButton, revealContent, new Runnable() {
+                @Override
+                public void run() {
+                    showActionButton();
+                }
+            });
         }
     }
 

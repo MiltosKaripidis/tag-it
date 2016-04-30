@@ -32,14 +32,16 @@ public class TransitionHelper {
 
 
         Animator animator = ViewAnimationUtils.createCircularReveal(revealContent, centerX, centerY, startRadius, finalRadius);
-        animator.setDuration(700);
+        animator.setDuration(400);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
 
-                runnable.run();
+                if (runnable != null) {
+                    runnable.run();
+                }
             }
         });
         revealContent.setVisibility(View.VISIBLE);
@@ -47,20 +49,24 @@ public class TransitionHelper {
     }
 
     @TargetApi(21)
-    public static void circularHide(View view, final ViewGroup revealContent) {
+    public static void circularHide(View view, final ViewGroup revealContent, final Runnable runnable) {
         int centerX = (view.getLeft() + view.getRight()) / 2;
         int centerY = (view.getTop() + view.getBottom()) / 2;
         float initialRadius = revealContent.getWidth();
         float finalRadius = 0;
 
         Animator animator = ViewAnimationUtils.createCircularReveal(revealContent, centerX, centerY, initialRadius, finalRadius);
-        animator.setDuration(700);
+        animator.setDuration(300);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
 
                 revealContent.setVisibility(View.INVISIBLE);
+
+                if (runnable != null) {
+                    runnable.run();
+                }
             }
         });
         animator.start();

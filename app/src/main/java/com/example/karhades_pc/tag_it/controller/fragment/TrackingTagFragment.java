@@ -21,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -147,15 +146,7 @@ public class TrackingTagFragment extends Fragment {
         super.onResume();
 
         updateUI();
-
-        if (TransitionHelper.isTransitionEnabled) {
-            showActionButton();
-
-            // Hide the reveal content view.
-            if (revealContent.getVisibility() == View.VISIBLE) {
-                TransitionHelper.circularHide(fullscreenActionButton, revealContent);
-            }
-        }
+        hideCircularReveal();
     }
 
     private void updateUI() {
@@ -163,6 +154,20 @@ public class TrackingTagFragment extends Fragment {
         solvedCheckBox.setChecked(nfcTag.isSolved());
         if (nfcTag.getDateSolved() != null) {
             dateSolvedTextView.setText(nfcTag.getDateSolved());
+        }
+    }
+
+    private void hideCircularReveal() {
+        if (TransitionHelper.isTransitionEnabled) {
+            // Hide the reveal content view.
+            if (revealContent.getVisibility() == View.VISIBLE) {
+                TransitionHelper.circularHide(fullscreenActionButton, revealContent, new Runnable() {
+                    @Override
+                    public void run() {
+                        showActionButton();
+                    }
+                });
+            }
         }
     }
 
@@ -259,9 +264,6 @@ public class TrackingTagFragment extends Fragment {
             // Display the caret for an ancestral navigation.
             if (NavUtils.getParentActivityName(getActivity()) != null)
                 actionBar.setDisplayHomeAsUpEnabled(true);
-//            if (nfcTag != null) {
-//                actionBar.setTitle(nfcTag.getTitle());
-//            }
         }
     }
 
@@ -361,13 +363,9 @@ public class TrackingTagFragment extends Fragment {
     }
 
     private void showActionButton() {
-        // Floating Action Button animation on show after a period of time.
-        if (fullscreenActionButton.getScaleX() == 0 && fullscreenActionButton.getScaleY() == 0) {
-            fullscreenActionButton.animate()
-                    .setStartDelay(700)
-                    .scaleX(1)
-                    .scaleY(1);
-        }
+        fullscreenActionButton.animate()
+                .scaleX(1)
+                .scaleY(1);
     }
 
     /**
@@ -377,7 +375,7 @@ public class TrackingTagFragment extends Fragment {
      * @param runnable The runnable to run after the hide animation
      *                 of the action button.
      */
-    public void hideActionButton(Runnable runnable) {
+    public void hideActionButtonOnExit(Runnable runnable) {
         fullscreenActionButton.animate()
                 .scaleX(0)
                 .scaleY(0)
@@ -394,17 +392,12 @@ public class TrackingTagFragment extends Fragment {
         getActivity().getWindow().getSharedElementEnterTransition().addListener(new Transition.TransitionListener() {
             @Override
             public void onTransitionStart(Transition transition) {
-                fullscreenActionButton.setScaleX(0);
-                fullscreenActionButton.setScaleY(0);
+                hideActionButton();
             }
 
             @Override
             public void onTransitionEnd(Transition transition) {
-                fullscreenActionButton.animate()
-                        .setInterpolator(new AccelerateInterpolator())
-                        .setStartDelay(100)
-                        .scaleX(1)
-                        .scaleY(1);
+                showActionButton();
             }
 
             @Override

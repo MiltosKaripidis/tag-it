@@ -275,7 +275,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
 
             // Hide the fragment's action button and pass a runnable to run after
             // the animation ends.
-            fragmentAdapter.getCurrentFragment().hideActionButton(new Runnable() {
+            fragmentAdapter.getCurrentFragment().hideActionButtonOnExit(new Runnable() {
                 @Override
                 public void run() {
                     Intent intent = new Intent();
