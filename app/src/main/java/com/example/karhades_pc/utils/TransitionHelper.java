@@ -32,7 +32,7 @@ public class TransitionHelper {
 
 
         Animator animator = ViewAnimationUtils.createCircularReveal(revealContent, centerX, centerY, startRadius, finalRadius);
-        animator.setDuration(400);
+        animator.setDuration(300);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
