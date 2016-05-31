@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.karhades_pc.tag_it">
+    package="com.karhades.tag_it.main">
 
     <!-- Permission to use NFC and external storage-->
     <uses-permission android:name="android.permission.NFC" />
@@ -19,7 +19,7 @@
 
         <!-- MainActivity-->
         <activity
-            android:name=".controller.activity.MainActivity"
+            android:name="com.karhades.tag_it.main.controller.activity.MainActivity"
             android:screenOrientation="portrait">
 
             <!-- Launcher intent filter-->
@@ -43,35 +43,35 @@
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="application/com.example.karhades_pc.nfchandler" />
+                <data android:mimeType="application/com.karhades.tag_it.nfchandler" />
             </intent-filter>
         </activity>
 
         <!-- TrackingTagPagerActivity-->
         <activity
-            android:name=".controller.activity.TrackingTagPagerActivity"
+            android:name="com.karhades.tag_it.main.controller.activity.TrackingTagPagerActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".controller.activity.MainActivity" />
+                android:value="com.karhades.tag_it.main.controller.activity.MainActivity" />
         </activity>
 
         <!-- CreateTagPagerActivity-->
         <activity
-            android:name=".controller.activity.CreateTagPagerActivity"
+            android:name="com.karhades.tag_it.main.controller.activity.CreateTagPagerActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".controller.activity.MainActivity" />
+                android:value="com.karhades.tag_it.main.controller.activity.MainActivity" />
         </activity>
 
         <!-- CreateTagActivity-->
         <activity
-            android:name=".controller.activity.CreateTagActivity"
+            android:name="com.karhades.tag_it.main.controller.activity.CreateTagActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".controller.activity.MainActivity" />
+                android:value="com.karhades.tag_it.main.controller.activity.MainActivity" />
 
             <!--TECH_DISCOVERED-->
             <intent-filter>
@@ -90,11 +90,11 @@
 
         <!-- FullScreenActivity-->
         <activity
-            android:name=".controller.activity.FullScreenActivity"
+            android:name="com.karhades.tag_it.main.controller.activity.FullScreenActivity"
             android:label="@string/app_name"
             android:theme="@style/AppThemeTranslucent" />
 
         <!-- Audio Service-->
-        <service android:name="com.example.karhades_pc.utils.AudioService" />
+        <service android:name="com.karhades.tag_it.utils.AudioService" />
     </application>
 </manifest>

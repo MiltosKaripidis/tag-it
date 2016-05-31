@@ -22,6 +22,9 @@
 
         <!-- Custom ActionMode popup-->
         <item name="actionBarPopupTheme">@style/AppTheme.ActionMode.Overflow</item>
+
+        <!-- Custom alert dialog-->
+        <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>
     </style>
 
     <!-- Style for the fullscreen activity-->
@@ -33,5 +36,10 @@
     <style name="AppTheme.ActionMode.Overflow" parent="Theme.AppCompat.Light">
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <!-- Custom style for the alert dialog-->
+    <style name="AppTheme.AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:colorAccent">@color/accent</item>
     </style>
 </resources>
