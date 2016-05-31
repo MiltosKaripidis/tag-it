@@ -526,7 +526,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return new AlertDialog.Builder(getActivity())
-                    .setMessage("Delete tags?")
+                    .setIcon(R.drawable.icon_warning)
+                    .setTitle("Delete tags?")
+                    .setMessage("You are going to delete the selected tags.")
                     .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

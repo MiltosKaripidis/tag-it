@@ -564,7 +564,9 @@ public class CreateGameFragment extends Fragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return new AlertDialog.Builder(getActivity())
-                    .setMessage("Delete tag?")
+                    .setIcon(R.drawable.icon_warning)
+                    .setTitle("Delete tag?")
+                    .setMessage("You are going to delete the selected tag.")
                     .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

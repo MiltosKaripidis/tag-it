@@ -445,8 +445,9 @@ public class CreateTagFragment extends Fragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return new AlertDialog.Builder(getActivity())
+                    .setIcon(R.drawable.icon_info)
                     .setTitle("Nfc Write Mode")
-                    .setMessage("Touch the NFC tag to write the information inserted.")
+                    .setMessage("Tap the NFC tag to write the inserted information.")
                     .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
