@@ -1,10 +1,13 @@
 package com.karhades.tag_it.main.controller.activity;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -25,16 +28,15 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 
-import com.karhades.tag_it.main.model.NfcHandler;
 import com.karhades.tag_it.main.R;
 import com.karhades.tag_it.main.controller.fragment.CreateGameFragment;
 import com.karhades.tag_it.main.controller.fragment.ShareGameFragment;
 import com.karhades.tag_it.main.controller.fragment.TrackingGameFragment;
 import com.karhades.tag_it.main.controller.fragment.TrackingTagFragment;
 import com.karhades.tag_it.main.model.MyTags;
+import com.karhades.tag_it.main.model.NfcHandler;
 import com.karhades.tag_it.utils.TransitionHelper;
 
 import java.util.ArrayList;
@@ -314,10 +316,10 @@ public class MainActivity extends AppCompatActivity {
         actionModeCallback = new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                changeBarsColor(false);
+
                 MenuInflater inflater = mode.getMenuInflater();
                 inflater.inflate(R.menu.contextual_action_bar, menu);
-
-                disableActionModeFadeInAnimation();
 
                 return true;
             }
@@ -366,26 +368,10 @@ public class MainActivity extends AppCompatActivity {
                     CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(tabLayout.getSelectedTabPosition());
                     fragment.contextFinish();
 
-                    disableActionModeFadeOutAnimation();
-
                     actionMode = null;
                 }
             }
         };
-    }
-
-    private void disableActionModeFadeInAnimation() {
-        // Workaround to disable fade in animation of the Action Mode.
-        toolbar.setBackgroundColor(getResources().getColor(R.color.accent));
-    }
-
-    private void disableActionModeFadeOutAnimation() {
-        // Workaround to disable fade out animation of the Action Mode.
-        View actionModeBar = findViewById(R.id.action_mode_bar);
-        if (actionModeBar != null) {
-            actionModeBar.setVisibility(View.INVISIBLE);
-        }
-        toolbar.setBackgroundColor(getResources().getColor(R.color.primary));
     }
 
     private void doPositiveClick() {
@@ -423,8 +409,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemLongClicked() {
                 if (actionMode == null) {
-                    changeBarsColor(false);
-
                     // Start contextual action mode.
                     actionMode = toolbar.startActionMode(actionModeCallback);
                 }
@@ -448,22 +432,45 @@ public class MainActivity extends AppCompatActivity {
     @SuppressWarnings("deprecation")
     private void changeBarsColor(boolean isContextualActionBarVisible) {
         if (isContextualActionBarVisible) {
-            if (Build.VERSION.SDK_INT >= 21) {
-                getWindow().setStatusBarColor(getResources().getColor(R.color.primary_dark));
-                getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
-            }
-
             tabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_normal));
-            tabLayout.setBackgroundColor(getResources().getColor(R.color.primary));
             tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
+
+            animateStatusBar(getResources().getColor(R.color.accent_dark), getResources().getColor(R.color.primary_dark));
+            animateTabLayout(getResources().getColor(R.color.accent), getResources().getColor(R.color.primary));
+
+            // TODO: Temporary fix.
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
+                }
+            }, 400);
         } else {
-            if (Build.VERSION.SDK_INT >= 21) {
-                getWindow().setStatusBarColor(getResources().getColor(R.color.accent_dark));
-            }
             tabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_activated));
-            tabLayout.setBackgroundColor(getResources().getColor(R.color.accent));
             tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.primary));
+
+            animateStatusBar(getResources().getColor(R.color.primary_dark), getResources().getColor(R.color.accent_dark));
+            animateTabLayout(getResources().getColor(R.color.primary), getResources().getColor(R.color.accent));
         }
+    }
+
+    private void animateStatusBar(int colorFrom, int colorTo) {
+        final ValueAnimator valueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                getWindow().setStatusBarColor((Integer) valueAnimator.getAnimatedValue());
+            }
+        });
+        valueAnimator.setDuration(300);
+        valueAnimator.start();
+    }
+
+    private void animateTabLayout(int colorFrom, int colorTo) {
+        ObjectAnimator objectAnimator = ObjectAnimator.ofArgb(tabLayout, "backgroundColor", colorFrom, colorTo);
+        objectAnimator.setDuration(300);
+        objectAnimator.setStartDelay(20);
+        objectAnimator.start();
     }
 
     // Used for transitions.
