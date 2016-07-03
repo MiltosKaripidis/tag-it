@@ -6,7 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.karhades.tag_it.main.R;
+import com.karhades.tag_it.R;
+
 
 /**
  * Created by Karhades on 20-Sep-15.

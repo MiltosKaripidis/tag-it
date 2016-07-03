@@ -6,9 +6,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 
-import com.karhades.tag_it.main.model.NfcHandler;
+import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.fragment.CreateTagFragment;
-import com.karhades.tag_it.main.R;
+import com.karhades.tag_it.main.model.NfcHandler;
 
 /**
  * Created by Karhades on 11-Sep-15.

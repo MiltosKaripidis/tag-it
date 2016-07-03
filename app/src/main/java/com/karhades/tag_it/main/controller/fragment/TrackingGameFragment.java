@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.karhades.tag_it.main.R;
+import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.activity.TrackingTagPagerActivity;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcTag;

@@ -5,7 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
-import com.karhades.tag_it.main.R;
+import com.karhades.tag_it.R;
+
 
 public abstract class SingleFragmentActivity extends AppCompatActivity {
 

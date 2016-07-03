@@ -3,7 +3,7 @@ package com.karhades.tag_it.utils;
 import android.content.Context;
 import android.widget.ImageView;
 
-import com.karhades.tag_it.main.R;
+import com.karhades.tag_it.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;

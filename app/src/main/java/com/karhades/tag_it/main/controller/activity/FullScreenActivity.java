@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.karhades.tag_it.main.R;
+import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.fragment.TrackingTagFragment;
 import com.karhades.tag_it.utils.PictureLoader;
 

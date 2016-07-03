@@ -3,7 +3,8 @@ package com.karhades.tag_it.utils;
 import android.app.IntentService;
 import android.content.Intent;
 
-import com.karhades.tag_it.main.R;
+import com.karhades.tag_it.R;
+
 
 /**
  * Created by Karhades on 11-11-15.

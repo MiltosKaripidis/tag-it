@@ -4,7 +4,7 @@ import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.karhades.tag_it.main.R;
+import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.activity.MainActivity;
 
 import org.junit.Rule;

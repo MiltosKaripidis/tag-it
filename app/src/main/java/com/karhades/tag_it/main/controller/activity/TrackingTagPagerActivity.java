@@ -13,10 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
-import com.karhades.tag_it.main.model.NfcHandler;
-import com.karhades.tag_it.main.R;
+import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.fragment.TrackingTagFragment;
 import com.karhades.tag_it.main.model.MyTags;
+import com.karhades.tag_it.main.model.NfcHandler;
 import com.karhades.tag_it.main.model.NfcTag;
 import com.karhades.tag_it.utils.TransitionHelper;
 

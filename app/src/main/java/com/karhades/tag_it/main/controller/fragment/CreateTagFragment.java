@@ -29,11 +29,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.karhades.tag_it.main.model.NfcHandler;
-import com.karhades.tag_it.main.model.MyTags;
-import com.karhades.tag_it.main.model.NfcTag;
-import com.karhades.tag_it.main.R;
+import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.activity.FullScreenActivity;
+import com.karhades.tag_it.main.model.MyTags;
+import com.karhades.tag_it.main.model.NfcHandler;
+import com.karhades.tag_it.main.model.NfcTag;
 import com.karhades.tag_it.utils.PictureLoader;
 import com.karhades.tag_it.utils.TransitionHelper;
 

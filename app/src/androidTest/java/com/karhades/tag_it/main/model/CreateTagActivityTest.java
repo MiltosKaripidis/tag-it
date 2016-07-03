@@ -3,7 +3,7 @@ package com.karhades.tag_it.main.model;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.karhades.tag_it.main.R;
+import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.activity.CreateTagActivity;
 
 import org.hamcrest.Matchers;

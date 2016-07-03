@@ -40,7 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.karhades.tag_it.main.R;
+import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.activity.CreateTagActivity;
 import com.karhades.tag_it.main.controller.activity.CreateTagPagerActivity;
 import com.karhades.tag_it.main.model.MyTags;

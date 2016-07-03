@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.karhades.tag_it.main">
+    package="com.karhades.tag_it">
 
     <!-- Permission to use NFC and external storage-->
     <uses-permission android:name="android.permission.NFC" />
@@ -19,7 +19,8 @@
 
         <!-- MainActivity-->
         <activity
-            android:name="com.karhades.tag_it.main.controller.activity.MainActivity"
+            android:name=".main.controller.activity.MainActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
 
             <!-- Launcher intent filter-->
@@ -49,29 +50,29 @@
 
         <!-- TrackingTagPagerActivity-->
         <activity
-            android:name="com.karhades.tag_it.main.controller.activity.TrackingTagPagerActivity"
+            android:name=".main.controller.activity.TrackingTagPagerActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.karhades.tag_it.main.controller.activity.MainActivity" />
+                android:value=".main.controller.activity.MainActivity" />
         </activity>
 
         <!-- CreateTagPagerActivity-->
         <activity
-            android:name="com.karhades.tag_it.main.controller.activity.CreateTagPagerActivity"
+            android:name=".main.controller.activity.CreateTagPagerActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.karhades.tag_it.main.controller.activity.MainActivity" />
+                android:value=".main.controller.activity.MainActivity" />
         </activity>
 
         <!-- CreateTagActivity-->
         <activity
-            android:name="com.karhades.tag_it.main.controller.activity.CreateTagActivity"
+            android:name=".main.controller.activity.CreateTagActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.karhades.tag_it.main.controller.activity.MainActivity" />
+                android:value=".main.controller.activity.MainActivity" />
 
             <!--TECH_DISCOVERED-->
             <intent-filter>
@@ -90,11 +91,11 @@
 
         <!-- FullScreenActivity-->
         <activity
-            android:name="com.karhades.tag_it.main.controller.activity.FullScreenActivity"
+            android:name=".main.controller.activity.FullScreenActivity"
             android:label="@string/app_name"
             android:theme="@style/AppThemeTranslucent" />
 
         <!-- Audio Service-->
-        <service android:name="com.karhades.tag_it.utils.AudioService" />
+        <service android:name=".utils.AudioService" />
     </application>
 </manifest>
