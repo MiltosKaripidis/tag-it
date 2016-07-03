@@ -21,7 +21,7 @@ import java.util.ArrayList;
 /**
  * Created by Karhades on 15-Sep-15.
  */
-public class CreateTagPagerActivity extends AppCompatActivity implements ViewPager.PageTransformer {
+public class CreateTagPagerActivity extends AppCompatActivity implements ViewPager.PageTransformer, CreateTagFragment.Callbacks {
 
     /**
      * ViewPager.PageTransformer constant.
@@ -64,6 +64,11 @@ public class CreateTagPagerActivity extends AppCompatActivity implements ViewPag
     private void setupNFC() {
         nfcHandler = new NfcHandler();
         nfcHandler.setupNfcHandler(this);
+    }
+
+    @Override
+    public void setOnTagWriteListener(NfcHandler.OnTagWriteListener onTagWriteListener) {
+        nfcHandler.setOnTagWriteListener(onTagWriteListener);
     }
 
     @Override

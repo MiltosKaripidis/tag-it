@@ -85,7 +85,7 @@ public class NfcHandler {
     /**
      * Listener reference.
      */
-    private static OnTagWriteListener onTagWriteListener;
+    private OnTagWriteListener onTagWriteListener;
 
     /**
      * Enum reference.
@@ -118,8 +118,8 @@ public class NfcHandler {
      *
      * @param onTagWriteListener The callback that will run.
      */
-    public static void setOnTagWriteListener(OnTagWriteListener onTagWriteListener) {
-        NfcHandler.onTagWriteListener = onTagWriteListener;
+    public void setOnTagWriteListener(OnTagWriteListener onTagWriteListener) {
+        this.onTagWriteListener = onTagWriteListener;
     }
 
     /**

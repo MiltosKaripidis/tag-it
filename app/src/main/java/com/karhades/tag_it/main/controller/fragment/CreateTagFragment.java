@@ -2,6 +2,7 @@ package com.karhades.tag_it.main.controller.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -73,6 +74,11 @@ public class CreateTagFragment extends Fragment {
     private String temporaryDifficulty;
     private String temporaryPictureFilename;
     private TagItDialogFragment dialogFragment;
+    private Callbacks callbacks;
+
+    public interface Callbacks {
+        void setOnTagWriteListener(NfcHandler.OnTagWriteListener onTagWriteListener);
+    }
 
     /**
      * Transition variable.
@@ -108,6 +114,17 @@ public class CreateTagFragment extends Fragment {
         setHasOptionsMenu(true);
 
         getFragmentArguments();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            callbacks = (Callbacks) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnTagWriteLister");
+        }
     }
 
     @Override
@@ -173,15 +190,9 @@ public class CreateTagFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
-                Log.d("CreateTagFragment", "RESULT_OK!");
 
                 File tempFile = createExternalStoragePrivateFile();
                 temporaryPictureFilename = tempFile.getAbsolutePath();
-
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                Log.d("CreateTagFragment", "RESULT_CANCELED!");
-            } else {
-                Log.d("CreateTagFragment", "RESULT_EXITED!");
             }
         }
     }
@@ -355,7 +366,7 @@ public class CreateTagFragment extends Fragment {
         dialogFragment.show(getActivity().getSupportFragmentManager(), "write");
 
         // Wire a listener for a on tag write event.
-        NfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
+        callbacks.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
             @Override
             public void onTagWritten(int status, String tagId) {
 

@@ -20,7 +20,6 @@
         <!-- MainActivity-->
         <activity
             android:name=".main.controller.activity.MainActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait">
 
             <!-- Launcher intent filter-->

@@ -29,7 +29,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.fragment.CreateGameFragment;
@@ -109,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         if (tabLayout.getSelectedTabPosition() == 0) {
             // Get the ID of the discovered tag.
             String tagId = nfcHandler.handleNfcReadTag(intent);
-            Toast.makeText(this, "Caught from onNewIntent " + intent.getAction(), Toast.LENGTH_SHORT).show();
             // If there was no error.
             if (tagId != null) {
                 startTrackingTagPagerActivity(tagId);
@@ -175,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Get the ID of the discovered tag.
         String tagId = nfcHandler.handleNfcReadTag(getIntent());
-        Toast.makeText(this, "Caught from onCreate " + getIntent().getAction(), Toast.LENGTH_SHORT).show();
         // If there was no error.
         if (tagId != null) {
             startTrackingTagPagerActivity(tagId);
