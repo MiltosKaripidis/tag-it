@@ -14,6 +14,10 @@ import com.karhades.tag_it.R;
  */
 public class ShareGameFragment extends Fragment {
 
+    public static ShareGameFragment newInstance() {
+        return new ShareGameFragment();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_share_game, container, false);

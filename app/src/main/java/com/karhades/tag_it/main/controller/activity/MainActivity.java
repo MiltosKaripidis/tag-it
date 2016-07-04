@@ -222,9 +222,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager() {
         adapter = new TabsAdapter(getSupportFragmentManager());
-        adapter.addFragment(new TrackingGameFragment());
-        adapter.addFragment(new ShareGameFragment());
-        adapter.addFragment(new CreateGameFragment());
+        adapter.addFragment(TrackingGameFragment.newInstance());
+        adapter.addFragment(ShareGameFragment.newInstance());
+        adapter.addFragment(CreateGameFragment.newInstance());
 
         viewPager = (ViewPager) findViewById(R.id.main_view_pager);
         viewPager.setAdapter(adapter);

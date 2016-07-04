@@ -113,6 +113,10 @@ public class CreateGameFragment extends Fragment {
         this.onContextualActionBarEnterListener = onContextualActionBarEnterListener;
     }
 
+    public static CreateGameFragment newInstance() {
+        return new CreateGameFragment();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

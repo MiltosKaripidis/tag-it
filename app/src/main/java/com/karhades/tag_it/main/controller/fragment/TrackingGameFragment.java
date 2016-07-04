@@ -64,6 +64,10 @@ public class TrackingGameFragment extends Fragment {
     private Bundle bundle;
     private boolean isReentering;
 
+    public static TrackingGameFragment newInstance() {
+        return new TrackingGameFragment();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
