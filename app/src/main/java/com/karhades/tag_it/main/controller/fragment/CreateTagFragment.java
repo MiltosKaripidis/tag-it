@@ -48,8 +48,9 @@ public class CreateTagFragment extends Fragment {
     /**
      * Extras constants.
      */
-    public static final String EXTRA_TAG_ID = "com.karhades.tag_it.tag_id";
-    public static final String EXTRA_FILE_PATH = "com.karhades.tag_it.file_path";
+    private static final String EXTRA_POSITION = "com.karhades.tag_it.position";
+    private static final String EXTRA_TAG_ID = "com.karhades.tag_it.tag_id";
+    private static final String EXTRA_FILE_PATH = "com.karhades.tag_it.file_path";
 
     /**
      * Request constant.
@@ -413,7 +414,7 @@ public class CreateTagFragment extends Fragment {
         int position = MyTags.get(getActivity()).getNfcTags().indexOf(currentNfcTag);
         // Set result for REQUEST_EDIT and set position as an intent extra.
         Intent intent = new Intent();
-        intent.putExtra(CreateGameFragment.EXTRA_POSITION, position);
+        intent.putExtra(EXTRA_POSITION, position);
 
         // Set result for REQUEST_EDIT.
         getActivity().setResult(Activity.RESULT_OK, intent);

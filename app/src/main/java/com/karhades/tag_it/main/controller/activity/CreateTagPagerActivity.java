@@ -1,5 +1,6 @@
 package com.karhades.tag_it.main.controller.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
  */
 public class CreateTagPagerActivity extends AppCompatActivity implements ViewPager.PageTransformer, CreateTagFragment.Callbacks {
 
+    private static final String EXTRA_TAG_ID = "com.karhades.tag_it.tag_id";
+
     /**
      * ViewPager.PageTransformer constant.
      */
@@ -44,6 +47,12 @@ public class CreateTagPagerActivity extends AppCompatActivity implements ViewPag
      * NFC adapter.
      */
     private NfcHandler nfcHandler;
+
+    public static Intent newIntent(Context context, String tagId) {
+        Intent intent = new Intent(context, CreateTagPagerActivity.class);
+        intent.putExtra(EXTRA_TAG_ID, tagId);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +109,7 @@ public class CreateTagPagerActivity extends AppCompatActivity implements ViewPag
 
     private void getIntentExtras() {
         // Get the NfcTag ID from the onListClick() of CreateGameFragment.
-        tagId = getIntent().getStringExtra(CreateTagFragment.EXTRA_TAG_ID);
+        tagId = getIntent().getStringExtra(EXTRA_TAG_ID);
     }
 
     @SuppressWarnings("deprecation")

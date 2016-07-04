@@ -66,7 +66,7 @@ public class CreateGameFragment extends Fragment {
     /**
      * Extra key, used for the position value returned from startActivityForResult().
      */
-    public static final String EXTRA_POSITION = "com.karhades.tag_it.position";
+    private static final String EXTRA_POSITION = "com.karhades.tag_it.position";
 
     /**
      * Widget variables.
@@ -475,8 +475,7 @@ public class CreateGameFragment extends Fragment {
                     // If Contextual Action Bar is disabled.
                     if (!adapter.isSelectionMode()) {
                         // Start CreateTagPagerActivity.
-                        Intent intent = new Intent(getActivity(), CreateTagPagerActivity.class);
-                        intent.putExtra(CreateTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
+                        Intent intent = CreateTagPagerActivity.newIntent(getActivity(), nfcTag.getTagId());
                         startActivityForResult(intent, REQUEST_EDIT);
                     }
                     // If Contextual Action Bar is enabled.
@@ -543,8 +542,8 @@ public class CreateGameFragment extends Fragment {
 
     public static class DeleteDialogFragment extends DialogFragment {
 
-        public static final String EXTRA_TAG_ID = "com.karhades.tag_it.tag_id";
-        public static final String EXTRA_ADAPTER_POSITION = "com.karhades.tag_it.adapter_position";
+        private static final String EXTRA_TAG_ID = "com.karhades.tag_it.tag_id";
+        private static final String EXTRA_ADAPTER_POSITION = "com.karhades.tag_it.adapter_position";
 
         private String tagId;
         private int adapterPosition;
