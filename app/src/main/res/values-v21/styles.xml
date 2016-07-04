@@ -1,12 +1,11 @@
 <resources>
 
-    <!-- Default app style.-->
+    <!-- Default app style-->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- App colors-->
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primary_dark</item>
         <item name="android:colorAccent">@color/accent</item>
-        <item name="android:colorControlNormal">@color/primary</item>
         <item name="android:colorControlActivated">@color/accent</item>
 
         <!-- Contextual action bar-->
@@ -20,10 +19,27 @@
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowSharedElementEnterTransition">@transition/tracking_shared_element</item>
         <item name="android:windowSharedElementReturnTransition">@transition/tracking_shared_element</item>
+
+        <!-- Custom ActionMode popup-->
+        <item name="actionBarPopupTheme">@style/AppTheme.ActionMode.Overflow</item>
+
+        <!-- Custom alert dialog-->
+        <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>
     </style>
 
-    <!-- Style for the fullscreen activity.-->
+    <!-- Style for the fullscreen activity-->
     <style name="AppThemeTranslucent" parent="AppTheme">
         <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <!-- Custom style for the ActionMode's popup menu-->
+    <style name="AppTheme.ActionMode.Overflow" parent="Theme.AppCompat.Light">
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <!-- Custom style for the alert dialog-->
+    <style name="AppTheme.AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:colorAccent">@color/accent</item>
     </style>
 </resources>
