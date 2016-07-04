@@ -432,6 +432,10 @@ public class NfcHandler {
      */
     public String handleNfcReadTag(Intent intent) {
         try {
+            if (intent.getAction() == null) {
+                return null;
+            }
+
             // If the discovered tag maps to MIME type.
             if (intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
                 // Get the extra from the intent containing the tag.

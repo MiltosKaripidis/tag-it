@@ -34,6 +34,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
+        </activity>
+
+        <!-- TrackingTagPagerActivity-->
+        <activity
+            android:name=".main.controller.activity.TrackingTagPagerActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName=".main.controller.activity.MainActivity"
+            android:screenOrientation="portrait">
 
             <!-- The android system searches for these filters-->
             <!-- and matches with the appropriate one that-->
@@ -47,31 +55,17 @@
             </intent-filter>
         </activity>
 
-        <!-- TrackingTagPagerActivity-->
-        <activity
-            android:name=".main.controller.activity.TrackingTagPagerActivity"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".main.controller.activity.MainActivity" />
-        </activity>
-
         <!-- CreateTagPagerActivity-->
         <activity
             android:name=".main.controller.activity.CreateTagPagerActivity"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".main.controller.activity.MainActivity" />
-        </activity>
+            android:parentActivityName=".main.controller.activity.MainActivity"
+            android:screenOrientation="portrait" />
 
         <!-- CreateTagActivity-->
         <activity
             android:name=".main.controller.activity.CreateTagActivity"
+            android:parentActivityName=".main.controller.activity.MainActivity"
             android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".main.controller.activity.MainActivity" />
 
             <!--TECH_DISCOVERED-->
             <intent-filter>

@@ -170,14 +170,6 @@ public class MainActivity extends AppCompatActivity {
     private void setupNFC() {
         nfcHandler = new NfcHandler();
         nfcHandler.setupNfcHandler(this);
-
-        // Get the ID of the discovered tag.
-        String tagId = nfcHandler.handleNfcReadTag(getIntent());
-        // If there was no error.
-        if (tagId != null) {
-            startTrackingTagPagerActivity(tagId);
-        }
-
         nfcHandler.registerAndroidBeamShareFiles();
         nfcHandler.handleAndroidBeamReceivedFiles(getIntent());
     }

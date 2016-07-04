@@ -134,6 +134,14 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
     private void setupNFC() {
         nfcHandler = new NfcHandler();
         nfcHandler.setupNfcHandler(this);
+
+        // Get the ID of the discovered tag.
+        String tagId = nfcHandler.handleNfcReadTag(getIntent());
+        // If there was no error.
+        if (tagId != null) {
+            this.tagId = tagId;
+            isTagDiscovered = true;
+        }
     }
 
     /**
