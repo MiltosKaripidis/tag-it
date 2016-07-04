@@ -41,6 +41,12 @@ import java.util.Map;
 public class TrackingGameFragment extends Fragment {
 
     /**
+     * Extras constants.
+     */
+    private static final String EXTRA_CURRENT_TAG_POSITION = "com.karhades.tag_it.current_tag_position";
+    private static final String EXTRA_OLD_TAG_POSITION = "com.karhades.tag_it.old_tag_position";
+
+    /**
      * Widget references.
      */
     private RecyclerView recyclerView;
@@ -221,9 +227,7 @@ public class TrackingGameFragment extends Fragment {
         @TargetApi(21)
         @SuppressWarnings("unchecked")
         private void startTrackingTagPagerActivityWithTransition() {
-            Intent intent = new Intent(getActivity(), TrackingTagPagerActivity.class);
-            intent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
-            intent.putExtra(TrackingTagPagerActivity.EXTRA_CURRENT_TAG_POSITION, getAdapterPosition());
+            Intent intent = TrackingTagPagerActivity.newIntent(getActivity(), nfcTag.getTagId(), getAdapterPosition());
 
             isReentering = false;
 
@@ -233,9 +237,7 @@ public class TrackingGameFragment extends Fragment {
         }
 
         private void startTrackingTagPagerActivity() {
-            Intent intent = new Intent(getActivity(), TrackingTagPagerActivity.class);
-            intent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
-            intent.putExtra(TrackingTagPagerActivity.EXTRA_CURRENT_TAG_POSITION, getAdapterPosition());
+            Intent intent = TrackingTagPagerActivity.newIntent(getActivity(), nfcTag.getTagId(), getAdapterPosition());
             startActivity(intent);
         }
 
@@ -307,8 +309,8 @@ public class TrackingGameFragment extends Fragment {
         isReentering = true;
         bundle = new Bundle(data.getExtras());
 
-        int oldTagPosition = data.getIntExtra(TrackingTagPagerActivity.EXTRA_OLD_TAG_POSITION, -1);
-        int currentTagPosition = data.getIntExtra(TrackingTagPagerActivity.EXTRA_CURRENT_TAG_POSITION, -1);
+        int oldTagPosition = data.getIntExtra(EXTRA_OLD_TAG_POSITION, -1);
+        int currentTagPosition = data.getIntExtra(EXTRA_CURRENT_TAG_POSITION, -1);
 
         // If user swiped to another tag.
         if (oldTagPosition != currentTagPosition) {
@@ -335,8 +337,8 @@ public class TrackingGameFragment extends Fragment {
 
                 // If TrackingTagPagerActivity returns to MainActivity.
                 if (isReentering) {
-                    int oldTagPosition = bundle.getInt(TrackingTagPagerActivity.EXTRA_OLD_TAG_POSITION);
-                    int currentTagPosition = bundle.getInt(TrackingTagPagerActivity.EXTRA_CURRENT_TAG_POSITION);
+                    int oldTagPosition = bundle.getInt(EXTRA_OLD_TAG_POSITION);
+                    int currentTagPosition = bundle.getInt(EXTRA_CURRENT_TAG_POSITION);
 
                     // If currentPosition != oldPosition the user must have swiped to a different
                     // page in the ViewPager. We must update the shared element so that the

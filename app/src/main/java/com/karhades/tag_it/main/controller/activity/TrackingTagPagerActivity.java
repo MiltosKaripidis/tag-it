@@ -2,6 +2,7 @@ package com.karhades.tag_it.main.controller.activity;
 
 import android.annotation.TargetApi;
 import android.app.SharedElementCallback;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -32,8 +33,9 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
     /**
      * Extras constants.
      */
-    public static final String EXTRA_CURRENT_TAG_POSITION = "com.karhades.tag_it.current_tag_position";
-    public static final String EXTRA_OLD_TAG_POSITION = "com.karhades.tag_it.old_tag_position";
+    private static final String EXTRA_TAG_ID = "com.karhades.tag_it.tag_id";
+    private static final String EXTRA_CURRENT_TAG_POSITION = "com.karhades.tag_it.current_tag_position";
+    private static final String EXTRA_OLD_TAG_POSITION = "com.karhades.tag_it.old_tag_position";
 
     /**
      * ViewPager.PageTransformer constant.
@@ -64,6 +66,13 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
     private int currentTagPosition;
     private int originalTagPosition;
     private boolean isReturning;
+
+    public static Intent newIntent(Context context, String tagId, int position) {
+        Intent intent = new Intent(context, TrackingTagPagerActivity.class);
+        intent.putExtra(EXTRA_TAG_ID, tagId);
+        intent.putExtra(EXTRA_CURRENT_TAG_POSITION, position);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,9 +107,12 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
         super.onNewIntent(intent);
 
         // Get the ID of the discovered tag.
-        tagId = nfcHandler.handleNfcReadTag(intent);
+        String tagId = nfcHandler.handleNfcReadTag(intent);
         // If there was no error.
         if (tagId != null) {
+            this.tagId = tagId;
+            isTagDiscovered = true;
+
             setCurrentTagPage();
             solveNfcTag();
         }
@@ -123,9 +135,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
     private void getIntentExtras(Intent intent) {
         // Gets the NfcTag ID either from the onListClick() of TrackingGameFragment
         // or from NFC tag discovery.
-        tagId = intent.getStringExtra(TrackingTagFragment.EXTRA_TAG_ID);
-
-        isTagDiscovered = intent.getBooleanExtra(TrackingTagFragment.EXTRA_TAG_DISCOVERED, false);
+        tagId = intent.getStringExtra(EXTRA_TAG_ID);
 
         currentTagPosition = intent.getIntExtra(EXTRA_CURRENT_TAG_POSITION, -1);
         originalTagPosition = currentTagPosition;

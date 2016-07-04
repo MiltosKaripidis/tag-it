@@ -47,9 +47,8 @@ public class TrackingTagFragment extends Fragment {
     /**
      * Extras constants.
      */
-    public static final String EXTRA_TAG_ID = "com.karhades.tag_it.tag_id";
-    public static final String EXTRA_TAG_DISCOVERED = "com.karhades.tag_it.tag_discovered";
-    public static final String EXTRA_FILE_PATH = "com.karhades.tag_it.file_path";
+    private static final String EXTRA_TAG_ID = "com.karhades.tag_it.tag_id";
+    private static final String EXTRA_FILE_PATH = "com.karhades.tag_it.file_path";
 
     /**
      * Instance variable.
@@ -111,6 +110,10 @@ public class TrackingTagFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        loadImage();
+    }
+
+    private void loadImage() {
         if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
             // Register a callback to be invoked when the image has been loaded
             // to inform the activity to start the shared element transition.

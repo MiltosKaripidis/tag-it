@@ -34,7 +34,6 @@ import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.fragment.CreateGameFragment;
 import com.karhades.tag_it.main.controller.fragment.ShareGameFragment;
 import com.karhades.tag_it.main.controller.fragment.TrackingGameFragment;
-import com.karhades.tag_it.main.controller.fragment.TrackingTagFragment;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcHandler;
 import com.karhades.tag_it.utils.TransitionHelper;
@@ -89,9 +88,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        // Disable the interception of any intent.
-        nfcHandler.disableForegroundDispatch();
-
         // Save the tags to a file before leaving.
         MyTags.get(this).saveTags();
 
@@ -103,42 +99,6 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
 
         nfcHandler.handleAndroidBeamReceivedFiles(intent);
-
-        // Tab 1.
-        if (tabLayout.getSelectedTabPosition() == 0) {
-            // Get the ID of the discovered tag.
-            String tagId = nfcHandler.handleNfcReadTag(intent);
-            // If there was no error.
-            if (tagId != null) {
-                startTrackingTagPagerActivity(tagId);
-            }
-        }
-        // Tab 2.
-        else if (tabLayout.getSelectedTabPosition() == 1) {
-            Snackbar.make(coordinatorLayout, "Approach devices to share game.", Snackbar.LENGTH_LONG).show();
-        }
-        // Tab 3.
-        else if (tabLayout.getSelectedTabPosition() == 2) {
-            Snackbar.make(coordinatorLayout, "Click + to create a new one.", Snackbar.LENGTH_LONG).show();
-        }
-    }
-
-    private void startTrackingTagPagerActivity(String tagId) {
-        // Create an Intent and send the extra discovered NfcTag ID and
-        // another extra to indicate that it's from the NFC discovery.
-        Intent tagIntent = new Intent(this, TrackingTagPagerActivity.class);
-        tagIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        tagIntent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, tagId);
-        tagIntent.putExtra(TrackingTagFragment.EXTRA_TAG_DISCOVERED, true);
-        this.startActivity(tagIntent);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Intercept any intent that is associated with a Tag discovery.
-        nfcHandler.enableForegroundDispatch();
     }
 
     @Override
