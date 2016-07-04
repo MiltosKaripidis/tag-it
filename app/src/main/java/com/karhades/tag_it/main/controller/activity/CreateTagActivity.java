@@ -13,7 +13,7 @@ import com.karhades.tag_it.main.model.NfcHandler;
 /**
  * Created by Karhades on 11-Sep-15.
  */
-public class CreateTagActivity extends SingleFragmentActivity {
+public class CreateTagActivity extends SingleFragmentActivity implements CreateTagFragment.Callbacks {
 
     private NfcHandler nfcHandler;
 
@@ -65,5 +65,10 @@ public class CreateTagActivity extends SingleFragmentActivity {
         } else {
             nfcHandler.handleNfcWriteTag(intent);
         }
+    }
+
+    @Override
+    public void setOnTagWriteListener(NfcHandler.OnTagWriteListener onTagWriteListener) {
+        nfcHandler.setOnTagWriteListener(onTagWriteListener);
     }
 }
