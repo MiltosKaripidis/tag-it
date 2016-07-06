@@ -3,7 +3,6 @@ package com.karhades.tag_it.main.controller.fragment;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -30,7 +29,6 @@ import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.activity.FullScreenActivity;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcTag;
-import com.karhades.tag_it.utils.FontCache;
 import com.karhades.tag_it.utils.PictureLoader;
 import com.karhades.tag_it.utils.TransitionHelper;
 import com.squareup.picasso.Callback;
@@ -247,7 +245,7 @@ public class TrackingTagFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tracking_tag2, container, false);
+        View view = inflater.inflate(R.layout.fragment_tracking_tag, container, false);
 
         setupToolbar(view);
         setupCollapsingToolbar(view);
@@ -323,9 +321,9 @@ public class TrackingTagFragment extends Fragment {
     }
 
     private void startFullScreenActivity() {
-        Intent intent = new Intent(getActivity(), FullScreenActivity.class);
         String filePath = nfcTag.getPictureFilePath();
-        intent.putExtra(EXTRA_FILE_PATH, filePath);
+
+        Intent intent = FullScreenActivity.newIntent(getActivity(), filePath);
         startActivity(intent);
     }
 
@@ -335,42 +333,20 @@ public class TrackingTagFragment extends Fragment {
      * @param view A view needed for the findViewById() method.
      */
     private void initializeWidgets(View view) {
-        // Custom Fonts.
-        Typeface typefaceTitle = FontCache.get("fonts/capture_it.ttf", getActivity());
-        Typeface typefaceNormal = FontCache.get("fonts/amatic_normal.ttf", getActivity());
-
         // NfcTag Picture ImageView.
         pictureImageView = (ImageView) view.findViewById(R.id.tracking_image_view);
         if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
             pictureImageView.setTransitionName("image" + nfcTag.getTagId());
         }
 
-        // NfcTag Details Title TextView.
-        TextView detailsTextView = (TextView) view.findViewById(R.id.tracking_details_text_view);
-        detailsTextView.setTypeface(typefaceTitle);
-
-        // NfcTag Difficulty Label TextView.
-        TextView difficultyLabelTextView = (TextView) view.findViewById(R.id.tracking_difficulty_label_text_view);
-        difficultyLabelTextView.setTypeface(typefaceNormal);
-
         // NfcTag Difficulty TextView.
         difficultyTextView = (TextView) view.findViewById(R.id.tracking_difficulty_text_view);
-        difficultyTextView.setTypeface(typefaceNormal);
-
-        // NfcTag Solved Label TextView.
-        TextView solvedLabelTextView = (TextView) view.findViewById(R.id.tracking_solved_label_text_view);
-        solvedLabelTextView.setTypeface(typefaceNormal);
 
         // NfcTag Solved CheckBox.
         solvedCheckBox = (CheckBox) view.findViewById(R.id.tracking_solved_check_box);
 
-        // NfcTag Date Label TextView.
-        TextView dateSolvedLabelTextView = (TextView) view.findViewById(R.id.tracking_date_solved_label_text_view);
-        dateSolvedLabelTextView.setTypeface(typefaceNormal);
-
         // NfcTag Date Solved TextView.
         dateSolvedTextView = (TextView) view.findViewById(R.id.tracking_date_solved_text_view);
-        dateSolvedTextView.setTypeface(typefaceNormal);
 
         // A hidden FrameLayout that will cover the whole screen on transition start.
         revealContent = (ViewGroup) view.findViewById(R.id.tracking_reveal_content);

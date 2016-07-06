@@ -64,7 +64,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
      * Transition variables.
      */
     private int currentTagPosition;
-    private int originalTagPosition;
+    private int oldTagPosition;
     private boolean isReturning;
 
     public static Intent newIntent(Context context, String tagId, int position) {
@@ -138,7 +138,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
         tagId = intent.getStringExtra(EXTRA_TAG_ID);
 
         currentTagPosition = intent.getIntExtra(EXTRA_CURRENT_TAG_POSITION, -1);
-        originalTagPosition = currentTagPosition;
+        oldTagPosition = currentTagPosition;
     }
 
     private void setupNFC() {
@@ -285,7 +285,6 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
     }
 
     // Used for transitions.
-    @TargetApi(21)
     @Override
     public void finishAfterTransition() {
         if (TransitionHelper.isTransitionEnabled) {
@@ -297,7 +296,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
                 @Override
                 public void run() {
                     Intent intent = new Intent();
-                    intent.putExtra(EXTRA_OLD_TAG_POSITION, originalTagPosition);
+                    intent.putExtra(EXTRA_OLD_TAG_POSITION, oldTagPosition);
                     intent.putExtra(EXTRA_CURRENT_TAG_POSITION, currentTagPosition);
                     setResult(RESULT_OK, intent);
 
@@ -305,7 +304,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
                 }
             });
         } else {
-            TrackingTagPagerActivity.super.finishAfterTransition();
+            super.finishAfterTransition();
         }
     }
 
@@ -332,7 +331,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
                         sharedElements.clear();
                     }
                     // If user swiped to another tag.
-                    else if (currentTagPosition != originalTagPosition) {
+                    else if (currentTagPosition != oldTagPosition) {
                         // Clear all the previous registrations.
                         names.clear();
                         sharedElements.clear();

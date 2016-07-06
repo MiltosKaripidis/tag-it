@@ -3,7 +3,9 @@ package com.karhades.tag_it.main.controller.activity;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.app.Dialog;
+import android.app.SharedElementCallback;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,12 +25,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.fragment.CreateGameFragment;
@@ -36,15 +41,28 @@ import com.karhades.tag_it.main.controller.fragment.ShareGameFragment;
 import com.karhades.tag_it.main.controller.fragment.TrackingGameFragment;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcHandler;
+import com.karhades.tag_it.main.model.NfcTag;
 import com.karhades.tag_it.utils.TransitionHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Karhades on 20-Aug-15.
  */
 public class MainActivity extends AppCompatActivity {
+
+    /**
+     * Extras constants.
+     */
+    private static final String EXTRA_CURRENT_TAG_POSITION = "com.karhades.tag_it.current_tag_position";
+    private static final String EXTRA_OLD_TAG_POSITION = "com.karhades.tag_it.old_tag_position";
+
+    /**
+     * Transition variables.
+     */
+    private Bundle bundle;
 
     /**
      * Widget references.
@@ -82,6 +100,10 @@ public class MainActivity extends AppCompatActivity {
         setupViewPager();
         setupTabLayout();
         setupContextualActionBar();
+
+        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+            enableTransitions();
+        }
     }
 
     @Override
@@ -135,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupFloatingActionButton() {
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_action_button);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.add_action_button);
     }
 
     private void setupCoordinatorLayout() {
@@ -436,7 +458,28 @@ public class MainActivity extends AppCompatActivity {
         // If Tab 1.
         if (tabLayout.getSelectedTabPosition() == 0) {
             TrackingGameFragment fragment = (TrackingGameFragment) adapter.getFragment(0);
-            fragment.prepareReenterTransition(data);
+            final RecyclerView recyclerView = fragment.getRecyclerView();
+
+            bundle = new Bundle(data.getExtras());
+
+            int oldTagPosition = data.getIntExtra(EXTRA_OLD_TAG_POSITION, -1);
+            int currentTagPosition = data.getIntExtra(EXTRA_CURRENT_TAG_POSITION, -1);
+
+            // If user swiped to another tag.
+            if (oldTagPosition != currentTagPosition) {
+                recyclerView.scrollToPosition(currentTagPosition);
+
+                // Wait for RecyclerView to load it's layout.
+                postponeEnterTransition();
+                recyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                        startPostponedEnterTransition();
+                        return true;
+                    }
+                });
+            }
         }
     }
 
@@ -502,5 +545,57 @@ public class MainActivity extends AppCompatActivity {
                     })
                     .create();
         }
+    }
+
+    @TargetApi(21)
+    private void enableTransitions() {
+        setExitSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                TrackingGameFragment fragment = (TrackingGameFragment) adapter.getFragment(0);
+                final RecyclerView recyclerView = fragment.getRecyclerView();
+
+                // If TrackingTagPagerActivity returns to MainActivity.
+                if (bundle != null) {
+                    int oldTagPosition = bundle.getInt(EXTRA_OLD_TAG_POSITION);
+                    int currentTagPosition = bundle.getInt(EXTRA_CURRENT_TAG_POSITION);
+
+                    // If currentPosition != oldPosition the user must have swiped to a different
+                    // page in the ViewPager. We must update the shared element so that the
+                    // correct one falls into place.
+                    if (currentTagPosition != oldTagPosition) {
+
+                        // Get the transition name of the current tag.
+                        NfcTag nfcTag = MyTags.get(MainActivity.this).getNfcTags().get(currentTagPosition);
+                        String currentTransitionName = "image" + nfcTag.getTagId();
+
+                        // Get the ImageView from the RecyclerView.
+                        View currentSharedImageView = recyclerView.findViewWithTag(currentTransitionName);
+                        // If it exists.
+                        if (currentSharedImageView != null) {
+                            // Clear the previous (original) ImageView registrations.
+                            names.clear();
+                            sharedElements.clear();
+
+                            // Add the current ImageView.
+                            names.add(currentTransitionName);
+                            sharedElements.put(currentTransitionName, currentSharedImageView);
+                        }
+                    }
+                    // Delete the previous positions.
+                    bundle = null;
+                } else {
+                    //TODO: ImageView overlaps status bar.
+                    // If bundle is null, then the activity is exiting.
+                    View statusBar = findViewById(android.R.id.statusBarBackground);
+
+                    if (statusBar != null) {
+                        names.add(statusBar.getTransitionName());
+                        sharedElements.put(statusBar.getTransitionName(), statusBar);
+                        getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
+                    }
+                }
+            }
+        });
     }
 }

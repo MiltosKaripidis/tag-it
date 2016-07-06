@@ -4,9 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
-import android.app.SharedElementCallback;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,25 +23,16 @@ import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.activity.TrackingTagPagerActivity;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcTag;
-import com.karhades.tag_it.utils.FontCache;
 import com.karhades.tag_it.utils.PictureLoader;
 import com.karhades.tag_it.utils.TransitionHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Karhades - PC on 4/15/2015.
  */
 public class TrackingGameFragment extends Fragment {
-
-    /**
-     * Extras constants.
-     */
-    private static final String EXTRA_CURRENT_TAG_POSITION = "com.karhades.tag_it.current_tag_position";
-    private static final String EXTRA_OLD_TAG_POSITION = "com.karhades.tag_it.old_tag_position";
 
     /**
      * Widget references.
@@ -58,12 +46,6 @@ public class TrackingGameFragment extends Fragment {
     private ArrayList<NfcTag> nfcTags;
     private NfcTagAdapter adapter;
 
-    /**
-     * Transition variables.
-     */
-    private Bundle bundle;
-    private boolean isReentering;
-
     public static TrackingGameFragment newInstance() {
         return new TrackingGameFragment();
     }
@@ -74,10 +56,6 @@ public class TrackingGameFragment extends Fragment {
 
         // Get the list of NFC tags.
         nfcTags = MyTags.get(getActivity()).getNfcTags();
-
-        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
-            enableTransitions();
-        }
     }
 
     @Override
@@ -113,13 +91,18 @@ public class TrackingGameFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
     private void setupEmptyView(View view) {
         emptyLinearLayout = (LinearLayout) view.findViewById(R.id.tracking_empty_linear_layout);
         hideRecyclerViewIfEmpty();
     }
 
     private void hideRecyclerViewIfEmpty() {
-        if (nfcTags.size() == 0) {
+        boolean shouldHide = nfcTags.size() == 0;
+        if (shouldHide) {
             recyclerView.setVisibility(View.INVISIBLE);
             emptyLinearLayout.setVisibility(View.VISIBLE);
         } else {
@@ -168,17 +151,11 @@ public class TrackingGameFragment extends Fragment {
             setupTouchListener(view);
             setupClickListener(view);
 
-            // Custom Fonts.
-            Typeface typefaceTitle = FontCache.get("fonts/capture_it.ttf", getActivity());
-            Typeface typefaceBold = FontCache.get("fonts/amatic_bold.ttf", getActivity());
-
             imageView = (ImageView) view.findViewById(R.id.row_tracking_image_view);
 
             titleTextView = (TextView) view.findViewById(R.id.row_tracking_title_text_view);
-            titleTextView.setTypeface(typefaceTitle);
 
             difficultyTextView = (TextView) view.findViewById(R.id.row_tracking_difficulty_text_view);
-            difficultyTextView.setTypeface(typefaceBold);
             difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
 
             solvedCheckBox = (CheckBox) view.findViewById(R.id.row_tracking_solved_check_box);
@@ -233,8 +210,6 @@ public class TrackingGameFragment extends Fragment {
         private void startTrackingTagPagerActivityWithTransition() {
             Intent intent = TrackingTagPagerActivity.newIntent(getActivity(), nfcTag.getTagId(), getAdapterPosition());
 
-            isReentering = false;
-
             Pair<View, String>[] pairs = createPairs(Pair.create(imageView, imageView.getTransitionName()));
             Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), pairs).toBundle();
             getActivity().startActivity(intent, bundle);
@@ -275,7 +250,7 @@ public class TrackingGameFragment extends Fragment {
 
         @Override
         public NfcTagHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_tracking_game_fragment, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_tracking_game_fragment_alt, viewGroup, false);
 
             return new NfcTagHolder(view);
         }
@@ -306,70 +281,5 @@ public class TrackingGameFragment extends Fragment {
         Collections.addAll(pairs, sharedViews);
 
         return pairs.toArray(new Pair[pairs.size()]);
-    }
-
-    @TargetApi(21)
-    public void prepareReenterTransition(Intent data) {
-        isReentering = true;
-        bundle = new Bundle(data.getExtras());
-
-        int oldTagPosition = data.getIntExtra(EXTRA_OLD_TAG_POSITION, -1);
-        int currentTagPosition = data.getIntExtra(EXTRA_CURRENT_TAG_POSITION, -1);
-
-        // If user swiped to another tag.
-        if (oldTagPosition != currentTagPosition) {
-            recyclerView.scrollToPosition(currentTagPosition);
-
-            // Wait for RecyclerView to load it's layout.
-            getActivity().postponeEnterTransition();
-            recyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-                    getActivity().startPostponedEnterTransition();
-                    return true;
-                }
-            });
-        }
-    }
-
-    @TargetApi(21)
-    private void enableTransitions() {
-        getActivity().setExitSharedElementCallback(new SharedElementCallback() {
-            @Override
-            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-
-                // If TrackingTagPagerActivity returns to MainActivity.
-                if (isReentering) {
-                    int oldTagPosition = bundle.getInt(EXTRA_OLD_TAG_POSITION);
-                    int currentTagPosition = bundle.getInt(EXTRA_CURRENT_TAG_POSITION);
-
-                    // If currentPosition != oldPosition the user must have swiped to a different
-                    // page in the ViewPager. We must update the shared element so that the
-                    // correct one falls into place.
-                    if (currentTagPosition != oldTagPosition) {
-
-                        // Get the transition name of the current tag.
-                        NfcTag nfcTag = MyTags.get(getActivity()).getNfcTags().get(currentTagPosition);
-                        String currentTransitionName = "image" + nfcTag.getTagId();
-
-                        // Get the ImageView from the RecyclerView.
-                        View currentSharedImageView = recyclerView.findViewWithTag(currentTransitionName);
-                        // If it exists.
-                        if (currentSharedImageView != null) {
-                            // Clear the previous (original) ImageView registrations.
-                            names.clear();
-                            sharedElements.clear();
-
-                            // Add the current ImageView.
-                            names.add(currentTransitionName);
-                            sharedElements.put(currentTransitionName, currentSharedImageView);
-                        }
-                    }
-                    // Delete the previous positions.
-                    bundle = null;
-                }
-            }
-        });
     }
 }

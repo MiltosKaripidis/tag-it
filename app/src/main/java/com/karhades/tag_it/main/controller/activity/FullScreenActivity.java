@@ -1,6 +1,8 @@
 package com.karhades.tag_it.main.controller.activity;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +18,12 @@ public class FullScreenActivity extends Activity {
     private static final String EXTRA_FILE_PATH = "com.karhades.tag_it.file_path";
 
     private ImageView imageView;
+
+    public static Intent newIntent(Context context, String filePath) {
+        Intent intent = new Intent(context, FullScreenActivity.class);
+        intent.putExtra(EXTRA_FILE_PATH, filePath);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
