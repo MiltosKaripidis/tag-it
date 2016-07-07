@@ -585,14 +585,19 @@ public class MainActivity extends AppCompatActivity {
                     // Delete the previous positions.
                     bundle = null;
                 } else {
-                    //TODO: ImageView overlaps status bar.
+                    //TODO: When status bar is transparent, it is null and imageView overlaps it.
                     // If bundle is null, then the activity is exiting.
                     View statusBar = findViewById(android.R.id.statusBarBackground);
+                    // Add the NavigationBar to shared elements to avoid blinking.
+                    View navigationBar = findViewById(android.R.id.navigationBarBackground);
 
                     if (statusBar != null) {
                         names.add(statusBar.getTransitionName());
                         sharedElements.put(statusBar.getTransitionName(), statusBar);
-                        getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
+                    }
+                    if (navigationBar != null) {
+                        names.add(navigationBar.getTransitionName());
+                        sharedElements.put(navigationBar.getTransitionName(), navigationBar);
                     }
                 }
             }
