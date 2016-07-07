@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private TabsAdapter adapter;
     private ActionMode actionMode;
     private ActionMode.Callback actionModeCallback;
+    private boolean isSelectAllItemVisible;
 
     /**
      * NFC adapter.
@@ -300,7 +301,18 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
+                MenuItem selectAllItem = menu.findItem(R.id.context_bar_select_all_item);
+                MenuItem clearSelectionItem = menu.findItem(R.id.context_bar_clear_selection_item);
+
+                if (isSelectAllItemVisible) {
+                    selectAllItem.setVisible(false);
+                    clearSelectionItem.setVisible(true);
+                } else {
+                    selectAllItem.setVisible(true);
+                    clearSelectionItem.setVisible(false);
+                }
+
+                return true;
             }
 
             @Override
@@ -309,22 +321,19 @@ public class MainActivity extends AppCompatActivity {
                 if (tabLayout.getSelectedTabPosition() == 2) {
                     CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(tabLayout.getSelectedTabPosition());
 
-                    MenuItem selectAllItem = mode.getMenu().findItem(R.id.context_bar_select_all_item);
-                    MenuItem clearSelectionItem = mode.getMenu().findItem(R.id.context_bar_clear_selection_item);
-
                     switch (item.getItemId()) {
                         case R.id.context_bar_delete_item:
-                            new DeleteDialogFragment().show(getSupportFragmentManager(), "delete");
+                            DeleteDialogFragment.newInstance().show(getSupportFragmentManager(), "delete");
                             return true;
                         case R.id.context_bar_select_all_item:
-                            clearSelectionItem.setVisible(true);
-                            selectAllItem.setVisible(false);
                             fragment.contextSelectAll();
+                            isSelectAllItemVisible = true;
+                            mode.invalidate();
                             return true;
                         case R.id.context_bar_clear_selection_item:
-                            clearSelectionItem.setVisible(false);
-                            selectAllItem.setVisible(true);
                             fragment.contextClearSelection();
+                            isSelectAllItemVisible = false;
+                            mode.invalidate();
                             return true;
                         default:
                             return false;
@@ -524,6 +533,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static class DeleteDialogFragment extends DialogFragment {
+
+        public static DeleteDialogFragment newInstance() {
+            return new DeleteDialogFragment();
+        }
+
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {

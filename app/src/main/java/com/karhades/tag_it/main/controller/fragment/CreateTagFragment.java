@@ -363,7 +363,7 @@ public class CreateTagFragment extends Fragment {
         }
 
         // Create and show the dialog.
-        dialogFragment = new TagItDialogFragment();
+        dialogFragment = TagItDialogFragment.newInstance();
         dialogFragment.show(getActivity().getSupportFragmentManager(), "write");
 
         // Wire a listener for a on tag write event.
@@ -453,6 +453,11 @@ public class CreateTagFragment extends Fragment {
     }
 
     public static class TagItDialogFragment extends DialogFragment {
+
+        public static TagItDialogFragment newInstance() {
+            return new TagItDialogFragment();
+        }
+
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
