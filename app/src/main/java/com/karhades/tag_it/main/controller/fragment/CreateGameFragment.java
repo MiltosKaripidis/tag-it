@@ -50,7 +50,7 @@ import com.karhades.tag_it.utils.FontCache;
 import com.karhades.tag_it.utils.PictureLoader;
 import com.karhades.tag_it.utils.TransitionHelper;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Karhades - PC on 4/15/2015.
@@ -80,7 +80,7 @@ public class CreateGameFragment extends Fragment {
     /**
      * Instance variables.
      */
-    private ArrayList<NfcTag> nfcTags;
+    private List<NfcTag> nfcTags;
 
     /**
      * Transition variables.

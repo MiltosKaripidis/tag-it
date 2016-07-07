@@ -12,6 +12,7 @@ import com.karhades.tag_it.utils.TagJSONSerializer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Karhades - PC on 4/14/2015.
@@ -38,7 +39,7 @@ public class MyTags {
     /**
      * List of NfcTag objects.
      */
-    private ArrayList<NfcTag> nfcTags;
+    private List<NfcTag> nfcTags;
 
     /**
      * Helper class for saving and loading NfcTag objects in JSON format.
@@ -112,9 +113,9 @@ public class MyTags {
     /**
      * Get all the nfcTags.
      *
-     * @return The ArrayList containing the tags.
+     * @return The List containing the tags.
      */
-    public ArrayList<NfcTag> getNfcTags() {
+    public List<NfcTag> getNfcTags() {
         return nfcTags;
     }
 

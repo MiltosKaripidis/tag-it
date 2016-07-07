@@ -26,7 +26,7 @@ import com.karhades.tag_it.main.model.NfcTag;
 import com.karhades.tag_it.utils.PictureLoader;
 import com.karhades.tag_it.utils.TransitionHelper;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Karhades - PC on 4/15/2015.
@@ -42,7 +42,7 @@ public class TrackingGameFragment extends Fragment {
     /**
      * Instance variables.
      */
-    private ArrayList<NfcTag> nfcTags;
+    private List<NfcTag> nfcTags;
     private NfcTagAdapter adapter;
 
     private Callbacks callbacks;

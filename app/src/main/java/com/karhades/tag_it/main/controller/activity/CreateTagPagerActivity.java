@@ -17,7 +17,7 @@ import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcHandler;
 import com.karhades.tag_it.main.model.NfcTag;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Karhades on 15-Sep-15.
@@ -40,7 +40,7 @@ public class CreateTagPagerActivity extends AppCompatActivity implements ViewPag
      * Instance variables.
      */
     private FragmentAdapter fragmentAdapter;
-    private ArrayList<NfcTag> nfcTags;
+    private List<NfcTag> nfcTags;
     private String tagId;
 
     /**

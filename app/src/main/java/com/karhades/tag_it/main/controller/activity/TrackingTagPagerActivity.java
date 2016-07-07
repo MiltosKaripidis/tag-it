@@ -21,7 +21,6 @@ import com.karhades.tag_it.main.model.NfcHandler;
 import com.karhades.tag_it.main.model.NfcTag;
 import com.karhades.tag_it.utils.TransitionHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +49,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
     /**
      * Instance variables.
      */
-    private ArrayList<NfcTag> nfcTags;
+    private List<NfcTag> nfcTags;
     private FragmentAdapter fragmentAdapter;
     private String tagId;
     private boolean isTagDiscovered;

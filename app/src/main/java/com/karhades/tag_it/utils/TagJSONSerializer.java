@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Karhades on 18-Sep-15.
@@ -29,7 +30,7 @@ public class TagJSONSerializer {
         this.filename = filename;
     }
 
-    public void saveTagsExternal(ArrayList<NfcTag> nfcTags) throws JSONException, IOException {
+    public void saveTagsExternal(List<NfcTag> nfcTags) throws JSONException, IOException {
         // Build an array in JSON.
         JSONArray jsonArray = new JSONArray();
 
@@ -45,9 +46,9 @@ public class TagJSONSerializer {
         fileOutputStream.close();
     }
 
-    public ArrayList<NfcTag> loadTagsExternal() throws JSONException, IOException {
+    public List<NfcTag> loadTagsExternal() throws JSONException, IOException {
         // Create a new tag list that will be returned.
-        ArrayList<NfcTag> loadedTags = new ArrayList<>();
+        List<NfcTag> loadedTags = new ArrayList<>();
 
         File file = new File(context.getExternalFilesDir(null) + File.separator + filename);
         FileInputStream fileInputStream = new FileInputStream(file);
