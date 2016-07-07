@@ -173,6 +173,8 @@ public class CreateGameFragment extends Fragment {
 
     private void setupRecyclerView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.create_recycler_view);
+        // Forces the recycling of items (Default=2).
+        recyclerView.setItemViewCacheSize(0);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         adapter = new NfcTagAdapter();
@@ -322,9 +324,9 @@ public class CreateGameFragment extends Fragment {
             for (int i = 0; i < nfcTags.size(); i++) {
                 View view = recyclerView.getChildAt(i);
                 if (view instanceof CardView) {
-                    selectedItems.put(i, true);
                     view.setActivated(true);
                 }
+                selectedItems.put(i, true);
             }
             callbacks.onItemClicked(getSelectionSize());
         }
