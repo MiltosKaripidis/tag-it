@@ -124,9 +124,16 @@ public class CreateGameFragment extends Fragment {
             callbacks = (Callbacks) context;
         }
         catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement Callbacks interface.");
+            throw new ClassCastException(context.toString() + " must implement CreateGameFragment.Callbacks interface.");
         }
         callbacks.onFragmentAttached(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        callbacks = null;
     }
 
     @Override

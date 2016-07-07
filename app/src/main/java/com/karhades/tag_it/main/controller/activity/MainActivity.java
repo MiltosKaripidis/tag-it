@@ -51,7 +51,7 @@ import java.util.Map;
 /**
  * Created by Karhades on 20-Aug-15.
  */
-public class MainActivity extends AppCompatActivity implements CreateGameFragment.Callbacks {
+public class MainActivity extends AppCompatActivity implements TrackingGameFragment.Callbacks, CreateGameFragment.Callbacks {
 
     /**
      * Extras constants.
@@ -82,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements CreateGameFragmen
     private ActionMode actionMode;
     private ActionMode.Callback actionModeCallback;
     private boolean isSelectAllItemVisible;
+    private TrackingGameFragment trackingGameFragment;
+    private CreateGameFragment createGameFragment;
 
     /**
      * NFC adapter.
@@ -318,20 +320,18 @@ public class MainActivity extends AppCompatActivity implements CreateGameFragmen
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 // If Tab 2 is selected.
-                if (tabLayout.getSelectedTabPosition() == 2) {
-                    CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(tabLayout.getSelectedTabPosition());
-
+                if (createGameFragment != null) {
                     switch (item.getItemId()) {
                         case R.id.context_bar_delete_item:
                             DeleteDialogFragment.newInstance().show(getSupportFragmentManager(), "delete");
                             return true;
                         case R.id.context_bar_select_all_item:
-                            fragment.contextSelectAll();
+                            createGameFragment.contextSelectAll();
                             isSelectAllItemVisible = true;
                             mode.invalidate();
                             return true;
                         case R.id.context_bar_clear_selection_item:
-                            fragment.contextClearSelection();
+                            createGameFragment.contextClearSelection();
                             isSelectAllItemVisible = false;
                             mode.invalidate();
                             return true;
@@ -345,11 +345,10 @@ public class MainActivity extends AppCompatActivity implements CreateGameFragmen
             @Override
             public void onDestroyActionMode(ActionMode mode) {
                 // If Tab 2 is selected.
-                if (tabLayout.getSelectedTabPosition() == 2) {
+                if (createGameFragment != null) {
                     changeBarsColor(true);
 
-                    CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(tabLayout.getSelectedTabPosition());
-                    fragment.contextFinish();
+                    createGameFragment.contextFinish();
 
                     actionMode = null;
                 }
@@ -358,9 +357,7 @@ public class MainActivity extends AppCompatActivity implements CreateGameFragmen
     }
 
     private void doPositiveClick() {
-        CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(tabLayout.getSelectedTabPosition());
-
-        fragment.contextDeleteSelectedItems();
+        createGameFragment.contextDeleteSelectedItems();
         disableContextualActionBar();
 
         // Inform user.
@@ -397,13 +394,19 @@ public class MainActivity extends AppCompatActivity implements CreateGameFragmen
 
     @Override
     public void onFragmentAttached(CreateGameFragment fragment) {
-        fragment.setupFloatingActionButton(floatingActionButton);
+        createGameFragment = fragment;
+        createGameFragment.setupFloatingActionButton(floatingActionButton);
 
         if (TransitionHelper.isTransitionSupported()) {
             ViewGroup sceneRoot = drawerLayout;
             ViewGroup revealContent = (ViewGroup) findViewById(R.id.main_reveal_content);
-            fragment.setupTransitionViews(sceneRoot, revealContent);
+            createGameFragment.setupTransitionViews(sceneRoot, revealContent);
         }
+    }
+
+    @Override
+    public void onFragmentAttached(TrackingGameFragment fragment) {
+        trackingGameFragment = fragment;
     }
 
     @SuppressWarnings("deprecation")
@@ -459,9 +462,8 @@ public class MainActivity extends AppCompatActivity implements CreateGameFragmen
             return;
 
         // If Tab 1.
-        if (tabLayout.getSelectedTabPosition() == 0) {
-            TrackingGameFragment fragment = (TrackingGameFragment) adapter.getFragment(0);
-            final RecyclerView recyclerView = fragment.getRecyclerView();
+        if (trackingGameFragment != null) {
+            final RecyclerView recyclerView = trackingGameFragment.getRecyclerView();
 
             bundle = new Bundle(data.getExtras());
 
@@ -507,10 +509,6 @@ public class MainActivity extends AppCompatActivity implements CreateGameFragmen
         public void addFragment(Fragment fragment) {
             fragments.add(fragment);
         }
-
-        public Fragment getFragment(int position) {
-            return fragments.get(position);
-        }
     }
 
     public static class DeleteDialogFragment extends DialogFragment {
@@ -547,8 +545,7 @@ public class MainActivity extends AppCompatActivity implements CreateGameFragmen
         setExitSharedElementCallback(new SharedElementCallback() {
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                TrackingGameFragment fragment = (TrackingGameFragment) adapter.getFragment(0);
-                final RecyclerView recyclerView = fragment.getRecyclerView();
+                final RecyclerView recyclerView = trackingGameFragment.getRecyclerView();
 
                 // If TrackingTagPagerActivity returns to MainActivity.
                 if (bundle != null) {

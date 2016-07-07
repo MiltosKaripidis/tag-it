@@ -124,8 +124,15 @@ public class CreateTagFragment extends Fragment {
         try {
             callbacks = (Callbacks) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement Callbacks interface.");
+            throw new ClassCastException(context.toString() + " must implement CreateTagFragment.Callbacks interface.");
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        callbacks = null;
     }
 
     @Override

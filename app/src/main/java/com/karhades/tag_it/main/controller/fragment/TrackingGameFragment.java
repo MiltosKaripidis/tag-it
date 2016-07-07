@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -44,6 +45,12 @@ public class TrackingGameFragment extends Fragment {
     private ArrayList<NfcTag> nfcTags;
     private NfcTagAdapter adapter;
 
+    private Callbacks callbacks;
+
+    public interface Callbacks {
+        void onFragmentAttached(TrackingGameFragment fragment);
+    }
+
     public static TrackingGameFragment newInstance() {
         return new TrackingGameFragment();
     }
@@ -54,6 +61,25 @@ public class TrackingGameFragment extends Fragment {
 
         // Get the list of NFC tags.
         nfcTags = MyTags.get(getActivity()).getNfcTags();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            callbacks = (Callbacks) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement TrackingGameFragment.Callbacks interface");
+        }
+        callbacks.onFragmentAttached(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        callbacks = null;
     }
 
     @Override
