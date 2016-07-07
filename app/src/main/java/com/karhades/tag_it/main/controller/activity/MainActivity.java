@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -323,7 +324,8 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
                 if (createGameFragment != null) {
                     switch (item.getItemId()) {
                         case R.id.context_bar_delete_item:
-                            DeleteDialogFragment.newInstance().show(getSupportFragmentManager(), "delete");
+                            int size = createGameFragment.contextGetSelectionSize();
+                            DeleteDialogFragment.newInstance(size).show(getSupportFragmentManager(), "delete");
                             return true;
                         case R.id.context_bar_select_all_item:
                             createGameFragment.contextSelectAll();
@@ -357,11 +359,14 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
     }
 
     private void doPositiveClick() {
+        int size = createGameFragment.contextGetSelectionSize();
+
         createGameFragment.contextDeleteSelectedItems();
         disableContextualActionBar();
 
+        String deletionSize = getResources().getQuantityString(R.plurals.snackbar_deleted_plural, size);
         // Inform user.
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "Tags deleted", Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, deletionSize, Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 
@@ -513,8 +518,22 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
 
     public static class DeleteDialogFragment extends DialogFragment {
 
-        public static DeleteDialogFragment newInstance() {
-            return new DeleteDialogFragment();
+        private static final String EXTRA_SIZE = "com.karhades.tag_it.selectionSize";
+        private int selectionSize;
+
+        public static DeleteDialogFragment newInstance(int size) {
+            DeleteDialogFragment fragment = new DeleteDialogFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt(EXTRA_SIZE, size);
+            fragment.setArguments(bundle);
+            return fragment;
+        }
+
+        @Override
+        public void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            selectionSize = getArguments().getInt(EXTRA_SIZE);
         }
 
         @NonNull
@@ -522,8 +541,8 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return new AlertDialog.Builder(getActivity())
                     .setIcon(R.drawable.icon_warning)
-                    .setTitle("Delete tags?")
-                    .setMessage("You are going to delete the selected tags.")
+                    .setTitle(getResources().getQuantityString(R.plurals.dialog_title_deleted_plural, selectionSize))
+                    .setMessage(getResources().getQuantityString(R.plurals.dialog_message_deleted_plural, selectionSize))
                     .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

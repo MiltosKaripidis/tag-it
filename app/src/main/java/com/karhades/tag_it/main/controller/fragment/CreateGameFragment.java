@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
@@ -122,8 +123,7 @@ public class CreateGameFragment extends Fragment {
 
         try {
             callbacks = (Callbacks) context;
-        }
-        catch (ClassCastException e) {
+        } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement CreateGameFragment.Callbacks interface.");
         }
         callbacks.onFragmentAttached(this);
@@ -232,6 +232,10 @@ public class CreateGameFragment extends Fragment {
             showActionButton();
             restoreLayoutAfterTransition();
         }
+    }
+
+    public int contextGetSelectionSize() {
+        return adapter.getSelectionSize();
     }
 
     public void contextDeleteSelectedItems() {
@@ -566,13 +570,21 @@ public class CreateGameFragment extends Fragment {
 
         public static DeleteDialogFragment newInstance(String tagId, int adapterPosition) {
             Bundle bundle = new Bundle();
-            bundle.putSerializable(EXTRA_TAG_ID, tagId);
-            bundle.putSerializable(EXTRA_ADAPTER_POSITION, adapterPosition);
+            bundle.putString(EXTRA_TAG_ID, tagId);
+            bundle.putInt(EXTRA_ADAPTER_POSITION, adapterPosition);
 
             DeleteDialogFragment fragment = new DeleteDialogFragment();
             fragment.setArguments(bundle);
 
             return fragment;
+        }
+
+        @Override
+        public void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            tagId = getArguments().getString(EXTRA_TAG_ID);
+            adapterPosition = getArguments().getInt(EXTRA_ADAPTER_POSITION);
         }
 
         @NonNull

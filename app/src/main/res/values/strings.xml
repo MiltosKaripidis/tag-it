@@ -39,4 +39,19 @@
         <item>SHARE</item>
         <item>CREATE</item>
     </string-array>
+
+    <plurals name="snackbar_deleted_plural">
+        <item quantity="one">Tag deleted</item>
+        <item quantity="other">Tags deleted</item>
+    </plurals>
+
+    <plurals name="dialog_title_deleted_plural">
+        <item quantity="one">Delete tag?</item>
+        <item quantity="other">Delete tags?</item>
+    </plurals>
+
+    <plurals name="dialog_message_deleted_plural">
+        <item quantity="one">You are going to delete the selected tag.</item>
+        <item quantity="other">You are going to delete the selected tags.</item>
+    </plurals>
 </resources>
