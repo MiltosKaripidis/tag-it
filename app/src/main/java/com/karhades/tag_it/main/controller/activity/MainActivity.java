@@ -51,7 +51,7 @@ import java.util.Map;
 /**
  * Created by Karhades on 20-Aug-15.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CreateGameFragment.Callbacks {
 
     /**
      * Extras constants.
@@ -374,8 +374,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setupAddActionButton() {
-        CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(2);
+    @Override
+    public void onItemLongClicked() {
+        if (actionMode == null) {
+            // Start contextual action mode.
+            actionMode = toolbar.startActionMode(actionModeCallback);
+        }
+    }
+
+    @Override
+    public void onItemClicked(int tagsSelected) {
+        actionMode.setTitle(tagsSelected + " selected");
+
+        MenuItem deleteItem = actionMode.getMenu().findItem(R.id.context_bar_delete_item);
+        // If there are no selected tags.
+        if (tagsSelected == 0) {
+            deleteItem.setVisible(false);
+        } else {
+            deleteItem.setVisible(true);
+        }
+    }
+
+    @Override
+    public void onFragmentAttached(CreateGameFragment fragment) {
         fragment.setupFloatingActionButton(floatingActionButton);
 
         if (TransitionHelper.isTransitionSupported()) {
@@ -383,33 +404,6 @@ public class MainActivity extends AppCompatActivity {
             ViewGroup revealContent = (ViewGroup) findViewById(R.id.main_reveal_content);
             fragment.setupTransitionViews(sceneRoot, revealContent);
         }
-    }
-
-    private void registerCreateGameFragmentListener() {
-        // Listen for CreateGameFragment's events.
-        CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(2);
-        fragment.setOnContextualActionBarEnterListener(new CreateGameFragment.OnContextualActionBarEnterListener() {
-            @Override
-            public void onItemLongClicked() {
-                if (actionMode == null) {
-                    // Start contextual action mode.
-                    actionMode = toolbar.startActionMode(actionModeCallback);
-                }
-            }
-
-            @Override
-            public void onItemClicked(int tagsSelected) {
-                actionMode.setTitle(tagsSelected + " selected");
-
-                MenuItem deleteItem = actionMode.getMenu().findItem(R.id.context_bar_delete_item);
-                // If there are no selected tags.
-                if (tagsSelected == 0) {
-                    deleteItem.setVisible(false);
-                } else {
-                    deleteItem.setVisible(true);
-                }
-            }
-        });
     }
 
     @SuppressWarnings("deprecation")
@@ -508,19 +502,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return fragments.size();
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            Fragment fragment = (Fragment) super.instantiateItem(container, position);
-
-            // Register listeners for each fragment.
-            if (fragment instanceof CreateGameFragment) {
-                registerCreateGameFragmentListener();
-                setupAddActionButton();
-            }
-
-            return fragment;
         }
 
         public void addFragment(Fragment fragment) {

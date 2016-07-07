@@ -91,26 +91,18 @@ public class CreateGameFragment extends Fragment {
     /**
      * Interface variable.
      */
-    private OnContextualActionBarEnterListener onContextualActionBarEnterListener;
+    private Callbacks callbacks;
 
     /**
      * Interface definition for a callback to be invoked when
      * the fragment enters contextual mode.
      */
-    public interface OnContextualActionBarEnterListener {
+    public interface Callbacks {
         void onItemLongClicked();
 
         void onItemClicked(int tagsSelected);
-    }
 
-    /**
-     * Register a callback to be invoked when the fragment
-     * enters contextual mode.
-     *
-     * @param onContextualActionBarEnterListener The callback that will run.
-     */
-    public void setOnContextualActionBarEnterListener(OnContextualActionBarEnterListener onContextualActionBarEnterListener) {
-        this.onContextualActionBarEnterListener = onContextualActionBarEnterListener;
+        void onFragmentAttached(CreateGameFragment fragment);
     }
 
     public static CreateGameFragment newInstance() {
@@ -122,6 +114,19 @@ public class CreateGameFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         nfcTags = MyTags.get(getActivity()).getNfcTags();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            callbacks = (Callbacks) context;
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement Callbacks interface.");
+        }
+        callbacks.onFragmentAttached(this);
     }
 
     @Override
@@ -310,7 +315,7 @@ public class CreateGameFragment extends Fragment {
                     view.setActivated(true);
                 }
             }
-            onContextualActionBarEnterListener.onItemClicked(getSelectionSize());
+            callbacks.onItemClicked(getSelectionSize());
         }
 
         public void clearSelection() {
@@ -322,7 +327,7 @@ public class CreateGameFragment extends Fragment {
                     view.setActivated(false);
                 }
             }
-            onContextualActionBarEnterListener.onItemClicked(getSelectionSize());
+            callbacks.onItemClicked(getSelectionSize());
         }
 
         public int getSelectionSize() {
@@ -409,7 +414,7 @@ public class CreateGameFragment extends Fragment {
             }
 
             adapter.toggleSelection(getAdapterPosition());
-            onContextualActionBarEnterListener.onItemClicked(adapter.getSelectionSize());
+            callbacks.onItemClicked(adapter.getSelectionSize());
         }
 
         @SuppressLint("InflateParams")
@@ -495,7 +500,7 @@ public class CreateGameFragment extends Fragment {
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    onContextualActionBarEnterListener.onItemLongClicked();
+                    callbacks.onItemLongClicked();
 
                     // Enable selection mode.
                     adapter.setSelectionMode(true);

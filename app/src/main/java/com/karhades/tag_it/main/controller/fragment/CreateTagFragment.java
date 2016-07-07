@@ -124,7 +124,7 @@ public class CreateTagFragment extends Fragment {
         try {
             callbacks = (Callbacks) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnTagWriteLister");
+            throw new ClassCastException(context.toString() + " must implement Callbacks interface.");
         }
     }
 
