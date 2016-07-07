@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,7 +26,6 @@ import com.karhades.tag_it.utils.PictureLoader;
 import com.karhades.tag_it.utils.TransitionHelper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Created by Karhades - PC on 4/15/2015.
@@ -209,9 +207,7 @@ public class TrackingGameFragment extends Fragment {
         @SuppressWarnings("unchecked")
         private void startTrackingTagPagerActivityWithTransition() {
             Intent intent = TrackingTagPagerActivity.newIntent(getActivity(), nfcTag.getTagId(), getAdapterPosition());
-
-            Pair<View, String>[] pairs = createPairs(Pair.create(imageView, imageView.getTransitionName()));
-            Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), pairs).toBundle();
+            Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), imageView, imageView.getTransitionName()).toBundle();
             getActivity().startActivity(intent, bundle);
         }
 
@@ -229,13 +225,12 @@ public class TrackingGameFragment extends Fragment {
         public void bindNfcTag(NfcTag nfcTag) {
             this.nfcTag = nfcTag;
 
-            if (TransitionHelper.isTransitionSupported()) {
+            if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
                 imageView.setTransitionName("image" + nfcTag.getTagId());
                 imageView.setTag("image" + nfcTag.getTagId());
             }
 
             PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
-
             titleTextView.setText(nfcTag.getTitle());
             difficultyTextView.setText(nfcTag.getDifficulty());
             solvedCheckBox.setChecked(nfcTag.isSolved());
@@ -265,21 +260,5 @@ public class TrackingGameFragment extends Fragment {
         public int getItemCount() {
             return nfcTags.size();
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    @TargetApi(21)
-    private Pair<View, String>[] createPairs(Pair... sharedViews) {
-        ArrayList<Pair> pairs = new ArrayList<>();
-
-        View navigationBar = getActivity().findViewById(android.R.id.navigationBarBackground);
-
-        if (navigationBar != null) {
-            pairs.add(Pair.create(navigationBar, navigationBar.getTransitionName()));
-        }
-
-        Collections.addAll(pairs, sharedViews);
-
-        return pairs.toArray(new Pair[pairs.size()]);
     }
 }

@@ -18,9 +18,12 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
 
         <!-- Transitions-->
+        <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowSharedElementEnterTransition">@transition/tracking_shared_element</item>
         <item name="android:windowSharedElementReturnTransition">@transition/tracking_shared_element</item>
+        <item name="android:windowEnterTransition">@transition/tracking_game_window_enter_transition</item>
+        <item name="android:windowReturnTransition">@transition/tracking_game_window_return_transition</item>
 
         <!-- Custom ActionMode popup-->
         <item name="actionBarPopupTheme">@style/AppTheme.ActionMode.Overflow</item>

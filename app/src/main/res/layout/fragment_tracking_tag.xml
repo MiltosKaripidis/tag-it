@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar"
+        android:id="@+id/tracking_app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true">
@@ -50,14 +50,13 @@
         android:layout_marginRight="16dp"
         android:src="@drawable/icon_fullscreen"
         app:backgroundTint="@color/accent"
-        app:layout_anchor="@id/app_bar"
+        app:layout_anchor="@id/tracking_app_bar_layout"
         app:layout_anchorGravity="bottom|right" />
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:transitionGroup="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout

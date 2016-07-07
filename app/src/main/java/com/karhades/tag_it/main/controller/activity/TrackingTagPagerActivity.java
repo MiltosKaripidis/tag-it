@@ -341,9 +341,15 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
                         sharedElements.put(sharedView.getTransitionName(), sharedView);
                     }
 
+                    // If bundle is null, then the activity is exiting.
+                    View statusBar = findViewById(android.R.id.statusBarBackground);
                     // Add the NavigationBar to shared elements to avoid blinking.
                     View navigationBar = findViewById(android.R.id.navigationBarBackground);
 
+                    if (statusBar != null) {
+                        names.add(statusBar.getTransitionName());
+                        sharedElements.put(statusBar.getTransitionName(), statusBar);
+                    }
                     if (navigationBar != null) {
                         names.add(navigationBar.getTransitionName());
                         sharedElements.put(navigationBar.getTransitionName(), navigationBar);
