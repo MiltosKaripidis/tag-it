@@ -329,12 +329,17 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
                             return true;
                         case R.id.context_bar_select_all_item:
                             createGameFragment.contextSelectAll();
+
+                            // Invalidate menu item.
                             isSelectAllItemVisible = true;
                             mode.invalidate();
                             return true;
                         case R.id.context_bar_clear_selection_item:
                             createGameFragment.contextClearSelection();
+
+                            // Invalidate menu item.
                             isSelectAllItemVisible = false;
+
                             mode.invalidate();
                             return true;
                         default:
@@ -351,6 +356,10 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
                     changeBarsColor(true);
 
                     createGameFragment.contextFinish();
+
+                    // Invalidate menu item.
+                    isSelectAllItemVisible = false;
+                    mode.invalidate();
 
                     actionMode = null;
                 }

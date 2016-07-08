@@ -192,8 +192,8 @@ public class TrackingGameFragment extends Fragment {
          */
         private void setupTouchListener(View view) {
             view.setOnTouchListener(new View.OnTouchListener() {
-                Animator startAnimator = AnimatorInflater.loadAnimator(getActivity(), R.animator.start);
-                Animator endAnimator = AnimatorInflater.loadAnimator(getActivity(), R.animator.end);
+                Animator startAnimator = AnimatorInflater.loadAnimator(getActivity(), R.animator.card_view_elevate);
+                Animator endAnimator = AnimatorInflater.loadAnimator(getActivity(), R.animator.card_view_rest);
 
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
