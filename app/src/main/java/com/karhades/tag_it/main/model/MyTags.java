@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.model;
 
 import android.annotation.SuppressLint;
@@ -7,7 +11,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.karhades.tag_it.utils.PictureLoader;
-import com.karhades.tag_it.utils.TagJSONSerializer;
+import com.karhades.tag_it.utils.TagJsonSerializer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Karhades - PC on 4/14/2015.
+ * Singleton class that manages all the tags for the application.
  */
 public class MyTags {
 
@@ -44,7 +48,7 @@ public class MyTags {
     /**
      * Helper class for saving and loading NfcTag objects in JSON format.
      */
-    private TagJSONSerializer serializer;
+    private TagJsonSerializer serializer;
 
     /**
      * Private constructor that gets called only
@@ -54,7 +58,7 @@ public class MyTags {
      */
     private MyTags(Context context) {
         this.context = context;
-        serializer = new TagJSONSerializer(this.context, FILENAME);
+        serializer = new TagJsonSerializer(this.context, FILENAME);
 
         loadTags();
 
@@ -75,19 +79,18 @@ public class MyTags {
     }
 
     /**
-     * Save the tags asynchronously to external storage.
+     * Saves the tags asynchronously to external storage.
      */
     public void saveTags() {
         new AsyncTaskSaver().execute();
     }
 
     /**
-     * Load the tags from the external storage.
+     * Loads the tags from the external storage.
      */
     public void loadTags() {
         try {
             nfcTags = serializer.loadTagsExternal();
-            Log.d(TAG, "Nfc Tags were loaded!");
         } catch (FileNotFoundException e) {
             nfcTags = new ArrayList<>();
             Log.e(TAG, "File tags.txt not found.", e);
@@ -98,7 +101,7 @@ public class MyTags {
     }
 
     /**
-     * Create a Single Object for this class (Singleton).
+     * Creates a Single Object for this class (Singleton).
      *
      * @param context The Context needed for android.
      * @return The MyTags Object reference.
@@ -111,7 +114,7 @@ public class MyTags {
     }
 
     /**
-     * Get all the nfcTags.
+     * Gets all the nfcTags.
      *
      * @return The List containing the tags.
      */
@@ -120,7 +123,7 @@ public class MyTags {
     }
 
     /**
-     * Get a NfcTag through it's tagId.
+     * Gets a NfcTag through it's tagId.
      *
      * @param tagId The tag id needed for search.
      * @return The NfcTag with this tag id.
@@ -135,34 +138,28 @@ public class MyTags {
     }
 
     /**
-     * Add a new Nfc Tag to the list.
+     * Adds a new Nfc Tag to the list.
      *
      * @param nfcTag The NfcTag to add.
      */
     public void addNfcTag(NfcTag nfcTag) {
-        Log.d(TAG, "NfcTag inserted!");
-
         // Add to list.
         nfcTags.add(nfcTag);
     }
 
     /**
-     * Remove the specified NfcTag from the list.
+     * Removes the specified NfcTag from the list.
      *
      * @param nfcTag The NfcTag to remove.
      */
     public void deleteNfcTag(NfcTag nfcTag) {
-        Log.d(TAG, "NFC " + nfcTag.getTitle() + " deleted!");
-
         // Clear memory cache for previous image to refresh ImageView.
         PictureLoader.invalidateWithPicasso(context, nfcTag.getPictureFilePath());
 
         if (nfcTag.getPictureFilePath() != null) {
             // Delete file from disk.
             File deleteFile = new File(nfcTag.getPictureFilePath());
-            if (deleteFile.delete()) {
-                Log.d(TAG, "NFC " + nfcTag.getTitle() + " picture deleted.");
-            } else {
+            if (!deleteFile.delete()) {
                 Log.e(TAG, "Error deleting " + nfcTag.getTitle() + " picture.");
             }
         }
@@ -172,7 +169,7 @@ public class MyTags {
     }
 
     /**
-     * Reorder the whole list starting from 1 to length list.
+     * Reorders the whole list starting from 1 to length list.
      */
     public void reorderNfcTags() {
         int title = 1;
@@ -184,10 +181,10 @@ public class MyTags {
     }
 
     /**
-     * Create a URI array with the URIs of the tags.txt and the pictures
+     * Creates a URI array with the URIs of the tags.txt and the pictures
      * associated with every NfcTag object.
      *
-     * @return Return the URI array containing the URIs of tags.txt and
+     * @return Returns the URI array containing the URIs of tags.txt and
      * the images.
      */
     public Uri[] createFileUrisArray() {
@@ -229,7 +226,6 @@ public class MyTags {
         protected Void doInBackground(Void... params) {
             try {
                 serializer.saveTagsExternal(nfcTags);
-                Log.d(TAG, "Tags saved to file!");
             } catch (Exception e) {
                 Log.e(TAG, "Error saving tags: " + e.getMessage());
             }

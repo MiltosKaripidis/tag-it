@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.controller.activity;
 
 import android.animation.ArgbEvaluator;
@@ -50,7 +54,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Karhades on 20-Aug-15.
+ * Main Controller Activity class that hosts 3 fragments (TrackingGameFragment, ShareGameFragment,
+ * CreateGameFragment) that each corresponds to a tab. Manages the Android Beam operation.
  */
 public class MainActivity extends AppCompatActivity implements TrackingGameFragment.Callbacks, CreateGameFragment.Callbacks {
 
@@ -79,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
     /**
      * Instance variables.
      */
-    private TabsAdapter adapter;
     private ActionMode actionMode;
     private ActionMode.Callback actionModeCallback;
     private boolean isSelectAllItemVisible;
@@ -247,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
     }
 
     private void setupViewPager() {
-        adapter = new TabsAdapter(getSupportFragmentManager());
+        TabsAdapter adapter = new TabsAdapter(getSupportFragmentManager());
         adapter.addFragment(TrackingGameFragment.newInstance());
         adapter.addFragment(ShareGameFragment.newInstance());
         adapter.addFragment(CreateGameFragment.newInstance());

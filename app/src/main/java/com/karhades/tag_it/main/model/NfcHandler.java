@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.model;
 
 import android.app.Activity;
@@ -114,7 +118,7 @@ public class NfcHandler {
     }
 
     /**
-     * Register a callback to be invoked when the tag had data written to it.
+     * Registers a callback to be invoked when the tag had data written to it.
      *
      * @param onTagWriteListener The callback that will run.
      */
@@ -134,7 +138,7 @@ public class NfcHandler {
     }
 
     /**
-     * Setup the NfcAdapter and the Foreground Dispatch System.
+     * Setups the NfcAdapter and the Foreground Dispatch System.
      *
      * @param activity The activity needed by the Android System.
      */
@@ -177,8 +181,8 @@ public class NfcHandler {
     }
 
     /**
-     * Intercept the intent and claim priority over other activities.
-     * Block incoming intents that would launch due to the NFC tag Discovery,
+     * Intercepts the intent and claim priority over other activities.
+     * Blocks incoming intents that would launch due to the NFC tag Discovery,
      * including the base activity as well (Duplicate).
      */
     private void setupForegroundDispatch() {
@@ -211,7 +215,7 @@ public class NfcHandler {
     }
 
     /**
-     * Set whether the application is ready to write to an NFC tag.
+     * Sets whether the application is ready to write to an NFC tag.
      */
     public static void setWriteMode(boolean writeMode) {
         NfcHandler.writeMode = writeMode;
@@ -222,21 +226,21 @@ public class NfcHandler {
     }
 
     /**
-     * Enable a foreground tag dispatch for this activity.
+     * Enables a foreground tag dispatch for this activity.
      */
     public void enableForegroundDispatch() {
         nfcAdapter.enableForegroundDispatch(activity, nfcPendingIntent, discoveryIntentFilters, techList);
     }
 
     /**
-     * Disable the foreground tag dispatch for this activity.
+     * Disables the foreground tag dispatch for this activity.
      */
     public void disableForegroundDispatch() {
         nfcAdapter.disableForegroundDispatch(activity);
     }
 
     /**
-     * Handle an NFC tag discovery and write data on it.
+     * Handles an NFC tag discovery and write data on it.
      *
      * @param intent The NFC intent to resolve the tag discovery type.
      * @return A boolean indicating whether the write operation is ready
@@ -260,7 +264,7 @@ public class NfcHandler {
     }
 
     /**
-     * Get the ID (NdefRecord ID) from the specified tag.
+     * Gets the ID (NdefRecord ID) from the specified tag.
      *
      * @param tag The discovered NFC tag.
      * @return A String representing the ID of
@@ -337,7 +341,7 @@ public class NfcHandler {
     }
 
     /**
-     * Write the MIME type and payload to the specified tag
+     * Writes the MIME type and payload to the specified tag
      * and return the operation result.
      *
      * @param tag   The Tag object representing the NFC tag.
@@ -395,8 +399,8 @@ public class NfcHandler {
     }
 
     /**
-     * Create an NdefRecord with the specified ID, encapsulate it into an NdefMessage
-     * and return it.
+     * Creates an NdefRecord with the specified ID, encapsulates it into an NdefMessage
+     * and returns it.
      *
      * @param ndefRecordId A String representing the ID of the NdefRecord.
      * @return The created NdefMessage.
@@ -423,7 +427,7 @@ public class NfcHandler {
     }
 
     /**
-     * Handle an NFC tag discovery, read and return the underlying tag ID.
+     * Handles an NFC tag discovery, reads and returns the underlying tag ID.
      *
      * @param intent The intent that is sent from the Android System at
      *               discovery time.
@@ -469,7 +473,7 @@ public class NfcHandler {
     }
 
     /**
-     * Read the NdefRecord of NdefMessage and return
+     * Reads the NdefRecord of NdefMessage and returns
      * the ID for the specified tag.
      *
      * @param tag The Tag object representing the NFC tag.
@@ -516,7 +520,7 @@ public class NfcHandler {
     }
 
     /**
-     * Register an Android Beam callback and send the data when
+     * Registers an Android Beam callback and sends the data when
      * the devices are in proximity.
      */
     public void registerAndroidBeamShareFiles() {
@@ -530,7 +534,7 @@ public class NfcHandler {
     }
 
     /**
-     * Handle the Intent.ACTION_VIEW action and move the files
+     * Handles the Intent.ACTION_VIEW action and moves the files
      * from the android beam folder to the external private storage.
      *
      * @param intent The intent to get the action.
@@ -563,7 +567,7 @@ public class NfcHandler {
     }
 
     /**
-     * Return the parent file directory of the given URI
+     * Returns the parent file directory of the given URI
      * that has a file scheme.
      *
      * @param uri A URI object to retrieve the path.
@@ -582,7 +586,7 @@ public class NfcHandler {
     }
 
     /**
-     * Return the parent file directory of the given URI
+     * Returns the parent file directory of the given URI
      * that has a content scheme.
      *
      * @param uri A URI object needed by the cursor.
@@ -622,7 +626,7 @@ public class NfcHandler {
     }
 
     /**
-     * Move files to the private external storage of the device from the
+     * Moves files to the private external storage of the device from the
      * specified file path.
      *
      * @param parentFilePath A String representing the parent file directory

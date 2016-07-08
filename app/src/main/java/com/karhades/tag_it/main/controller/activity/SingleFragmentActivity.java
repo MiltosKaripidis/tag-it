@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.controller.activity;
 
 import android.os.Bundle;
@@ -7,7 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.karhades.tag_it.R;
 
-
+/**
+ * Abstract Activity class that knows how to host a single fragment.
+ */
 public abstract class SingleFragmentActivity extends AppCompatActivity {
 
     protected abstract Fragment createFragment();

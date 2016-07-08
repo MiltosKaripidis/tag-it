@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.utils;
 
 import android.content.Context;
@@ -5,7 +9,7 @@ import android.graphics.Typeface;
 import java.util.Hashtable;
 
 /**
- * Created by Karhades on 18-Aug-15.
+ * Helper class for caching fonts.
  */
 public class FontCache
 {

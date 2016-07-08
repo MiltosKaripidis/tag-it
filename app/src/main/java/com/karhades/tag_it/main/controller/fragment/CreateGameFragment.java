@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.controller.fragment;
 
 import android.animation.Animator;
@@ -53,7 +57,7 @@ import com.karhades.tag_it.utils.TransitionHelper;
 import java.util.List;
 
 /**
- * Created by Karhades - PC on 4/15/2015.
+ * Controller Fragment class that binds the create tab with the data set.
  */
 public class CreateGameFragment extends Fragment {
 

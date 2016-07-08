@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.utils;
 
 import android.app.IntentService;
@@ -7,7 +11,7 @@ import com.karhades.tag_it.R;
 
 
 /**
- * Created by Karhades on 11-11-15.
+ * Background service that plays a sound.
  */
 public class AudioService extends IntentService {
 

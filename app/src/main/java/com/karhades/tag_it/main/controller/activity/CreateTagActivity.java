@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.controller.activity;
 
 import android.content.Intent;
@@ -11,7 +15,7 @@ import com.karhades.tag_it.main.controller.fragment.CreateTagFragment;
 import com.karhades.tag_it.main.model.NfcHandler;
 
 /**
- * Created by Karhades on 11-Sep-15.
+ * Controller Activity class that hosts a CreateTagFragment. Manages the NFC write operation.
  */
 public class CreateTagActivity extends SingleFragmentActivity implements CreateTagFragment.Callbacks {
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.controller.activity;
 
 import android.content.Context;
@@ -20,7 +24,8 @@ import com.karhades.tag_it.main.model.NfcTag;
 import java.util.List;
 
 /**
- * Created by Karhades on 15-Sep-15.
+ * Controller Activity class that hosts CreateTagFragment and enables paging. Manages the NFC
+ * write operation.
  */
 public class CreateTagPagerActivity extends AppCompatActivity implements ViewPager.PageTransformer, CreateTagFragment.Callbacks {
 
@@ -30,11 +35,6 @@ public class CreateTagPagerActivity extends AppCompatActivity implements ViewPag
      * ViewPager.PageTransformer constant.
      */
     private static final float MIN_SCALE = 0.75f;
-
-    /**
-     * Widget references.
-     */
-    private ViewPager viewPager;
 
     /**
      * Instance variables.
@@ -114,7 +114,7 @@ public class CreateTagPagerActivity extends AppCompatActivity implements ViewPag
 
     @SuppressWarnings("deprecation")
     private void setupViewPager() {
-        viewPager = (ViewPager) findViewById(R.id.create_tag_pager_view_pager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.create_tag_pager_view_pager);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentAdapter = new FragmentAdapter(fragmentManager);

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.controller.activity;
 
 import android.app.Activity;
@@ -11,7 +15,7 @@ import com.karhades.tag_it.R;
 import com.karhades.tag_it.utils.PictureLoader;
 
 /**
- * Created by Karhades on 15-10-15.
+ * Controller Activity class that loads a Fullscreen image.
  */
 public class FullScreenActivity extends Activity {
 

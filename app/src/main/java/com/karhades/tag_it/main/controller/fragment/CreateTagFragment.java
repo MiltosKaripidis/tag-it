@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.controller.fragment;
 
 import android.app.Activity;
@@ -41,7 +45,7 @@ import com.karhades.tag_it.utils.TransitionHelper;
 import java.io.File;
 
 /**
- * Created by Karhades on 11-Sep-15.
+ * Controller Fragment class that binds the creation of the tag with the data set.
  */
 public class CreateTagFragment extends Fragment {
 

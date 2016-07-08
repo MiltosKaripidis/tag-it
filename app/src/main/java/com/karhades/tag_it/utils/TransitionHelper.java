@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.utils;
 
 import android.animation.Animator;
@@ -10,7 +14,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 /**
- * Created by Karhades on 08-11-15.
+ * Helper class for managing transitions.
  */
 public class TransitionHelper {
 

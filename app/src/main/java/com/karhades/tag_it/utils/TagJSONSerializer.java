@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.utils;
 
 import android.content.Context;
@@ -18,25 +22,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Karhades on 18-Sep-15.
+ * Helper class for saving and loading the json file from the filesystem.
  */
-public class TagJSONSerializer {
+public class TagJsonSerializer {
 
     private Context context;
     private String filename;
 
-    public TagJSONSerializer(Context context, String filename) {
+    public TagJsonSerializer(Context context, String filename) {
         this.context = context;
         this.filename = filename;
     }
 
+    /**
+     * Saves the specified {@code nfcTags} to the external file system using the json format.
+     *
+     * @param nfcTags The List with the tags to save.
+     * @throws JSONException
+     * @throws IOException
+     */
     public void saveTagsExternal(List<NfcTag> nfcTags) throws JSONException, IOException {
-        // Build an array in JSON.
+        // Builds an array in JSON.
         JSONArray jsonArray = new JSONArray();
 
-        // Put each NfcTag to the JSONArray.
+        // Puts each NfcTag to the JSONArray.
         for (NfcTag nfcTag : nfcTags) {
-            jsonArray.put(nfcTag.toJSON());
+            jsonArray.put(nfcTag.toJson());
         }
 
         File file = new File(context.getExternalFilesDir(null) + File.separator + filename);
@@ -46,6 +57,13 @@ public class TagJSONSerializer {
         fileOutputStream.close();
     }
 
+    /**
+     * Loads the tags from the external file system and returns them.
+     *
+     * @return The saved List with tags.
+     * @throws JSONException
+     * @throws IOException
+     */
     public List<NfcTag> loadTagsExternal() throws JSONException, IOException {
         // Create a new tag list that will be returned.
         List<NfcTag> loadedTags = new ArrayList<>();

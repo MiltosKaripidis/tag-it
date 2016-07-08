@@ -1,10 +1,14 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by Karhades - PC on 4/11/2015.
+ * Model class that represents an NFC tag.
  */
 public class NfcTag {
 
@@ -60,13 +64,13 @@ public class NfcTag {
     }
 
     /**
-     * Return a JSONObject that contains all the
+     * Returns a JSONObject that contains all the
      * NFcTag fields.
      *
      * @return The JSONObject with the contained data.
      * @throws JSONException
      */
-    public JSONObject toJSON() throws JSONException {
+    public JSONObject toJson() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(JSON_DIFFICULTY, difficulty);
         jsonObject.put(JSON_TAG_ID, tagId);

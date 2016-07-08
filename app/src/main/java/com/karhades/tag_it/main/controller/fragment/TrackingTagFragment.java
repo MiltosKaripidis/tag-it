@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.controller.fragment;
 
 import android.annotation.TargetApi;
@@ -38,7 +42,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Created by Karhades - PC on 4/14/2015.
+ * Controller Fragment class that binds the tracking of the tags with the data set.
  */
 public class TrackingTagFragment extends Fragment {
 

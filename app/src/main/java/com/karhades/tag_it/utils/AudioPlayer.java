@@ -1,10 +1,14 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.utils;
 
 import android.content.Context;
 import android.media.MediaPlayer;
 
 /**
- * Created by Karhades on 20-Aug-15.
+ * Helper Wrapper class for MediaPlayer.
  */
 public class AudioPlayer {
 

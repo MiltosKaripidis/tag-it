@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.controller.activity;
 
 import android.annotation.TargetApi;
@@ -25,7 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Karhades - PC on 4/15/2015.
+ * Controller Activity class that hosts TrackingTagFragment and enables paging. Manages the NFC
+ * read operation.
  */
 public class TrackingTagPagerActivity extends AppCompatActivity implements ViewPager.PageTransformer {
 
