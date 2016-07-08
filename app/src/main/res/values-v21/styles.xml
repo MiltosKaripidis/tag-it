@@ -2,6 +2,9 @@
 
     <!-- Default app style-->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Background color-->
+        <item name="android:colorBackground">@color/background</item>
+
         <!-- App colors-->
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primary_dark</item>
@@ -33,12 +36,12 @@
     </style>
 
     <!-- Style for the fullscreen activity-->
-    <style name="AppThemeTranslucent" parent="AppTheme">
+    <style name="AppTheme.Translucent">
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <!-- Custom style for the ActionMode's popup menu-->
-    <style name="AppTheme.ActionMode.Overflow" parent="Theme.AppCompat.Light">
+    <style name="AppTheme.ActionMode.Overflow" parent="@android:style/Theme.Material.Light">
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:textColor">@android:color/black</item>
     </style>

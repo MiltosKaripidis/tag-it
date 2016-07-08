@@ -86,7 +86,7 @@
         <activity
             android:name=".main.controller.activity.FullScreenActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppThemeTranslucent" />
+            android:theme="@style/AppTheme.Translucent" />
 
         <!-- Audio Service-->
         <service android:name=".utils.AudioService" />
