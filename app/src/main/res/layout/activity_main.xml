@@ -45,6 +45,14 @@
             android:layout_margin="16dp"
             android:src="@drawable/icon_add"
             app:backgroundTint="@color/accent" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone" />
     </android.support.design.widget.CoordinatorLayout>
 
     <!-- Circular reveal content-->

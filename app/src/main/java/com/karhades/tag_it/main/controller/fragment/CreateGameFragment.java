@@ -221,7 +221,7 @@ public class CreateGameFragment extends Fragment {
     }
 
     private void hideRecyclerViewIfEmpty() {
-        if (nfcTags.size() == 0) {
+        if (nfcTags == null || nfcTags.size() == 0) {
             recyclerView.setVisibility(View.INVISIBLE);
             emptyLinearLayout.setVisibility(View.VISIBLE);
         } else {
@@ -301,7 +301,7 @@ public class CreateGameFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return nfcTags.size();
+            return (nfcTags == null) ? 0 : nfcTags.size();
         }
 
         public void setSelectionMode(boolean isSelectableMode) {

@@ -5,11 +5,15 @@
 package com.karhades.tag_it.main.model;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
+import com.karhades.tag_it.R;
 import com.karhades.tag_it.utils.PictureLoader;
 import com.karhades.tag_it.utils.TagJsonSerializer;
 
@@ -51,31 +55,46 @@ public class MyTags {
     private TagJsonSerializer serializer;
 
     /**
+     * Progress bar which indicates the loading of the tags list.
+     */
+    private ProgressBar progressBar;
+
+    /**
+     * Listener reference.
+     */
+    private OnLoadFinishedListener onLoadFinishedListener;
+
+    /**
+     * Interface definition for a callback to be invoked when
+     * the loading of the tags have been completed.
+     */
+    public interface OnLoadFinishedListener {
+        void onLoadFinished();
+    }
+
+    /**
+     * Registers a callback to be invoked when the loading of the tags have been completed.
+     *
+     * @param onLoadFinishedListener The callback that will run.
+     */
+    public void setOnLoadFinishedListener(OnLoadFinishedListener onLoadFinishedListener) {
+        this.onLoadFinishedListener = onLoadFinishedListener;
+    }
+
+    /**
      * Private constructor that gets called only
      * once by it's get(context) method.
      *
      * @param context The Context needed for Android.
      */
     private MyTags(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
+
         serializer = new TagJsonSerializer(this.context, FILENAME);
 
-        loadTags();
+        progressBar = (ProgressBar) ((Activity) context).findViewById(R.id.progress_bar);
 
-//        // Dummy Tags
-//        nfcTags = new ArrayList<>();
-//        NfcTag nfcTag_1 = new NfcTag("Tag 1", "Hard", "04D11AD2C03480");
-//        NfcTag nfcTag_2 = new NfcTag("Tag 2", "Easy", "04BCE16AC82980");
-//        NfcTag nfcTag_3 = new NfcTag("Tag 3", "Medium", "04DC1BD2C03480");
-//        NfcTag nfcTag_4 = new NfcTag("Tag 4", "Hard", "04D11AD2C03480");
-//        NfcTag nfcTag_5 = new NfcTag("Tag 5", "Easy", "04BCE16AC82980");
-//        NfcTag nfcTag_6 = new NfcTag("Tag 6", "Medium", "04DC1BD2C03480");
-//        nfcTags.add(nfcTag_1);
-//        nfcTags.add(nfcTag_2);
-//        nfcTags.add(nfcTag_3);
-//        nfcTags.add(nfcTag_4);
-//        nfcTags.add(nfcTag_5);
-//        nfcTags.add(nfcTag_6);
+        loadTags();
     }
 
     /**
@@ -86,18 +105,10 @@ public class MyTags {
     }
 
     /**
-     * Loads the tags from the external storage.
+     * Loads the tags asynchronously from the external storage.
      */
     public void loadTags() {
-        try {
-            nfcTags = serializer.loadTagsExternal();
-        } catch (FileNotFoundException e) {
-            nfcTags = new ArrayList<>();
-            Log.e(TAG, "File tags.txt not found.", e);
-        } catch (Exception e) {
-            nfcTags = new ArrayList<>();
-            Log.e(TAG, "Error loading tags: " + e.getMessage(), e);
-        }
+        new AsyncTaskLoader().execute();
     }
 
     /**
@@ -108,7 +119,7 @@ public class MyTags {
      */
     public static MyTags get(Context context) {
         if (myTags == null) {
-            myTags = new MyTags(context.getApplicationContext());
+            myTags = new MyTags(context);
         }
         return myTags;
     }
@@ -218,7 +229,7 @@ public class MyTags {
     }
 
     /**
-     * AsyncTask class for saving on a background thread.
+     * AsyncTask class which saves the json file in a background thread.
      */
     private class AsyncTaskSaver extends AsyncTask<Void, Void, Void> {
 
@@ -231,6 +242,39 @@ public class MyTags {
             }
 
             return null;
+        }
+    }
+
+    /**
+     * AsyncTask class which loads the json file in a background thread.
+     */
+    private class AsyncTaskLoader extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                nfcTags = serializer.loadTagsExternal();
+            } catch (FileNotFoundException e) {
+                nfcTags = new ArrayList<>();
+                Log.e(TAG, "File tags.txt not found.", e);
+            } catch (Exception e) {
+                nfcTags = new ArrayList<>();
+                Log.e(TAG, "Error loading tags: " + e.getMessage(), e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            onLoadFinishedListener.onLoadFinished();
+            onLoadFinishedListener = null;
+            progressBar.setVisibility(View.GONE);
         }
     }
 }

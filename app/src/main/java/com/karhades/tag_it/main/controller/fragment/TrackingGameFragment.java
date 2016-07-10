@@ -65,6 +65,12 @@ public class TrackingGameFragment extends Fragment {
 
         // Get the list of NFC tags.
         nfcTags = MyTags.get(getActivity()).getNfcTags();
+        MyTags.get(getActivity()).setOnLoadFinishedListener(new MyTags.OnLoadFinishedListener() {
+            @Override
+            public void onLoadFinished() {
+                updateUi();
+            }
+        });
     }
 
     @Override
@@ -125,11 +131,10 @@ public class TrackingGameFragment extends Fragment {
 
     private void setupEmptyView(View view) {
         emptyLinearLayout = (LinearLayout) view.findViewById(R.id.tracking_empty_linear_layout);
-        hideRecyclerViewIfEmpty();
     }
 
     private void hideRecyclerViewIfEmpty() {
-        boolean shouldHide = nfcTags.size() == 0;
+        boolean shouldHide = nfcTags == null || nfcTags.size() == 0;
         if (shouldHide) {
             recyclerView.setVisibility(View.INVISIBLE);
             emptyLinearLayout.setVisibility(View.VISIBLE);
@@ -137,6 +142,12 @@ public class TrackingGameFragment extends Fragment {
             recyclerView.setVisibility(View.VISIBLE);
             emptyLinearLayout.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void updateUi() {
+        nfcTags = MyTags.get(getActivity()).getNfcTags();
+        recyclerView.setAdapter(new NfcTagAdapter());
+        hideRecyclerViewIfEmpty();
     }
 
     @Override
@@ -288,7 +299,7 @@ public class TrackingGameFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return nfcTags.size();
+            return (nfcTags == null) ? 0 : nfcTags.size();
         }
     }
 }
