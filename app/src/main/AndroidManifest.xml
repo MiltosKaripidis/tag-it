@@ -39,7 +39,6 @@
         <!-- TrackingTagPagerActivity-->
         <activity
             android:name=".main.controller.activity.TrackingTagPagerActivity"
-            android:launchMode="singleTask"
             android:parentActivityName=".main.controller.activity.MainActivity"
             android:screenOrientation="portrait">
 
