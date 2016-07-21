@@ -111,9 +111,6 @@ public class CreateTagFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Retain the fragment through configuration change.
-        setRetainInstance(true);
-
         // Tell the FragmentManager that this fragment should receive
         // a call to onCreateOptionsMenu.
         setHasOptionsMenu(true);
@@ -502,9 +499,11 @@ public class CreateTagFragment extends Fragment {
     private void hideActionButton() {
         cameraActionButton.setScaleX(0);
         cameraActionButton.setScaleY(0);
+        cameraActionButton.setVisibility(View.INVISIBLE);
     }
 
     private void showActionButton() {
+        cameraActionButton.setVisibility(View.VISIBLE);
         cameraActionButton.animate()
                 .scaleX(1)
                 .scaleY(1);

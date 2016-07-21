@@ -93,9 +93,6 @@ public class TrackingTagFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Retain the fragment through configuration change.
-        setRetainInstance(true);
-
         // Tell the FragmentManager that this fragment should receive
         // a call to onCreateOptionsMenu.
         setHasOptionsMenu(true);
@@ -107,7 +104,6 @@ public class TrackingTagFragment extends Fragment {
         }
     }
 
-    @TargetApi(21)
     @Override
     public void onStart() {
         super.onStart();
@@ -357,6 +353,7 @@ public class TrackingTagFragment extends Fragment {
     }
 
     private void showActionButton() {
+        fullscreenActionButton.setVisibility(View.VISIBLE);
         fullscreenActionButton.animate()
                 .scaleX(1)
                 .scaleY(1);
@@ -379,6 +376,7 @@ public class TrackingTagFragment extends Fragment {
     private void hideActionButton() {
         fullscreenActionButton.setScaleX(0);
         fullscreenActionButton.setScaleY(0);
+        fullscreenActionButton.setVisibility(View.INVISIBLE);
     }
 
     @TargetApi(21)
