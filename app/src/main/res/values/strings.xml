@@ -16,7 +16,7 @@
     <string name="popup_window_delete">Delete</string>
     <string name="button_cancel">CANCEL</string>
     <string name="button_tag_it">TAG IT!</string>
-    <string name="text_share_hint">Tap devices to share...</string>
+    <string name="text_share_hint">Tap devices to share the fun.</string>
     <string name="text_empty1">Nothing to track.</string>
     <string name="text_empty2">Tap \'CREATE\' tab to add one.</string>
     <string name="label_empty_date">N/A</string>
@@ -45,13 +45,8 @@
         <item quantity="other">Tags deleted</item>
     </plurals>
 
-    <plurals name="dialog_title_deleted_plural">
+    <plurals name="dialog_deleted_plural">
         <item quantity="one">Delete tag?</item>
         <item quantity="other">Delete tags?</item>
-    </plurals>
-
-    <plurals name="dialog_message_deleted_plural">
-        <item quantity="one">You are going to delete the selected tag.</item>
-        <item quantity="other">You are going to delete the selected tags.</item>
     </plurals>
 </resources>

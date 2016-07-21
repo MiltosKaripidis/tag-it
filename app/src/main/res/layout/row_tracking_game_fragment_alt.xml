@@ -63,7 +63,8 @@
                 android:layout_alignParentRight="true"
                 android:clickable="false"
                 android:scaleX="1.7"
-                android:scaleY="1.7" />
+                android:scaleY="1.7"
+                android:visibility="invisible" />
         </RelativeLayout>
     </FrameLayout>
 </android.support.v7.widget.CardView>
