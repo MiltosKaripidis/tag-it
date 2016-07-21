@@ -148,19 +148,21 @@ public class NfcHandler {
         // Get the phone's NFC adapter.
         nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
 
-        // If there is an NFC adapter.
-        if (nfcAdapter != null) {
-            // If NFC is not enabled on device.
-            if (!nfcAdapter.isEnabled()) {
-                startSettingsActivity("Turn on NFC.", Settings.ACTION_NFC_SETTINGS);
-            }
-            // If Android Beam feature is not enabled on device.
-            else if (!nfcAdapter.isNdefPushEnabled()) {
-                startSettingsActivity("Turn on Android Beam.", Settings.ACTION_NFCSHARING_SETTINGS);
-            }
-
-            setupForegroundDispatch();
+        // If there isn't an NFC adapter.
+        if (nfcAdapter == null) {
+            return;
         }
+
+        // If NFC is not enabled on device.
+        if (!nfcAdapter.isEnabled()) {
+            startSettingsActivity("Turn on NFC.", Settings.ACTION_NFC_SETTINGS);
+        }
+        // If Android Beam feature is not enabled on device.
+        else if (!nfcAdapter.isNdefPushEnabled()) {
+            startSettingsActivity("Turn on Android Beam.", Settings.ACTION_NFCSHARING_SETTINGS);
+        }
+
+        setupForegroundDispatch();
     }
 
     /**
@@ -178,6 +180,7 @@ public class NfcHandler {
         Intent settingsIntent = new Intent();
         settingsIntent.setAction(action);
         activity.startActivity(settingsIntent);
+        activity.finish();
     }
 
     /**
