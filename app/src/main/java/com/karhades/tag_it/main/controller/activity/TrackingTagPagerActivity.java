@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -83,6 +84,18 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking_tag_pager);
 
+        // If Activity is root, it needs to load the json file from the disk.
+        if (isTaskRoot() && !MyTags.exists()) {
+            Log.d("LOG", "MyTags exists! (TrackingTagPagerActivity)");
+            // Updates the UI when the background loading of the tags finishes.
+            MyTags.get(this).setOnLoadFinishedListener(new MyTags.OnLoadFinishedListener() {
+                @Override
+                public void onLoadFinished() {
+                    updateUi(discoveredTagId);
+                }
+            });
+        }
+
         // Gets the NfcTag ID from TrackingGameFragment.
         tagId = getIntent().getStringExtra(EXTRA_TAG_ID);
 
@@ -92,17 +105,6 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
         setupNFC();
         // Get the ID from the NFC tag discovery.
         discoveredTagId = nfcHandler.handleNfcReadTag(getIntent());
-
-        // If Activity is root, it needs to load the json file from the disk.
-        if (isTaskRoot()) {
-            // Updates the UI when the background loading of the tags finishes.
-            MyTags.get(this).setOnLoadFinishedListener(new MyTags.OnLoadFinishedListener() {
-                @Override
-                public void onLoadFinished() {
-                    updateUi(discoveredTagId);
-                }
-            });
-        }
 
         setupViewPager();
         setCurrentTagPage();
@@ -292,6 +294,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
 
     // Used for transitions.
     @Override
+    @TargetApi(21)
     public void finishAfterTransition() {
         if (!TransitionHelper.isTransitionEnabled) {
             super.finishAfterTransition();

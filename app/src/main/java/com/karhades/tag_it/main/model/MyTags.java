@@ -124,6 +124,10 @@ public class MyTags {
         return myTags;
     }
 
+    public static boolean exists() {
+        return myTags != null;
+    }
+
     /**
      * Gets all the nfcTags.
      *

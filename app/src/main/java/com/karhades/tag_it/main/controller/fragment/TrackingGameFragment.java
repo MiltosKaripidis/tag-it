@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -63,14 +64,18 @@ public class TrackingGameFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (!MyTags.exists()) {
+            Log.d("LOG", "MyTags exists! (TrackingGameFragment)");
+            MyTags.get(getActivity()).setOnLoadFinishedListener(new MyTags.OnLoadFinishedListener() {
+                @Override
+                public void onLoadFinished() {
+                    updateUi();
+                }
+            });
+        }
+
         // Get the list of NFC tags.
         nfcTags = MyTags.get(getActivity()).getNfcTags();
-        MyTags.get(getActivity()).setOnLoadFinishedListener(new MyTags.OnLoadFinishedListener() {
-            @Override
-            public void onLoadFinished() {
-                updateUi();
-            }
-        });
     }
 
     @Override
@@ -275,6 +280,11 @@ public class TrackingGameFragment extends Fragment {
             titleTextView.setText(nfcTag.getTitle());
             difficultyTextView.setText(nfcTag.getDifficulty());
             solvedCheckBox.setChecked(nfcTag.isSolved());
+            if (solvedCheckBox.isChecked()) {
+                solvedCheckBox.setVisibility(View.VISIBLE);
+            } else {
+                solvedCheckBox.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
