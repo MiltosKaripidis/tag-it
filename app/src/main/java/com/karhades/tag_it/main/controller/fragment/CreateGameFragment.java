@@ -108,6 +108,8 @@ public class CreateGameFragment extends Fragment {
         void onItemClicked(int tagsSelected);
 
         void onFragmentAttached(CreateGameFragment fragment);
+
+        void onItemDeleted(String title);
     }
 
     public static CreateGameFragment newInstance() {
@@ -161,6 +163,9 @@ public class CreateGameFragment extends Fragment {
 
                 // Deletes the selected NFC tag.
                 adapter.deleteSelectedItem(nfcTag, adapterPosition);
+
+                // Invokes MainActivity's callback method.
+                callbacks.onItemDeleted(nfcTag.getTitle());
             }
         }
     }
@@ -400,17 +405,11 @@ public class CreateGameFragment extends Fragment {
             setupClickListener(view);
             setupLongClickListener(view);
 
-            // Custom Fonts.
-            Typeface typefaceBold = FontCache.get("fonts/capture_it.ttf", getActivity());
-            Typeface typefaceNormal = FontCache.get("fonts/amatic_bold.ttf", getActivity());
-
             imageView = (ImageView) view.findViewById(R.id.row_create_image_view);
 
             titleTextView = (TextView) view.findViewById(R.id.row_create_title_text_view);
-            titleTextView.setTypeface(typefaceBold);
 
             difficultyTextView = (TextView) view.findViewById(R.id.row_create_difficulty_text_view);
-            difficultyTextView.setTypeface(typefaceNormal);
             difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
 
             moreImageButton = (ImageButton) view.findViewById(R.id.row_create_more_image_button);
@@ -597,9 +596,7 @@ public class CreateGameFragment extends Fragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return new AlertDialog.Builder(getActivity())
-                    .setIcon(R.drawable.icon_warning)
-                    .setTitle("Delete tag?")
-                    .setMessage("You are going to delete the selected tag.")
+                    .setMessage(getResources().getQuantityString(R.plurals.dialog_deleted_plural, 1))
                     .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

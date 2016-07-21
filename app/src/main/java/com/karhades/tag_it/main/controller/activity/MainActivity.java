@@ -298,7 +298,9 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
         actionModeCallback = new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                changeBarsColor(false);
+                if (TransitionHelper.isTransitionSupported()) {
+                    changeBarsColor(false);
+                }
 
                 MenuInflater inflater = mode.getMenuInflater();
                 inflater.inflate(R.menu.contextual_action_bar, menu);
@@ -356,17 +358,21 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
             @Override
             public void onDestroyActionMode(ActionMode mode) {
                 // If Tab 2 is selected.
-                if (createGameFragment != null) {
-                    changeBarsColor(true);
-
-                    createGameFragment.contextFinish();
-
-                    // Invalidate menu item.
-                    isSelectAllItemVisible = false;
-                    mode.invalidate();
-
-                    actionMode = null;
+                if (createGameFragment == null) {
+                    return;
                 }
+
+                if (TransitionHelper.isTransitionSupported()) {
+                    changeBarsColor(true);
+                }
+
+                createGameFragment.contextFinish();
+
+                // Invalidate menu item.
+                isSelectAllItemVisible = false;
+                mode.invalidate();
+
+                actionMode = null;
             }
         };
     }
@@ -423,11 +429,19 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
     }
 
     @Override
+    public void onItemDeleted(String title) {
+        // Inform user.
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, title + " deleted", Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
+    @Override
     public void onFragmentAttached(TrackingGameFragment fragment) {
         trackingGameFragment = fragment;
     }
 
     @SuppressWarnings("deprecation")
+    @TargetApi(21)
     private void changeBarsColor(boolean isContextualActionBarVisible) {
         if (isContextualActionBarVisible) {
             tabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_normal));
@@ -452,6 +466,7 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
         }
     }
 
+    @TargetApi(21)
     private void animateStatusBar(int colorFrom, int colorTo) {
         final ValueAnimator valueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -464,6 +479,7 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
         valueAnimator.start();
     }
 
+    @TargetApi(21)
     private void animateTabLayout(int colorFrom, int colorTo) {
         ObjectAnimator objectAnimator = ObjectAnimator.ofArgb(tabLayout, "backgroundColor", colorFrom, colorTo);
         objectAnimator.setDuration(300);
@@ -473,6 +489,7 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
 
     // Used for transitions.
     @Override
+    @TargetApi(21)
     public void onActivityReenter(int resultCode, Intent data) {
         super.onActivityReenter(resultCode, data);
 
@@ -553,9 +570,7 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return new AlertDialog.Builder(getActivity())
-                    .setIcon(R.drawable.icon_warning)
-                    .setTitle(getResources().getQuantityString(R.plurals.dialog_title_deleted_plural, selectionSize))
-                    .setMessage(getResources().getQuantityString(R.plurals.dialog_message_deleted_plural, selectionSize))
+                    .setMessage(getResources().getQuantityString(R.plurals.dialog_deleted_plural, selectionSize))
                     .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
