@@ -10,11 +10,11 @@ import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,10 +22,11 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.karhades.tag_it.R;
-import com.karhades.tag_it.main.controller.activity.TrackingTagPagerActivity;
+import com.karhades.tag_it.main.controller.activity.TrackTagPagerActivity;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcTag;
 import com.karhades.tag_it.utils.PictureLoader;
@@ -36,46 +37,45 @@ import java.util.List;
 /**
  * Controller Fragment class that binds the tracking tab with the data set.
  */
-public class TrackingGameFragment extends Fragment {
+public class TrackGameFragment extends Fragment {
 
     /**
      * Widget references.
      */
     private RecyclerView recyclerView;
     private LinearLayout emptyLinearLayout;
+    private ProgressBar progressBar;
 
     /**
      * Instance variables.
      */
     private List<NfcTag> nfcTags;
     private NfcTagAdapter adapter;
-
     private Callbacks callbacks;
 
     public interface Callbacks {
-        void onFragmentAttached(TrackingGameFragment fragment);
+        void onFragmentAttached(TrackGameFragment fragment);
     }
 
-    public static TrackingGameFragment newInstance() {
-        return new TrackingGameFragment();
+    public static TrackGameFragment newInstance() {
+        return new TrackGameFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!MyTags.exists()) {
-            Log.d("LOG", "MyTags exists! (TrackingGameFragment)");
-            MyTags.get(getActivity()).setOnLoadFinishedListener(new MyTags.OnLoadFinishedListener() {
-                @Override
-                public void onLoadFinished() {
-                    updateUi();
-                }
-            });
-        }
+        // Gets the host Activity's progress bar.
+        progressBar = (ProgressBar) getActivity().findViewById(R.id.progress_bar);
+        // Loads the tags asynchronously from the external storage.
+        new AsyncTaskLoader().execute();
+    }
 
-        // Get the list of NFC tags.
+    public void updateUi() {
+        // Updates the UI.
         nfcTags = MyTags.get(getActivity()).getNfcTags();
+        // Refresh the NfcTag list.
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -85,7 +85,7 @@ public class TrackingGameFragment extends Fragment {
         try {
             callbacks = (Callbacks) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement TrackingGameFragment.Callbacks interface");
+            throw new ClassCastException(context.toString() + " must implement TrackGameFragment.Callbacks interface");
         }
         callbacks.onFragmentAttached(this);
     }
@@ -99,7 +99,7 @@ public class TrackingGameFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tracking_game, container, false);
+        View view = inflater.inflate(R.layout.fragment_track_game, container, false);
 
         setupRecyclerView(view);
         setupEmptyView(view);
@@ -149,18 +149,13 @@ public class TrackingGameFragment extends Fragment {
         }
     }
 
-    private void updateUi() {
-        nfcTags = MyTags.get(getActivity()).getNfcTags();
-        recyclerView.setAdapter(new NfcTagAdapter());
-        hideRecyclerViewIfEmpty();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
 
         // Refresh the NfcTag list.
         adapter.notifyDataSetChanged();
+//        updateUi();
     }
 
     /**
@@ -252,13 +247,13 @@ public class TrackingGameFragment extends Fragment {
         @TargetApi(21)
         @SuppressWarnings("unchecked")
         private void startTrackingTagPagerActivityWithTransition() {
-            Intent intent = TrackingTagPagerActivity.newIntent(getActivity(), nfcTag.getTagId(), getAdapterPosition());
+            Intent intent = TrackTagPagerActivity.newIntent(getActivity(), nfcTag.getTagId(), getAdapterPosition());
             Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), imageView, imageView.getTransitionName()).toBundle();
             getActivity().startActivity(intent, bundle);
         }
 
         private void startTrackingTagPagerActivity() {
-            Intent intent = TrackingTagPagerActivity.newIntent(getActivity(), nfcTag.getTagId(), getAdapterPosition());
+            Intent intent = TrackTagPagerActivity.newIntent(getActivity(), nfcTag.getTagId(), getAdapterPosition());
             startActivity(intent);
         }
 
@@ -296,7 +291,7 @@ public class TrackingGameFragment extends Fragment {
 
         @Override
         public NfcTagHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_tracking_game_fragment_alt, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_track_game_fragment_alt, viewGroup, false);
 
             return new NfcTagHolder(view);
         }
@@ -310,6 +305,30 @@ public class TrackingGameFragment extends Fragment {
         @Override
         public int getItemCount() {
             return (nfcTags == null) ? 0 : nfcTags.size();
+        }
+    }
+
+    /**
+     * AsyncTask class which loads the json file in a background thread.
+     */
+    private class AsyncTaskLoader extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            MyTags.get(getActivity()).loadTags();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressBar.setVisibility(View.GONE);
+            updateUi();
         }
     }
 }

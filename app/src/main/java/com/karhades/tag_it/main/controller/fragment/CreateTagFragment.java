@@ -151,9 +151,7 @@ public class CreateTagFragment extends Fragment {
         if (temporaryPictureFilename != null) {
             File deleteFile = new File(temporaryPictureFilename);
 
-            if (deleteFile.delete()) {
-                Log.d("CreateTagFragment", "Temporary picture deleted.");
-            } else {
+            if (!deleteFile.delete()) {
                 Log.e("CreateTagFragment", "Error deleting temporary file.");
             }
         }
@@ -450,8 +448,6 @@ public class CreateTagFragment extends Fragment {
             File renamedFile = new File(renamedPath);
 
             if (tempFile.renameTo(renamedFile)) {
-                Log.d("CreateTagFragment", "Renamed file to: " + renamedFile.getAbsolutePath());
-
                 temporaryPictureFilename = null;
                 currentNfcTag.setPictureFilePath(renamedFile.getAbsolutePath());
             } else {

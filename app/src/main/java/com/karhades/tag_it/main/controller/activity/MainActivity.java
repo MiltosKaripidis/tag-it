@@ -43,7 +43,7 @@ import android.view.ViewTreeObserver;
 import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.fragment.CreateGameFragment;
 import com.karhades.tag_it.main.controller.fragment.ShareGameFragment;
-import com.karhades.tag_it.main.controller.fragment.TrackingGameFragment;
+import com.karhades.tag_it.main.controller.fragment.TrackGameFragment;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcHandler;
 import com.karhades.tag_it.main.model.NfcTag;
@@ -54,10 +54,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Main Controller Activity class that hosts 3 fragments (TrackingGameFragment, ShareGameFragment,
+ * Main Controller Activity class that hosts 3 fragments (TrackGameFragment, ShareGameFragment,
  * CreateGameFragment) that each corresponds to a tab. Manages the Android Beam operation.
  */
-public class MainActivity extends AppCompatActivity implements TrackingGameFragment.Callbacks, CreateGameFragment.Callbacks {
+public class MainActivity extends AppCompatActivity implements TrackGameFragment.Callbacks, CreateGameFragment.Callbacks {
 
     /**
      * Extras constants.
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
     private ActionMode actionMode;
     private ActionMode.Callback actionModeCallback;
     private boolean isSelectAllItemVisible;
-    private TrackingGameFragment trackingGameFragment;
+    private TrackGameFragment trackGameFragment;
     private CreateGameFragment createGameFragment;
 
     /**
@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
 
     private void setupViewPager() {
         TabsAdapter adapter = new TabsAdapter(getSupportFragmentManager());
-        adapter.addFragment(TrackingGameFragment.newInstance());
+        adapter.addFragment(TrackGameFragment.newInstance());
         adapter.addFragment(ShareGameFragment.newInstance());
         adapter.addFragment(CreateGameFragment.newInstance());
 
@@ -395,6 +395,9 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
         }
     }
 
+    /*
+     * CreateGameFragment callbacks.
+     */
     @Override
     public void onItemLongClicked() {
         if (actionMode == null) {
@@ -435,9 +438,12 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
         snackbar.show();
     }
 
+    /*
+     * TrackGameFragment callbacks.
+     */
     @Override
-    public void onFragmentAttached(TrackingGameFragment fragment) {
-        trackingGameFragment = fragment;
+    public void onFragmentAttached(TrackGameFragment fragment) {
+        trackGameFragment = fragment;
     }
 
     @SuppressWarnings("deprecation")
@@ -497,8 +503,8 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
             return;
 
         // If Tab 1.
-        if (trackingGameFragment != null) {
-            final RecyclerView recyclerView = trackingGameFragment.getRecyclerView();
+        if (trackGameFragment != null) {
+            final RecyclerView recyclerView = trackGameFragment.getRecyclerView();
 
             bundle = new Bundle(data.getExtras());
 
@@ -592,9 +598,9 @@ public class MainActivity extends AppCompatActivity implements TrackingGameFragm
         setExitSharedElementCallback(new SharedElementCallback() {
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                final RecyclerView recyclerView = trackingGameFragment.getRecyclerView();
+                final RecyclerView recyclerView = trackGameFragment.getRecyclerView();
 
-                // If TrackingTagPagerActivity returns to MainActivity.
+                // If TrackTagPagerActivity returns to MainActivity.
                 if (bundle != null) {
                     int oldTagPosition = bundle.getInt(EXTRA_OLD_TAG_POSITION);
                     int currentTagPosition = bundle.getInt(EXTRA_CURRENT_TAG_POSITION);

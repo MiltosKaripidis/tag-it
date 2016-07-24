@@ -373,8 +373,6 @@ public class NfcHandler {
             // Set STATUS_OK.
             onTagWriteListener.onTagWritten(OnTagWriteListener.STATUS_OK, tagId);
 
-            Log.d(TAG, "Tag writing operation was successful!");
-
             // Write operation succeeded.
             return true;
         } catch (Exception e) {

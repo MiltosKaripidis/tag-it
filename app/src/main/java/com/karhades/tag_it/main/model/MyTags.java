@@ -55,33 +55,6 @@ public class MyTags {
     private TagJsonSerializer serializer;
 
     /**
-     * Progress bar which indicates the loading of the tags list.
-     */
-    private ProgressBar progressBar;
-
-    /**
-     * Listener reference.
-     */
-    private OnLoadFinishedListener onLoadFinishedListener;
-
-    /**
-     * Interface definition for a callback to be invoked when
-     * the loading of the tags have been completed.
-     */
-    public interface OnLoadFinishedListener {
-        void onLoadFinished();
-    }
-
-    /**
-     * Registers a callback to be invoked when the loading of the tags have been completed.
-     *
-     * @param onLoadFinishedListener The callback that will run.
-     */
-    public void setOnLoadFinishedListener(OnLoadFinishedListener onLoadFinishedListener) {
-        this.onLoadFinishedListener = onLoadFinishedListener;
-    }
-
-    /**
      * Private constructor that gets called only
      * once by it's get(context) method.
      *
@@ -91,10 +64,6 @@ public class MyTags {
         this.context = context.getApplicationContext();
 
         serializer = new TagJsonSerializer(this.context, FILENAME);
-
-        progressBar = (ProgressBar) ((Activity) context).findViewById(R.id.progress_bar);
-
-        loadTags();
     }
 
     /**
@@ -108,7 +77,15 @@ public class MyTags {
      * Loads the tags asynchronously from the external storage.
      */
     public void loadTags() {
-        new AsyncTaskLoader().execute();
+        try {
+            nfcTags = serializer.loadTagsExternal();
+        } catch (FileNotFoundException e) {
+            nfcTags = new ArrayList<>();
+            Log.e(TAG, "File tags.txt not found.", e);
+        } catch (Exception e) {
+            nfcTags = new ArrayList<>();
+            Log.e(TAG, "Error loading tags: " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -122,10 +99,6 @@ public class MyTags {
             myTags = new MyTags(context);
         }
         return myTags;
-    }
-
-    public static boolean exists() {
-        return myTags != null;
     }
 
     /**
@@ -246,39 +219,6 @@ public class MyTags {
             }
 
             return null;
-        }
-    }
-
-    /**
-     * AsyncTask class which loads the json file in a background thread.
-     */
-    private class AsyncTaskLoader extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                nfcTags = serializer.loadTagsExternal();
-            } catch (FileNotFoundException e) {
-                nfcTags = new ArrayList<>();
-                Log.e(TAG, "File tags.txt not found.", e);
-            } catch (Exception e) {
-                nfcTags = new ArrayList<>();
-                Log.e(TAG, "Error loading tags: " + e.getMessage(), e);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            onLoadFinishedListener.onLoadFinished();
-            onLoadFinishedListener = null;
-            progressBar.setVisibility(View.GONE);
         }
     }
 }

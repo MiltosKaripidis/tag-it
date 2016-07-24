@@ -7,7 +7,7 @@
             android:id="@+id/navigation_tracking"
             android:checked="true"
             android:icon="@drawable/icon_tracking"
-            android:title="@string/navigation_tracking" />
+            android:title="@string/navigation_track" />
         <item
             android:id="@+id/navigation_share"
             android:icon="@drawable/icon_share"

@@ -44,7 +44,7 @@ import java.util.Locale;
 /**
  * Controller Fragment class that binds the tracking of the tags with the data set.
  */
-public class TrackingTagFragment extends Fragment {
+public class TrackTagFragment extends Fragment {
 
     /**
      * Extras constants.
@@ -73,17 +73,17 @@ public class TrackingTagFragment extends Fragment {
     private ViewGroup revealContent;
 
     /**
-     * Return a TrackingTagFragment with tagId as its argument.
+     * Return a TrackTagFragment with tagId as its argument.
      * It must be called after the fragment is created and before it is added to the hosting activity.
      *
      * @param tagId A String containing the NfcTag ID.
      * @return A Fragment with the above arguments.
      */
-    public static TrackingTagFragment newInstance(String tagId) {
+    public static TrackTagFragment newInstance(String tagId) {
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_TAG_ID, tagId);
 
-        TrackingTagFragment fragment = new TrackingTagFragment();
+        TrackTagFragment fragment = new TrackTagFragment();
         fragment.setArguments(bundle);
 
         return fragment;
@@ -132,7 +132,7 @@ public class TrackingTagFragment extends Fragment {
 
                 @Override
                 public void onError() {
-                    Log.e("TrackingTagFragment", "There was an error loading image with Picasso");
+                    Log.e("TrackTagFragment", "There was an error loading image with Picasso");
                 }
             };
             PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), pictureImageView, picassoCallback);
@@ -210,7 +210,7 @@ public class TrackingTagFragment extends Fragment {
     }
 
     private void getFragmentArguments() {
-        // Get the tag ID either from the TrackingGameFragment or
+        // Get the tag ID either from the TrackGameFragment or
         // the NFC tag Discovery.
         String tagId = getArguments().getString(EXTRA_TAG_ID);
 
@@ -245,7 +245,7 @@ public class TrackingTagFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tracking_tag, container, false);
+        View view = inflater.inflate(R.layout.fragment_track_tag, container, false);
 
         setupToolbar(view);
         setupCollapsingToolbar(view);
@@ -360,7 +360,7 @@ public class TrackingTagFragment extends Fragment {
     }
 
     /**
-     * Called from TrackingTagPagerActivity to hide the action
+     * Called from TrackTagPagerActivity to hide the action
      * button before finishing the fragment.
      *
      * @param runnable The runnable to run after the hide animation

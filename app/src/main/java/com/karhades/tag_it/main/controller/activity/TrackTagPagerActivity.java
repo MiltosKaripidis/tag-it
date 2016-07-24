@@ -14,13 +14,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import com.karhades.tag_it.R;
-import com.karhades.tag_it.main.controller.fragment.TrackingTagFragment;
+import com.karhades.tag_it.main.controller.fragment.TrackTagFragment;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcHandler;
 import com.karhades.tag_it.main.model.NfcTag;
@@ -30,10 +29,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Controller Activity class that hosts TrackingTagFragment and enables paging. Manages the NFC
+ * Controller Activity class that hosts TrackTagFragment and enables paging. Manages the NFC
  * read operation.
  */
-public class TrackingTagPagerActivity extends AppCompatActivity implements ViewPager.PageTransformer {
+public class TrackTagPagerActivity extends AppCompatActivity implements ViewPager.PageTransformer {
 
     /**
      * Extras constants.
@@ -73,7 +72,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
     private boolean isReturning;
 
     public static Intent newIntent(Context context, String tagId, int position) {
-        Intent intent = new Intent(context, TrackingTagPagerActivity.class);
+        Intent intent = new Intent(context, TrackTagPagerActivity.class);
         intent.putExtra(EXTRA_TAG_ID, tagId);
         intent.putExtra(EXTRA_CURRENT_TAG_POSITION, position);
         return intent;
@@ -82,21 +81,13 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tracking_tag_pager);
+        setContentView(R.layout.activity_track_tag_pager);
 
-        // If Activity is root, it needs to load the json file from the disk.
-        if (isTaskRoot() && !MyTags.exists()) {
-            Log.d("LOG", "MyTags exists! (TrackingTagPagerActivity)");
-            // Updates the UI when the background loading of the tags finishes.
-            MyTags.get(this).setOnLoadFinishedListener(new MyTags.OnLoadFinishedListener() {
-                @Override
-                public void onLoadFinished() {
-                    updateUi(discoveredTagId);
-                }
-            });
+        if (isTaskRoot()) {
+            MyTags.get(this).loadTags();
         }
 
-        // Gets the NfcTag ID from TrackingGameFragment.
+        // Gets the NfcTag ID from TrackGameFragment.
         tagId = getIntent().getStringExtra(EXTRA_TAG_ID);
 
         // Gets the NFC tags list.
@@ -115,20 +106,14 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
         }
     }
 
-    private void updateUi(String tagId) {
-        nfcTags = MyTags.get(this).getNfcTags();
-        fragmentAdapter = new FragmentAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(fragmentAdapter);
-        setCurrentTagPage();
-        solveNfcTag(tagId);
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
 
-        nfcHandler.disableForegroundDispatch();
+        // Save the tags to a file before leaving.
         MyTags.get(this).saveTags();
+
+        nfcHandler.disableForegroundDispatch();
     }
 
     @Override
@@ -145,7 +130,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
         if (tagId == null) {
             return;
         }
-        TrackingTagFragment fragment = fragmentAdapter.getCurrentFragment();
+        TrackTagFragment fragment = fragmentAdapter.getCurrentFragment();
         if (fragment == null) {
             return;
         }
@@ -262,7 +247,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
 
     private class FragmentAdapter extends FragmentStatePagerAdapter {
 
-        private TrackingTagFragment currentFragment;
+        private TrackTagFragment currentFragment;
 
         public FragmentAdapter(FragmentManager fm) {
             super(fm);
@@ -272,7 +257,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
         public Fragment getItem(int position) {
             NfcTag nfcTag = nfcTags.get(position);
 
-            return TrackingTagFragment.newInstance(nfcTag.getTagId());
+            return TrackTagFragment.newInstance(nfcTag.getTagId());
         }
 
         @Override
@@ -284,10 +269,10 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             super.setPrimaryItem(container, position, object);
 
-            currentFragment = (TrackingTagFragment) object;
+            currentFragment = (TrackTagFragment) object;
         }
 
-        public TrackingTagFragment getCurrentFragment() {
+        public TrackTagFragment getCurrentFragment() {
             return currentFragment;
         }
     }
@@ -300,7 +285,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
             super.finishAfterTransition();
         }
 
-        TrackingTagFragment fragment = fragmentAdapter.getCurrentFragment();
+        TrackTagFragment fragment = fragmentAdapter.getCurrentFragment();
         if (fragment != null) {
             isReturning = true;
             // Hide the fragment's action button and pass a runnable to run after
@@ -313,7 +298,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
                     intent.putExtra(EXTRA_CURRENT_TAG_POSITION, currentTagPosition);
                     setResult(RESULT_OK, intent);
 
-                    TrackingTagPagerActivity.super.finishAfterTransition();
+                    TrackTagPagerActivity.super.finishAfterTransition();
                 }
             });
         } else {
@@ -332,7 +317,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
         setEnterSharedElementCallback(new SharedElementCallback() {
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                // If it's returning to MainActivity (TrackingGameFragment).
+                // If it's returning to MainActivity (TrackGameFragment).
                 if (isReturning) {
                     // Get shared view.
                     View sharedView = fragmentAdapter.getCurrentFragment().getSharedElement();

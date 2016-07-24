@@ -23,7 +23,7 @@
     <string name="context_delete">Delete</string>
     <string name="context_select_all">Select all</string>
     <string name="context_clear_selection">Clear selection</string>
-    <string name="navigation_tracking">Tracking</string>
+    <string name="navigation_track">Track</string>
     <string name="navigation_share">Share</string>
     <string name="navigation_create">Create</string>
     <string name="navigation_settings">Settings</string>
@@ -35,7 +35,7 @@
     </string-array>
 
     <string-array name="tab_names">
-        <item>TRACKING</item>
+        <item>TRACK</item>
         <item>SHARE</item>
         <item>CREATE</item>
     </string-array>

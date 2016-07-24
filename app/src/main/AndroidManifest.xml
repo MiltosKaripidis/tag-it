@@ -36,9 +36,9 @@
             </intent-filter>
         </activity>
 
-        <!-- TrackingTagPagerActivity-->
+        <!-- TrackTagPagerActivity-->
         <activity
-            android:name=".main.controller.activity.TrackingTagPagerActivity"
+            android:name=".main.controller.activity.TrackTagPagerActivity"
             android:parentActivityName=".main.controller.activity.MainActivity"
             android:screenOrientation="portrait">
 
