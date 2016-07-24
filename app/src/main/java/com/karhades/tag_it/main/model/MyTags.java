@@ -5,15 +5,10 @@
 package com.karhades.tag_it.main.model;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 
-import com.karhades.tag_it.R;
 import com.karhades.tag_it.utils.PictureLoader;
 import com.karhades.tag_it.utils.TagJsonSerializer;
 
@@ -67,14 +62,18 @@ public class MyTags {
     }
 
     /**
-     * Saves the tags asynchronously to external storage.
+     * Saves the tags to external storage.
      */
     public void saveTags() {
-        new AsyncTaskSaver().execute();
+        try {
+            serializer.saveTagsExternal(nfcTags);
+        } catch (Exception e) {
+            Log.e(TAG, "Error saving tags: " + e.getMessage());
+        }
     }
 
     /**
-     * Loads the tags asynchronously from the external storage.
+     * Loads the tags from the external storage.
      */
     public void loadTags() {
         try {
@@ -202,23 +201,6 @@ public class MyTags {
     private void setWorldReadable(File file) {
         if (!file.setReadable(true, false)) {
             Log.e(TAG, "Unable to set " + file.getAbsolutePath() + " to world readable.");
-        }
-    }
-
-    /**
-     * AsyncTask class which saves the json file in a background thread.
-     */
-    private class AsyncTaskSaver extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                serializer.saveTagsExternal(nfcTags);
-            } catch (Exception e) {
-                Log.e(TAG, "Error saving tags: " + e.getMessage());
-            }
-
-            return null;
         }
     }
 }

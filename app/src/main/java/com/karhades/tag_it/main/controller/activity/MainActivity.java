@@ -12,6 +12,7 @@ import android.app.Dialog;
 import android.app.SharedElementCallback;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -118,10 +119,15 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     protected void onPause() {
         super.onPause();
 
-        // Save the tags to a file before leaving.
-        MyTags.get(this).saveTags();
-
+        saveTags();
         disableContextualActionBar();
+    }
+
+    /**
+     * Saves the tags asynchronously to external storage.
+     */
+    private void saveTags() {
+        new AsyncTaskSaver().execute();
     }
 
     @Override
@@ -647,5 +653,18 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
                 }
             }
         });
+    }
+
+    /**
+     * AsyncTask class which saves the json file in a background thread.
+     */
+    private class AsyncTaskSaver extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            MyTags.get(MainActivity.this).saveTags();
+
+            return null;
+        }
     }
 }

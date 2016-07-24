@@ -67,7 +67,13 @@ public class TrackGameFragment extends Fragment {
 
         // Gets the host Activity's progress bar.
         progressBar = (ProgressBar) getActivity().findViewById(R.id.progress_bar);
-        // Loads the tags asynchronously from the external storage.
+        loadTags();
+    }
+
+    /**
+     * Loads the tags asynchronously from the external storage.
+     */
+    private void loadTags() {
         new AsyncTaskLoader().execute();
     }
 
