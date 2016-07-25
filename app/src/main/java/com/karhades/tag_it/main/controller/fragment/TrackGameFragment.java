@@ -10,7 +10,6 @@ import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.karhades.tag_it.R;
@@ -44,7 +42,6 @@ public class TrackGameFragment extends Fragment {
      */
     private RecyclerView recyclerView;
     private LinearLayout emptyLinearLayout;
-    private ProgressBar progressBar;
 
     /**
      * Instance variables.
@@ -54,7 +51,7 @@ public class TrackGameFragment extends Fragment {
     private Callbacks callbacks;
 
     public interface Callbacks {
-        void onFragmentAttached(TrackGameFragment fragment);
+        void onFragmentResumed(TrackGameFragment fragment);
     }
 
     public static TrackGameFragment newInstance() {
@@ -64,17 +61,6 @@ public class TrackGameFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Gets the host Activity's progress bar.
-        progressBar = (ProgressBar) getActivity().findViewById(R.id.progress_bar);
-        loadTags();
-    }
-
-    /**
-     * Loads the tags asynchronously from the external storage.
-     */
-    private void loadTags() {
-        new AsyncTaskLoader().execute();
     }
 
     public void updateUi() {
@@ -93,7 +79,6 @@ public class TrackGameFragment extends Fragment {
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement TrackGameFragment.Callbacks interface");
         }
-        callbacks.onFragmentAttached(this);
     }
 
     @Override
@@ -159,9 +144,7 @@ public class TrackGameFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        // Refresh the NfcTag list.
-        adapter.notifyDataSetChanged();
-//        updateUi();
+        callbacks.onFragmentResumed(this);
     }
 
     /**
@@ -311,30 +294,6 @@ public class TrackGameFragment extends Fragment {
         @Override
         public int getItemCount() {
             return (nfcTags == null) ? 0 : nfcTags.size();
-        }
-    }
-
-    /**
-     * AsyncTask class which loads the json file in a background thread.
-     */
-    private class AsyncTaskLoader extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            MyTags.get(getActivity()).loadTags();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            progressBar.setVisibility(View.GONE);
-            updateUi();
         }
     }
 }

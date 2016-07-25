@@ -40,6 +40,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ProgressBar;
 
 import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.fragment.CreateGameFragment;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private FloatingActionButton floatingActionButton;
+    private ProgressBar progressBar;
 
     /**
      * Instance variables.
@@ -90,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     private boolean isSelectAllItemVisible;
     private TrackGameFragment trackGameFragment;
     private CreateGameFragment createGameFragment;
+    private AsyncTaskLoader asyncTaskLoader;
 
     /**
      * NFC adapter.
@@ -102,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
         setContentView(R.layout.activity_main);
 
         setupNFC();
+        setupProgressBar();
         setupFloatingActionButton();
         setupCoordinatorLayout();
         setupNavigationDrawer();
@@ -113,6 +117,23 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
         if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
             enableTransitions();
         }
+
+        loadTags();
+    }
+
+    /**
+     * Saves the tags asynchronously to external storage.
+     */
+    private void saveTags() {
+        new AsyncTaskSaver().execute();
+    }
+
+    /**
+     * Loads the tags asynchronously from the external storage.
+     */
+    private void loadTags() {
+        asyncTaskLoader = new AsyncTaskLoader();
+        asyncTaskLoader.execute();
     }
 
     @Override
@@ -121,13 +142,6 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
 
         saveTags();
         disableContextualActionBar();
-    }
-
-    /**
-     * Saves the tags asynchronously to external storage.
-     */
-    private void saveTags() {
-        new AsyncTaskSaver().execute();
     }
 
     @Override
@@ -168,6 +182,10 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
         nfcHandler.setupNfcHandler(this);
         nfcHandler.registerAndroidBeamShareFiles();
         nfcHandler.handleAndroidBeamReceivedFiles(getIntent());
+    }
+
+    private void setupProgressBar() {
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
     }
 
     private void setupFloatingActionButton() {
@@ -448,8 +466,17 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
      * TrackGameFragment callbacks.
      */
     @Override
-    public void onFragmentAttached(TrackGameFragment fragment) {
+    public void onFragmentResumed(TrackGameFragment fragment) {
         trackGameFragment = fragment;
+
+        // If fragment is created before the AsyncTask finishes, the UI update should be done on the
+        // onPostExecute method to avoid duplicate updates.
+        if (asyncTaskLoader.getStatus() == AsyncTask.Status.RUNNING) {
+            return;
+        }
+
+        progressBar.setVisibility(View.GONE);
+        trackGameFragment.updateUi();
     }
 
     @SuppressWarnings("deprecation")
@@ -656,7 +683,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     }
 
     /**
-     * AsyncTask class which saves the json file in a background thread.
+     * AsyncTask class that saves the json file in a background thread.
      */
     private class AsyncTaskSaver extends AsyncTask<Void, Void, Void> {
 
@@ -665,6 +692,37 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
             MyTags.get(MainActivity.this).saveTags();
 
             return null;
+        }
+    }
+
+    /**
+     * AsyncTask class that loads the json file in a background thread.
+     */
+    private class AsyncTaskLoader extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            MyTags.get(MainActivity.this).loadTags();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            // If fragment isn't created yet, it cannot update it's UI and should be done on the
+            // onResume method instead.
+            if (trackGameFragment == null) {
+                return;
+            }
+
+            progressBar.setVisibility(View.GONE);
+            trackGameFragment.updateUi();
         }
     }
 }
