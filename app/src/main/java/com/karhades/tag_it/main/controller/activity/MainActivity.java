@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     private CoordinatorLayout coordinatorLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private AppBarLayout appBarLayout;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private FloatingActionButton floatingActionButton;
@@ -109,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
         setupFloatingActionButton();
         setupCoordinatorLayout();
         setupNavigationDrawer();
+        setupAppBarLayout();
         setupToolbar();
         setupViewPager();
         setupTabLayout();
@@ -242,6 +245,10 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
         }
     }
 
+    private void setupAppBarLayout() {
+        appBarLayout = (AppBarLayout) findViewById(R.id.main_app_bar_layout);
+    }
+
     @SuppressWarnings("deprecation, ConstantConditions")
     private void setupTabLayout() {
         tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
@@ -260,6 +267,8 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
 
                 Menu menu = navigationView.getMenu();
                 navigationView.setCheckedItem(menu.getItem(tab.getPosition()).getItemId());
+
+                appBarLayout.setExpanded(true, true);
             }
 
             @Override
