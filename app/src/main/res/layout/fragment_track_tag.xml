@@ -113,51 +113,49 @@
                             android:textSize="16sp" />
                     </LinearLayout>
 
-                    <!--Solved-->
+                    <!--Discovered-->
                     <LinearLayout
-                        android:id="@+id/tracking_solved_linear_layout"
+                        android:id="@+id/tracking_discovered_linear_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/tracking_solved_label_text_view"
+                            android:id="@+id/tracking_discovered_label_text_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/label_solved"
+                            android:text="@string/label_discovered"
                             android:textColor="?android:attr/textColorPrimary"
                             android:textSize="20sp" />
 
                         <CheckBox
-                            android:id="@+id/tracking_solved_check_box"
+                            android:id="@+id/tracking_discovered_check_box"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clickable="false" />
 
                     </LinearLayout>
 
-                    <!--Date Solved-->
+                    <!--Date discovered-->
                     <LinearLayout
-                        android:id="@+id/tracking_date_solved_linear_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/tracking_date_solved_label_text_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Date Solved"
+                            android:text="@string/label_date_discovered"
                             android:textColor="?android:attr/textColorPrimary"
                             android:textSize="20sp" />
 
                         <TextView
-                            android:id="@+id/tracking_date_solved_text_view"
+                            android:id="@+id/tracking_date_discovered_text_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="N/A"
+                            android:text="@string/text_view_date_discovered"
                             android:textColor="?android:attr/textColorSecondary"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -166,16 +164,16 @@
 
             <!-- Tag Google Maps location-->
             <!--<android.support.v7.widget.CardView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_marginBottom="16dp"-->
-                <!--android:layout_marginLeft="16dp"-->
-                <!--android:layout_marginRight="16dp">-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginBottom="16dp"-->
+            <!--android:layout_marginLeft="16dp"-->
+            <!--android:layout_marginRight="16dp">-->
 
-                <!--<ImageView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:src="@drawable/image_no_image" />-->
+            <!--<ImageView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:src="@drawable/image_no_image" />-->
             <!--</android.support.v7.widget.CardView>-->
 
         </LinearLayout>

@@ -165,7 +165,7 @@ public class TrackGameFragment extends Fragment {
         private ImageView imageView;
         private TextView titleTextView;
         private TextView difficultyTextView;
-        private CheckBox solvedCheckBox;
+        private CheckBox discoveredCheckBox;
 
         /**
          * Constructor that registers any listeners and make calls
@@ -186,7 +186,7 @@ public class TrackGameFragment extends Fragment {
             difficultyTextView = (TextView) view.findViewById(R.id.row_tracking_difficulty_text_view);
             difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
 
-            solvedCheckBox = (CheckBox) view.findViewById(R.id.row_tracking_solved_check_box);
+            discoveredCheckBox = (CheckBox) view.findViewById(R.id.row_tracking_discovered_check_box);
         }
 
         /**
@@ -263,11 +263,11 @@ public class TrackGameFragment extends Fragment {
             PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), imageView);
             titleTextView.setText(nfcTag.getTitle());
             difficultyTextView.setText(nfcTag.getDifficulty());
-            solvedCheckBox.setChecked(nfcTag.isSolved());
-            if (solvedCheckBox.isChecked()) {
-                solvedCheckBox.setVisibility(View.VISIBLE);
+            discoveredCheckBox.setChecked(nfcTag.isDiscovered());
+            if (discoveredCheckBox.isChecked()) {
+                discoveredCheckBox.setVisibility(View.VISIBLE);
             } else {
-                solvedCheckBox.setVisibility(View.INVISIBLE);
+                discoveredCheckBox.setVisibility(View.INVISIBLE);
             }
         }
     }

@@ -99,7 +99,7 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
 
         setupViewPager();
         setCurrentTagPage();
-        solveNfcTagAfterViewPagerLoad(discoveredTagId);
+        discoverNfcTagAfterViewPagerLoad(discoveredTagId);
 
         if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
             enableTransitions();
@@ -123,10 +123,10 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
         // Get the ID of the discovered tag.
         discoveredTagId = nfcHandler.handleNfcReadTag(intent);
         setCurrentTagPage();
-        solveNfcTag(discoveredTagId);
+        discoverNfcTag(discoveredTagId);
     }
 
-    private void solveNfcTag(String tagId) {
+    private void discoverNfcTag(String tagId) {
         if (tagId == null) {
             return;
         }
@@ -134,20 +134,20 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
         if (fragment == null) {
             return;
         }
-        fragment.solveNfcTag(tagId);
+        fragment.discoverNfcTag(tagId);
     }
 
     /**
      * Wait for the ViewPager to finish loading it's content
-     * before solving the NFC tag.
+     * before discovering the NFC tag.
      */
-    private void solveNfcTagAfterViewPagerLoad(final String tagId) {
+    private void discoverNfcTagAfterViewPagerLoad(final String tagId) {
         viewPager.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
                 viewPager.getViewTreeObserver().removeOnPreDrawListener(this);
 
-                solveNfcTag(tagId);
+                discoverNfcTag(tagId);
 
                 return true;
             }

@@ -56,7 +56,7 @@
                 android:textSize="14sp" />
 
             <CheckBox
-                android:id="@+id/row_tracking_solved_check_box"
+                android:id="@+id/row_tracking_discovered_check_box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@id/row_tracking_title_text_view"

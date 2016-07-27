@@ -62,8 +62,8 @@ public class TrackTagFragment extends Fragment {
      */
     private ImageView pictureImageView;
     private TextView difficultyTextView;
-    private CheckBox solvedCheckBox;
-    private TextView dateSolvedTextView;
+    private CheckBox discoveredCheckBox;
+    private TextView dateDiscoveredTextView;
     private Toolbar toolbar;
     private FloatingActionButton fullscreenActionButton;
 
@@ -153,9 +153,9 @@ public class TrackTagFragment extends Fragment {
 
     private void updateUI() {
         difficultyTextView.setText(nfcTag.getDifficulty());
-        solvedCheckBox.setChecked(nfcTag.isSolved());
-        if (nfcTag.getDateSolved() != null) {
-            dateSolvedTextView.setText(nfcTag.getDateSolved());
+        discoveredCheckBox.setChecked(nfcTag.isDiscovered());
+        if (nfcTag.getDateDiscovered() != null) {
+            dateDiscoveredTextView.setText(nfcTag.getDateDiscovered());
         }
     }
 
@@ -174,20 +174,20 @@ public class TrackTagFragment extends Fragment {
     }
 
     /**
-     * Solve the NfcTag with the given tag id.
+     * Discover the NfcTag with the given tag id.
      *
-     * @param tagId The id of the NfcTag to solve.
+     * @param tagId The id of the NfcTag to discover.
      */
-    public void solveNfcTag(String tagId) {
-        // Get tag from list and solve.
+    public void discoverNfcTag(String tagId) {
+        // Get tag from list and discover.
         NfcTag nfcTag = MyTags.get(getActivity()).getNfcTag(tagId);
-        nfcTag.setSolved(true);
+        nfcTag.setDiscovered(true);
 
         // Format the Date into custom string.
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM (HH:mm)", Locale.getDefault());
         String formattedDate = simpleDateFormat.format(date);
-        nfcTag.setDateSolved(formattedDate);
+        nfcTag.setDateDiscovered(formattedDate);
 
 //        // Play winning sound.
 //        Intent audioService = new Intent(getActivity(), AudioService.class);
@@ -196,7 +196,7 @@ public class TrackTagFragment extends Fragment {
         // Inform user.
         View parentView = getView();
         if (parentView != null) {
-            Snackbar snackbar = Snackbar.make(parentView, nfcTag.getTitle() + " solved", Snackbar.LENGTH_INDEFINITE);
+            Snackbar snackbar = Snackbar.make(parentView, nfcTag.getTitle() + " discovered", Snackbar.LENGTH_INDEFINITE);
             snackbar.setActionTextColor(getResources().getColor(R.color.accent));
             snackbar.setAction("DISMISS", new View.OnClickListener() {
                 @Override
@@ -342,11 +342,11 @@ public class TrackTagFragment extends Fragment {
         // NfcTag Difficulty TextView.
         difficultyTextView = (TextView) view.findViewById(R.id.tracking_difficulty_text_view);
 
-        // NfcTag Solved CheckBox.
-        solvedCheckBox = (CheckBox) view.findViewById(R.id.tracking_solved_check_box);
+        // NfcTag discovered CheckBox.
+        discoveredCheckBox = (CheckBox) view.findViewById(R.id.tracking_discovered_check_box);
 
-        // NfcTag Date Solved TextView.
-        dateSolvedTextView = (TextView) view.findViewById(R.id.tracking_date_solved_text_view);
+        // NfcTag Date discovered TextView.
+        dateDiscoveredTextView = (TextView) view.findViewById(R.id.tracking_date_discovered_text_view);
 
         // A hidden FrameLayout that will cover the whole screen on transition start.
         revealContent = (ViewGroup) view.findViewById(R.id.tracking_reveal_content);

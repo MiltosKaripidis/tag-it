@@ -19,8 +19,8 @@ public class NfcTag {
     private static final String JSON_TAG_ID = "tag_id";
     private static final String JSON_TITLE = "title";
     private static final String JSON_PICTURE_FILE_PATH = "picture_file_path";
-    private static final String JSON_SOLVED = "solved";
-    private static final String JSON_DATE_SOLVED = "date_solved";
+    private static final String JSON_DISCOVERED = "discovered";
+    private static final String DATE_DISCOVERED = "date_discovered";
 
     /**
      * Instance fields.
@@ -29,8 +29,8 @@ public class NfcTag {
     private String title;
     private String pictureFilePath;
     private String difficulty;
-    private boolean solved;
-    private String dateSolved;
+    private boolean discovered;
+    private String dateDiscovered;
 
     /**
      * Simple constructor of NfcTag.
@@ -57,9 +57,9 @@ public class NfcTag {
         tagId = jsonObject.getString(JSON_TAG_ID);
         title = jsonObject.getString(JSON_TITLE);
         pictureFilePath = jsonObject.getString(JSON_PICTURE_FILE_PATH);
-        solved = jsonObject.getBoolean(JSON_SOLVED);
-        if (jsonObject.has(JSON_DATE_SOLVED)) {
-            dateSolved = jsonObject.getString(JSON_DATE_SOLVED);
+        discovered = jsonObject.getBoolean(JSON_DISCOVERED);
+        if (jsonObject.has(DATE_DISCOVERED)) {
+            dateDiscovered = jsonObject.getString(DATE_DISCOVERED);
         }
     }
 
@@ -76,9 +76,9 @@ public class NfcTag {
         jsonObject.put(JSON_TAG_ID, tagId);
         jsonObject.put(JSON_TITLE, title);
         jsonObject.put(JSON_PICTURE_FILE_PATH, pictureFilePath);
-        jsonObject.put(JSON_SOLVED, solved);
-        if (dateSolved != null) {
-            jsonObject.put(JSON_DATE_SOLVED, dateSolved);
+        jsonObject.put(JSON_DISCOVERED, discovered);
+        if (dateDiscovered != null) {
+            jsonObject.put(DATE_DISCOVERED, dateDiscovered);
         }
 
         return jsonObject;
@@ -108,12 +108,12 @@ public class NfcTag {
         this.difficulty = difficulty;
     }
 
-    public boolean isSolved() {
-        return solved;
+    public boolean isDiscovered() {
+        return discovered;
     }
 
-    public void setSolved(boolean solved) {
-        this.solved = solved;
+    public void setDiscovered(boolean discovered) {
+        this.discovered = discovered;
     }
 
     public String getTagId() {
@@ -124,11 +124,11 @@ public class NfcTag {
         this.tagId = tagId;
     }
 
-    public String getDateSolved() {
-        return dateSolved;
+    public String getDateDiscovered() {
+        return dateDiscovered;
     }
 
-    public void setDateSolved(String dateSolved) {
-        this.dateSolved = dateSolved;
+    public void setDateDiscovered(String dateDiscovered) {
+        this.dateDiscovered = dateDiscovered;
     }
 }

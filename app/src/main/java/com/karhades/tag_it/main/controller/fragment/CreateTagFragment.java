@@ -410,8 +410,8 @@ public class CreateTagFragment extends Fragment {
         // Overwrite current nfc tag fields.
         currentNfcTag.setDifficulty(temporaryDifficulty);
         currentNfcTag.setTagId(tagId);
-        currentNfcTag.setSolved(false);
-        currentNfcTag.setDateSolved(null);
+        currentNfcTag.setDiscovered(false);
+        currentNfcTag.setDateDiscovered(null);
 
         // Clear memory cache for previous image to refresh ImageView.
         PictureLoader.invalidateWithPicasso(getActivity(), currentNfcTag.getPictureFilePath());

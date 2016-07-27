@@ -10,8 +10,9 @@
 
     <string name="app_name">Tag it!</string>
     <string name="label_details">Details</string>
-    <string name="label_solved">Solved</string>
-    <string name="label_date_solved">Date Solved: \</string>
+    <string name="label_discovered">Discovered</string>
+    <string name="label_date_discovered">Date discovered</string>
+    <string name="text_view_date_discovered">N/A</string>
     <string name="label_difficulty">Difficulty</string>
     <string name="popup_window_delete">Delete</string>
     <string name="button_cancel">CANCEL</string>
