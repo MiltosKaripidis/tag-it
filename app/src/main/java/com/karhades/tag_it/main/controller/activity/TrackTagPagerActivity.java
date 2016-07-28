@@ -16,12 +16,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
 import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.fragment.TrackTagFragment;
 import com.karhades.tag_it.main.model.MyTags;
-import com.karhades.tag_it.main.model.NfcHandler;
 import com.karhades.tag_it.main.model.NfcTag;
 import com.karhades.tag_it.utils.TransitionHelper;
 
@@ -29,8 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Controller Activity class that hosts TrackTagFragment and enables paging. Manages the NFC
- * read operation.
+ * Controller Activity class that hosts TrackTagFragment and enables paging.
  */
 public class TrackTagPagerActivity extends AppCompatActivity implements ViewPager.PageTransformer {
 
@@ -57,12 +54,6 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
     private List<NfcTag> nfcTags;
     private FragmentAdapter fragmentAdapter;
     private String tagId;
-    private String discoveredTagId;
-
-    /**
-     * NFC adapter.
-     */
-    private NfcHandler nfcHandler;
 
     /**
      * Transition variables.
@@ -83,92 +74,23 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_tag_pager);
 
-        if (isTaskRoot()) {
-            MyTags.get(this).loadTags();
-        }
-
         // Gets the NfcTag ID from TrackGameFragment.
         tagId = getIntent().getStringExtra(EXTRA_TAG_ID);
 
         // Gets the NFC tags list.
         nfcTags = MyTags.get(this).getNfcTags();
 
-        setupNFC();
-        // Get the ID from the NFC tag discovery.
-        discoveredTagId = nfcHandler.handleNfcReadTag(getIntent());
-
         setupViewPager();
         setCurrentTagPage();
-        discoverNfcTagAfterViewPagerLoad(discoveredTagId);
 
         if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
             enableTransitions();
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        // Save the tags to a file before leaving.
-        MyTags.get(this).saveTags();
-
-        nfcHandler.disableForegroundDispatch();
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        // Get the ID of the discovered tag.
-        discoveredTagId = nfcHandler.handleNfcReadTag(intent);
-        setCurrentTagPage();
-        discoverNfcTag(discoveredTagId);
-    }
-
-    private void discoverNfcTag(String tagId) {
-        if (tagId == null) {
-            return;
-        }
-        TrackTagFragment fragment = fragmentAdapter.getCurrentFragment();
-        if (fragment == null) {
-            return;
-        }
-        fragment.discoverNfcTag(tagId);
-    }
-
-    /**
-     * Wait for the ViewPager to finish loading it's content
-     * before discovering the NFC tag.
-     */
-    private void discoverNfcTagAfterViewPagerLoad(final String tagId) {
-        viewPager.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                viewPager.getViewTreeObserver().removeOnPreDrawListener(this);
-
-                discoverNfcTag(tagId);
-
-                return true;
-            }
-        });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        nfcHandler.enableForegroundDispatch();
-    }
-
-    private void setupNFC() {
-        nfcHandler = new NfcHandler();
-        nfcHandler.setupNfcHandler(this);
-    }
-
     @SuppressWarnings("deprecation")
     private void setupViewPager() {
-        viewPager = (ViewPager) findViewById(R.id.tracking_tag_pager_view_pager);
+        viewPager = (ViewPager) findViewById(R.id.track_tag_pager_view_pager);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentAdapter = new FragmentAdapter(fragmentManager);
@@ -197,7 +119,7 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
     }
 
     private void setCurrentTagPage() {
-        NfcTag nfcTag = MyTags.get(this).getNfcTag((discoveredTagId == null) ? tagId : discoveredTagId);
+        NfcTag nfcTag = MyTags.get(this).getNfcTag(tagId);
         int position = MyTags.get(this).getNfcTags().indexOf(nfcTag);
 
         if (position != -1) {

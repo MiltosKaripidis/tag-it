@@ -9,12 +9,9 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,10 +33,6 @@ import com.karhades.tag_it.main.model.NfcTag;
 import com.karhades.tag_it.utils.PictureLoader;
 import com.karhades.tag_it.utils.TransitionHelper;
 import com.squareup.picasso.Callback;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Controller Fragment class that binds the tracking of the tags with the data set.
@@ -152,6 +145,7 @@ public class TrackTagFragment extends Fragment {
     }
 
     private void updateUI() {
+        toolbar.setTitle(nfcTag.getTitle());
         difficultyTextView.setText(nfcTag.getDifficulty());
         discoveredCheckBox.setChecked(nfcTag.isDiscovered());
         if (nfcTag.getDateDiscovered() != null) {
@@ -173,42 +167,6 @@ public class TrackTagFragment extends Fragment {
         }
     }
 
-    /**
-     * Discover the NfcTag with the given tag id.
-     *
-     * @param tagId The id of the NfcTag to discover.
-     */
-    public void discoverNfcTag(String tagId) {
-        // Get tag from list and discover.
-        NfcTag nfcTag = MyTags.get(getActivity()).getNfcTag(tagId);
-        nfcTag.setDiscovered(true);
-
-        // Format the Date into custom string.
-        Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM (HH:mm)", Locale.getDefault());
-        String formattedDate = simpleDateFormat.format(date);
-        nfcTag.setDateDiscovered(formattedDate);
-
-//        // Play winning sound.
-//        Intent audioService = new Intent(getActivity(), AudioService.class);
-//        getActivity().startService(audioService);
-
-        // Inform user.
-        View parentView = getView();
-        if (parentView != null) {
-            Snackbar snackbar = Snackbar.make(parentView, nfcTag.getTitle() + " discovered", Snackbar.LENGTH_INDEFINITE);
-            snackbar.setActionTextColor(getResources().getColor(R.color.accent));
-            snackbar.setAction("DISMISS", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // DO NOTHING.
-                }
-            });
-            snackbar.show();
-        }
-        updateUI();
-    }
-
     private void getFragmentArguments() {
         // Get the tag ID either from the TrackGameFragment or
         // the NFC tag Discovery.
@@ -222,20 +180,7 @@ public class TrackTagFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent upIntent = NavUtils.getParentActivityIntent(getActivity());
-                if (getActivity().isTaskRoot()) {
-                    // This activity is NOT part of this app's task, so create a new task
-                    // when navigating up, with a synthesized back stack.
-                    TaskStackBuilder.create(getActivity())
-                            // Add all of this activity's parents to the back stack
-                            .addNextIntentWithParentStack(upIntent)
-                            // Navigate up to the closest parent
-                            .startActivities();
-                } else {
-                    // This activity is part of this app's task, so simply
-                    // navigate up to the logical parent activity.
-                    NavUtils.navigateUpTo(getActivity(), upIntent);
-                }
+                NavUtils.navigateUpFromSameTask(getActivity());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -248,7 +193,6 @@ public class TrackTagFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_track_tag, container, false);
 
         setupToolbar(view);
-        setupCollapsingToolbar(view);
         setupFloatingActionButton(view);
         initializeWidgets(view);
 
@@ -261,7 +205,7 @@ public class TrackTagFragment extends Fragment {
      * @param view A view needed for the findViewById() method.
      */
     private void setupToolbar(View view) {
-        toolbar = (Toolbar) view.findViewById(R.id.tracking_tool_bar);
+        toolbar = (Toolbar) view.findViewById(R.id.track_tool_bar);
 
         // Retrieve an AppCompatActivity hosting activity to get the supported actionbar.
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -277,11 +221,6 @@ public class TrackTagFragment extends Fragment {
             if (NavUtils.getParentActivityName(getActivity()) != null)
                 actionBar.setDisplayHomeAsUpEnabled(true);
         }
-    }
-
-    private void setupCollapsingToolbar(View view) {
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_tool_bar_layout);
-        collapsingToolbarLayout.setTitle(nfcTag.getTitle());
     }
 
     private void setupFloatingActionButton(View view) {
