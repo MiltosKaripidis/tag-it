@@ -27,7 +27,7 @@ public class CreateTagActivity extends SingleFragmentActivity implements CreateT
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Make content appear behind status bar.

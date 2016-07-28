@@ -36,7 +36,7 @@ public class MainActivityInstrumTest {
 
         recyclerView.perform(actionOnItemAtPosition(0, click()));
         for (int i = 0; i < 4; i++) {
-            onView(withId(R.id.tracking_tag_pager_view_pager)).perform(swipeLeft());
+            onView(withId(R.id.track_tag_pager_view_pager)).perform(swipeLeft());
         }
         pressBack();
     }
@@ -45,7 +45,7 @@ public class MainActivityInstrumTest {
     public void scrollItems_reverse() {
         onView(withId(R.id.tracking_recycler_view)).perform(actionOnItemAtPosition(4, click()));
         for (int i = 0; i < 4; i++) {
-            onView(withId(R.id.tracking_tag_pager_view_pager)).perform(swipeRight());
+            onView(withId(R.id.track_tag_pager_view_pager)).perform(swipeRight());
         }
         pressBack();
     }

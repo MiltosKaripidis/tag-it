@@ -12,15 +12,14 @@
     <string name="label_details">Details</string>
     <string name="label_discovered">Discovered</string>
     <string name="label_date_discovered">Date discovered</string>
-    <string name="text_view_date_discovered">N/A</string>
     <string name="label_difficulty">Difficulty</string>
+    <string name="label_empty">N/A</string>
     <string name="popup_window_delete">Delete</string>
     <string name="button_cancel">CANCEL</string>
     <string name="button_tag_it">TAG IT!</string>
     <string name="text_share_hint">Tap devices to share the fun.</string>
     <string name="text_empty1">Nothing to track.</string>
     <string name="text_empty2">Tap \'CREATE\' tab to add one.</string>
-    <string name="label_empty_date">N/A</string>
     <string name="context_delete">Delete</string>
     <string name="context_select_all">Select all</string>
     <string name="context_clear_selection">Clear selection</string>

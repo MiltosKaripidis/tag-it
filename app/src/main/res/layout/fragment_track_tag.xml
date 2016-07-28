@@ -33,10 +33,9 @@
                 tools:ignore="ContentDescription" />
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/tracking_tool_bar"
+                android:id="@+id/track_tool_bar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark"
                 app:layout_collapseMode="pin" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -85,8 +84,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="24dp"
-                        android:text="Details"
-                        android:textColor="?android:attr/colorPrimary"
+                        android:text="@string/label_details"
+                        android:textColor="@color/primary"
                         android:textSize="24sp" />
 
                     <!--Difficulty-->
@@ -155,7 +154,6 @@
                             android:id="@+id/tracking_date_discovered_text_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/text_view_date_discovered"
                             android:textColor="?android:attr/textColorSecondary"
                             android:textSize="16sp" />
                     </LinearLayout>
