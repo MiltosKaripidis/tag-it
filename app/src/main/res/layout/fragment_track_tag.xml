@@ -108,6 +108,7 @@
                             android:id="@+id/tracking_difficulty_text_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@string/label_empty"
                             android:textColor="@color/accent"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -154,6 +155,7 @@
                             android:id="@+id/tracking_date_discovered_text_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@string/label_empty"
                             android:textColor="?android:attr/textColorSecondary"
                             android:textSize="16sp" />
                     </LinearLayout>

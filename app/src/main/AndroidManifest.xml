@@ -36,9 +36,9 @@
             </intent-filter>
         </activity>
 
-        <!-- TrackTagPagerActivity-->
+        <!-- DiscoverTagActivity-->
         <activity
-            android:name=".main.controller.activity.TrackTagPagerActivity"
+            android:name=".main.controller.activity.DiscoverTagActivity"
             android:parentActivityName=".main.controller.activity.MainActivity"
             android:screenOrientation="portrait">
 
@@ -53,6 +53,12 @@
                 <data android:mimeType="application/com.karhades.tag_it.nfchandler" />
             </intent-filter>
         </activity>
+
+        <!-- TrackTagPagerActivity-->
+        <activity
+            android:name=".main.controller.activity.TrackTagPagerActivity"
+            android:parentActivityName=".main.controller.activity.MainActivity"
+            android:screenOrientation="portrait" />
 
         <!-- CreateTagPagerActivity-->
         <activity

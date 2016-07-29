@@ -205,6 +205,7 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
     public void finishAfterTransition() {
         if (!TransitionHelper.isTransitionEnabled) {
             super.finishAfterTransition();
+            return;
         }
 
         TrackTagFragment fragment = fragmentAdapter.getCurrentFragment();

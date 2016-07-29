@@ -66,7 +66,7 @@ public class TrackTagFragment extends Fragment {
     private ViewGroup revealContent;
 
     /**
-     * Return a TrackTagFragment with tagId as its argument.
+     * Returns a TrackTagFragment with tagId as its argument.
      * It must be called after the fragment is created and before it is added to the hosting activity.
      *
      * @param tagId A String containing the NfcTag ID.
@@ -86,8 +86,6 @@ public class TrackTagFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Tell the FragmentManager that this fragment should receive
-        // a call to onCreateOptionsMenu.
         setHasOptionsMenu(true);
 
         getFragmentArguments();
@@ -106,7 +104,7 @@ public class TrackTagFragment extends Fragment {
 
     private void loadImage() {
         if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
-            // Register a callback to be invoked when the image has been loaded
+            // Registers a callback to be invoked when the image has been loaded
             // to inform the activity to start the shared element transition.
             Callback picassoCallback = new Callback() {
                 @Override
@@ -154,7 +152,7 @@ public class TrackTagFragment extends Fragment {
     }
 
     private void hideCircularReveal() {
-        if (TransitionHelper.isTransitionEnabled) {
+        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
             // Hide the reveal content view.
             if (revealContent.getVisibility() == View.VISIBLE) {
                 TransitionHelper.circularHide(fullscreenActionButton, revealContent, new Runnable() {
@@ -228,11 +226,8 @@ public class TrackTagFragment extends Fragment {
         fullscreenActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TransitionHelper.isTransitionEnabled) {
-                    hideActionButton();
-                }
-
                 if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+                    hideActionButton();
                     startFullScreenActivityWithTransition();
                 }
                 // No transitions.
