@@ -437,40 +437,37 @@ public class NfcHandler {
      */
     public String handleNfcReadTag(Intent intent) {
         try {
-            if (intent.getAction() == null) {
-                return null;
+            if (!intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
+                throw new TagNotRegisteredException("NFC tag isn't NDEF formatted.");
             }
 
-            // If the discovered tag maps to MIME type.
-            if (intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
-                // Get the extra from the intent containing the tag.
-                Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            // Gets the extra from the intent containing the tag.
+            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
-                // Get the ID of the discovered tag.
-                String tagId = readTag(tag);
+            // Gets the ID of the discovered tag.
+            String tagId = readTag(tag);
 
-                // Get the NFC tag from the list that corresponds to
-                // the discovered tag ID.
-                NfcTag nfcTag = MyTags.get(activity).getNfcTag(tagId);
-                // If there isn't a corresponding NfcTag.
-                if (nfcTag == null) {
-                    throw new TagNotRegisteredException("No corresponding NfcTag found for the given tag ID.");
-                }
+            // Gets the NFC tag from the list that corresponds to
+            // the discovered tag ID.
+            NfcTag nfcTag = MyTags.get(activity).getNfcTag(tagId);
 
-                // Return the discovered tag ID.
-                return tagId;
+            // If there isn't a corresponding NfcTag.
+            if (nfcTag == null) {
+                throw new TagNotRegisteredException("No corresponding NfcTag found for the given tag ID.");
             }
-            // If the discovered tag cannot be mapped to MIME type.
-            else if (intent.getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED) || intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
-                throw new TagNotRegisteredException("NFC tag cannot be mapped to MIME type.");
-            }
+
+            // Returns the discovered tag ID.
+            return tagId;
+
         } catch (TagNotRegisteredException e) {
             Log.e(TAG, "Error reading tag. " + e.getMessage(), e);
-
-            // Inform user.
-            Toast.makeText(activity, "NFC tag not registered!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "NFC tag not registered", Toast.LENGTH_LONG).show();
+            return null;
+        } catch (NullPointerException e) {
+            Log.e(TAG, e.getMessage(), e);
+            Toast.makeText(activity, "Reading operation was interrupted", Toast.LENGTH_LONG).show();
+            return null;
         }
-        return null;
     }
 
     /**
@@ -479,45 +476,44 @@ public class NfcHandler {
      *
      * @param tag The Tag object representing the NFC tag.
      * @return The tag ID or null if an error occurred.
+     * @throws NullPointerException
      * @throws TagNotRegisteredException
      */
-    private String readTag(Tag tag) throws TagNotRegisteredException {
-        // Get the NDEF formatted tag.
+    private String readTag(Tag tag) throws NullPointerException, TagNotRegisteredException {
+        // Gets the NDEF formatted tag.
         Ndef ndef = Ndef.get(tag);
 
         try {
-            // Enable I/O operations.
+            // Enables I/O operations.
             ndef.connect();
 
-            // Read the NdefMessage from the NFC tag.
+            // Reads the NdefMessage from the NFC tag.
             NdefMessage ndefMessage = ndef.getNdefMessage();
-            // Get the first NdefRecord from the NdefMessage.
+            // Gets the first NdefRecord from the NdefMessage.
             NdefRecord ndefRecord = ndefMessage.getRecords()[0];
 
-            // Get the payload from the NdefRecord.
+            // Gets the payload from the NdefRecord.
             String payload = new String(ndefRecord.getPayload());
 
-            // If the discovered tag matches this application's signature.
-            if (payload.equals("tag_it")) {
-                // Return the ID of NdefRecord.
-                return new String(ndefRecord.getId());
-            }
-            // The discovered tag is not registered in this application.
-            else {
+            if (!payload.equals("tag_it")) {
                 throw new TagNotRegisteredException("NFC tag payload doesn't match.");
             }
+
+            // Returns the ID of NdefRecord.
+            return new String(ndefRecord.getId());
+
         } catch (FormatException | IOException e) {
-            Log.e(TAG, "Error reading tag " + e.getMessage(), e);
+            Log.e(TAG, "Error reading tag.", e);
+            throw new NullPointerException("Reading operation was interrupted.");
         } finally {
             if (ndef != null) {
                 try {
                     ndef.close();
                 } catch (IOException e) {
-                    Log.e(TAG, "Error closing tag " + e.getMessage(), e);
+                    Log.e(TAG, "Error closing tag. " + e.getMessage(), e);
                 }
             }
         }
-        return null;
     }
 
     /**
