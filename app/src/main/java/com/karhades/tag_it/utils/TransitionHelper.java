@@ -36,7 +36,7 @@ public class TransitionHelper {
 
 
         Animator animator = ViewAnimationUtils.createCircularReveal(revealContent, centerX, centerY, startRadius, finalRadius);
-        animator.setDuration(300);
+        animator.setDuration(400);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -60,7 +60,7 @@ public class TransitionHelper {
         float finalRadius = 0;
 
         Animator animator = ViewAnimationUtils.createCircularReveal(revealContent, centerX, centerY, initialRadius, finalRadius);
-        animator.setDuration(300);
+        animator.setDuration(400);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

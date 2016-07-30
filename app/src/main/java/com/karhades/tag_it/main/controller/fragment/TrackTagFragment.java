@@ -158,7 +158,7 @@ public class TrackTagFragment extends Fragment {
                 TransitionHelper.circularHide(fullscreenActionButton, revealContent, new Runnable() {
                     @Override
                     public void run() {
-                        showActionButton();
+                        // DO NOTHING
                     }
                 });
             }
@@ -227,7 +227,6 @@ public class TrackTagFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
-                    hideActionButton();
                     startFullScreenActivityWithTransition();
                 }
                 // No transitions.

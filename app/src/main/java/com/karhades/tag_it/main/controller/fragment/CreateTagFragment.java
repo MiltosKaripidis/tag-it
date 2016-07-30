@@ -241,7 +241,7 @@ public class CreateTagFragment extends Fragment {
         cameraActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TransitionHelper.isTransitionSupported()) {
+                if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
                     takePictureWithTransition();
                 }
                 // No transitions.
@@ -257,7 +257,6 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void takePictureWithTransition() {
-        hideActionButton();
         showCircularReveal();
     }
 
@@ -492,29 +491,17 @@ public class CreateTagFragment extends Fragment {
         }
     }
 
-    private void hideActionButton() {
-        cameraActionButton.setScaleX(0);
-        cameraActionButton.setScaleY(0);
-        cameraActionButton.setVisibility(View.INVISIBLE);
-    }
-
-    private void showActionButton() {
-        cameraActionButton.setVisibility(View.VISIBLE);
-        cameraActionButton.animate()
-                .scaleX(1)
-                .scaleY(1);
-    }
-
     private void hideCircularReveal() {
-        // Hide the reveal content view.
-        if (revealContent.getVisibility() == View.VISIBLE) {
-            TransitionHelper.circularHide(cameraActionButton, revealContent, new Runnable() {
-                @Override
-                public void run() {
-                    showActionButton();
-                }
-            });
+        if (revealContent.getVisibility() == View.INVISIBLE) {
+            return;
         }
+
+        TransitionHelper.circularHide(cameraActionButton, revealContent, new Runnable() {
+            @Override
+            public void run() {
+                // DO NOTHING
+            }
+        });
     }
 
     private void showCircularReveal() {

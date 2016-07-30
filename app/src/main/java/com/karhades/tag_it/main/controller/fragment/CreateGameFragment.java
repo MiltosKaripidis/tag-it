@@ -9,12 +9,12 @@ import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,7 +50,6 @@ import com.karhades.tag_it.main.controller.activity.CreateTagActivity;
 import com.karhades.tag_it.main.controller.activity.CreateTagPagerActivity;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcTag;
-import com.karhades.tag_it.utils.FontCache;
 import com.karhades.tag_it.utils.PictureLoader;
 import com.karhades.tag_it.utils.TransitionHelper;
 
@@ -239,10 +238,7 @@ public class CreateGameFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (addActionButton != null) {
-            showActionButton();
-            restoreLayoutAfterTransition();
-        }
+        restoreLayoutAfterTransition();
     }
 
     public int contextGetSelectionSize() {
@@ -554,12 +550,12 @@ public class CreateGameFragment extends Fragment {
         addActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TransitionHelper.isTransitionSupported()) {
-                    startActivityWithTransition();
+                if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+                    startCreateTagActivityWithTransition();
                 }
                 // No transitions.
                 else {
-                    startActivity();
+                    startCreateTagActivity();
                 }
             }
         });
@@ -627,7 +623,8 @@ public class CreateGameFragment extends Fragment {
     }
 
     @TargetApi(21)
-    private void startActivityWithTransition() {
+    private void startCreateTagActivityWithTransition() {
+        // Gets the transition from the XML file.
         Transition transition = TransitionInflater.from(getActivity()).inflateTransition(R.transition.changebounds_with_arcmotion);
         transition.addListener(new Transition.TransitionListener() {
             @Override
@@ -637,12 +634,12 @@ public class CreateGameFragment extends Fragment {
 
             @Override
             public void onTransitionEnd(Transition transition) {
-                hideActionButton();
-
                 TransitionHelper.circularShow(addActionButton, revealContent, new Runnable() {
                     @Override
                     public void run() {
-                        startActivity();
+                        Intent intent = new Intent(getActivity(), CreateTagActivity.class);
+                        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), null).toBundle();
+                        getActivity().startActivityForResult(intent, 0, bundle);
                     }
                 });
             }
@@ -663,44 +660,42 @@ public class CreateGameFragment extends Fragment {
             }
         });
 
-        // View transition.
+        // Curved motion transition.
         TransitionManager.beginDelayedTransition(sceneRoot, transition);
 
-        // Change the action button's gravity from bottom|right to center.
+        // Changes the action button's gravity from bottom|right to center.
         CoordinatorLayout.LayoutParams newLayoutParams = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.WRAP_CONTENT, CoordinatorLayout.LayoutParams.WRAP_CONTENT);
         newLayoutParams.gravity = Gravity.CENTER;
         addActionButton.setLayoutParams(newLayoutParams);
     }
 
-    private void startActivity() {
+    private void startCreateTagActivity() {
         Intent intent = new Intent(getActivity(), CreateTagActivity.class);
         startActivityForResult(intent, 0);
     }
 
-    private void showActionButton() {
-        if (addActionButton.getScaleX() == 0 && addActionButton.getScaleY() == 0) {
-            // Using handler because the setStartDelay method glitches with
-            // the show/hide of the action button.
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    addActionButton.animate()
-                            .scaleX(1)
-                            .scaleY(1);
-                }
-            }, 700);
-        }
-    }
-
-    private void hideActionButton() {
-        addActionButton.setScaleX(0);
-        addActionButton.setScaleY(0);
-    }
-
+    @TargetApi(21)
     private void restoreLayoutAfterTransition() {
-        if (revealContent != null && revealContent.getVisibility() == View.VISIBLE) {
-            revealContent.setVisibility(View.INVISIBLE);
-            addActionButton.setLayoutParams(originalLayoutParams);
+        if (!TransitionHelper.isTransitionSupported() && !TransitionHelper.isTransitionEnabled) {
+            return;
         }
+
+        if (revealContent.getVisibility() == View.INVISIBLE) {
+            return;
+        }
+
+        TransitionHelper.circularHide(addActionButton, revealContent, new Runnable() {
+            @Override
+            public void run() {
+                // Gets the transition from the XML file.
+                Transition transition = TransitionInflater.from(getActivity()).inflateTransition(R.transition.changebounds_with_arcmotion);
+
+                // Curved motion transition.
+                TransitionManager.beginDelayedTransition(sceneRoot, transition);
+
+                // Revert action button to it's original position.
+                addActionButton.setLayoutParams(originalLayoutParams);
+            }
+        });
     }
 }
