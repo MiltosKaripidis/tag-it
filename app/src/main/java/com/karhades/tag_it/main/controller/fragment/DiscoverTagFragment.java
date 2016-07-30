@@ -202,14 +202,7 @@ public class DiscoverTagFragment extends Fragment {
         // Inform user.
         View parentView = getView();
         if (parentView != null) {
-            Snackbar snackbar = Snackbar.make(parentView, mNfcTag.getTitle() + " discovered", Snackbar.LENGTH_INDEFINITE);
-            snackbar.setActionTextColor(getResources().getColor(R.color.accent));
-            snackbar.setAction("DISMISS", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // DO NOTHING.
-                }
-            });
+            Snackbar snackbar = Snackbar.make(parentView, mNfcTag.getTitle() + " discovered", Snackbar.LENGTH_LONG);
             snackbar.show();
         }
     }
