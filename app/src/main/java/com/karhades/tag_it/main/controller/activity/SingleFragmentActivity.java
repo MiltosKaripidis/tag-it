@@ -26,11 +26,11 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fragment);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.fragmentContainer);
+        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
         if (fragment == null) {
             fragment = createFragment();
             fragmentManager.beginTransaction()
-                    .add(R.id.fragmentContainer, fragment)
+                    .add(R.id.fragment_container, fragment)
                     .commit();
         }
     }

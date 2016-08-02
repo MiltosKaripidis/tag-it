@@ -188,11 +188,11 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     }
 
     private void setupProgressBar() {
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar = (ProgressBar) findViewById(R.id.main_progress_bar);
     }
 
     private void setupFloatingActionButton() {
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.add_action_button);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.main_floating_action_button);
     }
 
     private void setupCoordinatorLayout() {
@@ -201,13 +201,16 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
 
     @SuppressWarnings("ConstantConditions")
     private void setupNavigationDrawer() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.main_navigation_drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.main_navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                navigationView.setCheckedItem(item.getItemId());
                 drawerLayout.closeDrawer(navigationView);
+
+                if (item.getGroupId() == R.id.group_primary) {
+                    navigationView.setCheckedItem(item.getItemId());
+                }
 
                 switch (item.getItemId()) {
                     case R.id.navigation_tracking:
@@ -223,16 +226,19 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
                         return true;
 
                     case R.id.navigation_settings:
-                        // Start settings activity.
-                        Intent intent = SettingsActivity.newIntent(MainActivity.this);
-                        startActivity(intent);
-                        return true;
+                        startSettingsActivity();
+                        return false;
 
                     default:
                         return false;
                 }
             }
         });
+    }
+
+    private void startSettingsActivity() {
+        Intent intent = SettingsActivity.newIntent(MainActivity.this);
+        startActivity(intent);
     }
 
     @SuppressWarnings("deprecation")

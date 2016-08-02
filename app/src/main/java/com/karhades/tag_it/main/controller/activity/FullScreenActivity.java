@@ -40,7 +40,7 @@ public class FullScreenActivity extends Activity {
     }
 
     private void initializeWidgets() {
-        imageView = (ImageView) findViewById(R.id.full_screen_image_view);
+        imageView = (ImageView) findViewById(R.id.fullscreen_image_view);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

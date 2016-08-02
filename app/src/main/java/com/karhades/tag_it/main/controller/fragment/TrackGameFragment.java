@@ -116,7 +116,7 @@ public class TrackGameFragment extends Fragment {
             }
         });
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.tracking_recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.track_game_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
     }
@@ -126,7 +126,7 @@ public class TrackGameFragment extends Fragment {
     }
 
     private void setupEmptyView(View view) {
-        emptyLinearLayout = (LinearLayout) view.findViewById(R.id.tracking_empty_linear_layout);
+        emptyLinearLayout = (LinearLayout) view.findViewById(R.id.track_game_empty_linear_layout);
     }
 
     private void hideRecyclerViewIfEmpty() {
@@ -179,14 +179,14 @@ public class TrackGameFragment extends Fragment {
             setupTouchListener(view);
             setupClickListener(view);
 
-            imageView = (ImageView) view.findViewById(R.id.row_tracking_image_view);
+            imageView = (ImageView) view.findViewById(R.id.row_track_image_view);
 
-            titleTextView = (TextView) view.findViewById(R.id.row_tracking_title_text_view);
+            titleTextView = (TextView) view.findViewById(R.id.row_track_title_text_view);
 
-            difficultyTextView = (TextView) view.findViewById(R.id.row_tracking_difficulty_text_view);
+            difficultyTextView = (TextView) view.findViewById(R.id.row_track_difficulty_text_view);
             difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
 
-            discoveredCheckBox = (CheckBox) view.findViewById(R.id.row_tracking_discovered_check_box);
+            discoveredCheckBox = (CheckBox) view.findViewById(R.id.row_track_discovered_check_box);
         }
 
         /**
@@ -280,7 +280,7 @@ public class TrackGameFragment extends Fragment {
 
         @Override
         public NfcTagHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_track_game_fragment_alt, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_track_game_fragment, viewGroup, false);
 
             return new NfcTagHolder(view);
         }

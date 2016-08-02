@@ -124,7 +124,7 @@ public class DiscoverTagFragment extends Fragment {
      * @param view A view needed for the findViewById() method.
      */
     private void setupToolbar(View view) {
-        mToolbar = (Toolbar) view.findViewById(R.id.discover_toolbar);
+        mToolbar = (Toolbar) view.findViewById(R.id.discover_tool_bar);
 
         // Retrieves an AppCompatActivity hosting activity to get the supported actionbar.
         AppCompatActivity activity = (AppCompatActivity) getActivity();

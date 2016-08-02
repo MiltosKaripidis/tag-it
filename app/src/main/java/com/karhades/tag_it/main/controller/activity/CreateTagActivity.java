@@ -60,7 +60,7 @@ public class CreateTagActivity extends SingleFragmentActivity implements CreateT
         super.onNewIntent(intent);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        CreateTagFragment currentFragment = (CreateTagFragment) fragmentManager.findFragmentById(R.id.fragmentContainer);
+        CreateTagFragment currentFragment = (CreateTagFragment) fragmentManager.findFragmentById(R.id.fragment_container);
 
         // Indicates whether the write operation can start.
         boolean isReady = NfcHandler.getWriteMode();

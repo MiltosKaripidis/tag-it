@@ -180,7 +180,7 @@ public class CreateGameFragment extends Fragment {
     }
 
     private void setupRecyclerView(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.create_recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.create_game_recycler_view);
         // Forces the recycling of items (Default=2).
         recyclerView.setItemViewCacheSize(0);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
@@ -220,7 +220,7 @@ public class CreateGameFragment extends Fragment {
     }
 
     private void setupEmptyView(View view) {
-        emptyLinearLayout = (LinearLayout) view.findViewById(R.id.create_empty_linear_layout);
+        emptyLinearLayout = (LinearLayout) view.findViewById(R.id.create_game_empty_linear_layout);
         hideRecyclerViewIfEmpty();
     }
 

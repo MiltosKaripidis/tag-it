@@ -203,7 +203,7 @@ public class TrackTagFragment extends Fragment {
      * @param view A view needed for the findViewById() method.
      */
     private void setupToolbar(View view) {
-        toolbar = (Toolbar) view.findViewById(R.id.track_tool_bar);
+        toolbar = (Toolbar) view.findViewById(R.id.track_tag_tool_bar);
 
         // Retrieve an AppCompatActivity hosting activity to get the supported actionbar.
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -222,7 +222,7 @@ public class TrackTagFragment extends Fragment {
     }
 
     private void setupFloatingActionButton(View view) {
-        fullscreenActionButton = (FloatingActionButton) view.findViewById(R.id.full_screen_action_button);
+        fullscreenActionButton = (FloatingActionButton) view.findViewById(R.id.track_tag_fullscreen__floating_action_button);
         fullscreenActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -267,19 +267,19 @@ public class TrackTagFragment extends Fragment {
      */
     private void initializeWidgets(View view) {
         // NfcTag Picture ImageView.
-        pictureImageView = (ImageView) view.findViewById(R.id.tracking_image_view);
+        pictureImageView = (ImageView) view.findViewById(R.id.track_tag_image_view);
         if (TransitionHelper.isTransitionSupportedAndEnabled()) {
             pictureImageView.setTransitionName("image" + nfcTag.getTagId());
         }
 
         // NfcTag Difficulty TextView.
-        difficultyTextView = (TextView) view.findViewById(R.id.tracking_difficulty_text_view);
+        difficultyTextView = (TextView) view.findViewById(R.id.track_tag_difficulty_text_view);
 
         // NfcTag discovered CheckBox.
-        discoveredCheckBox = (CheckBox) view.findViewById(R.id.tracking_discovered_check_box);
+        discoveredCheckBox = (CheckBox) view.findViewById(R.id.track_tag_discovered_check_box);
 
         // NfcTag Date discovered TextView.
-        dateDiscoveredTextView = (TextView) view.findViewById(R.id.tracking_date_discovered_text_view);
+        dateDiscoveredTextView = (TextView) view.findViewById(R.id.track_tag_date_discovered_text_view);
 
         // A hidden FrameLayout that will cover the whole screen on transition start.
         revealContent = (ViewGroup) view.findViewById(R.id.tracking_reveal_content);
@@ -348,7 +348,7 @@ public class TrackTagFragment extends Fragment {
      */
     public View getSharedElement() {
         if (getView() != null) {
-            return getView().findViewById(R.id.tracking_image_view);
+            return getView().findViewById(R.id.track_tag_image_view);
         }
         return null;
     }

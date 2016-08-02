@@ -4,7 +4,7 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/settings_toolbar"
+        android:id="@+id/settings_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/primary"
@@ -13,7 +13,7 @@
 
     <!-- Fragment container-->
     <FrameLayout
-        android:id="@+id/fragmentContainer"
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

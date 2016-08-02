@@ -30,7 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void setupToolbar() {
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.settings_toolbar);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.settings_tool_bar);
         // Substitute the action bar for this toolbar.
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -42,7 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void setupFragment() {
         getFragmentManager().beginTransaction()
-                .add(R.id.fragmentContainer, SettingsFragment.newInstance())
+                .add(R.id.fragment_container, SettingsFragment.newInstance())
                 .commit();
     }
 }

@@ -237,7 +237,7 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void setupFloatingActionButton(View view) {
-        cameraActionButton = (FloatingActionButton) view.findViewById(R.id.camera_action_button);
+        cameraActionButton = (FloatingActionButton) view.findViewById(R.id.create_tag_camera_floating_action_button);
         cameraActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -275,9 +275,9 @@ public class CreateTagFragment extends Fragment {
     private void initializeWidgets(View view) {
         setupSpinner(view);
 
-        imageView = (ImageView) view.findViewById(R.id.create_image_view);
+        imageView = (ImageView) view.findViewById(R.id.create_tag_image_view);
 
-        imageViewOverlay = (ViewGroup) view.findViewById(R.id.create_image_view_overlay);
+        imageViewOverlay = (ViewGroup) view.findViewById(R.id.create_tag_image_view_overlay);
         imageViewOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -290,7 +290,7 @@ public class CreateTagFragment extends Fragment {
             }
         });
 
-        tagItButton = (Button) view.findViewById(R.id.tag_it_button);
+        tagItButton = (Button) view.findViewById(R.id.create_tag_tag_it_button);
         tagItButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -298,7 +298,7 @@ public class CreateTagFragment extends Fragment {
             }
         });
 
-        cancelButton = (Button) view.findViewById(R.id.cancel_button);
+        cancelButton = (Button) view.findViewById(R.id.create_tag_cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -306,11 +306,11 @@ public class CreateTagFragment extends Fragment {
             }
         });
 
-        revealContent = (ViewGroup) view.findViewById(R.id.create_reveal_content);
+        revealContent = (ViewGroup) view.findViewById(R.id.create_tag_reveal_content);
     }
 
     private void setupSpinner(View view) {
-        difficultySpinner = (Spinner) view.findViewById(R.id.spinner);
+        difficultySpinner = (Spinner) view.findViewById(R.id.create_tag_spinner);
         ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.array_difficulty, android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         difficultySpinner.setAdapter(arrayAdapter);

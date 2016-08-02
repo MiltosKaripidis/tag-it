@@ -11,13 +11,13 @@
         android:fitsSystemWindows="true">
 
         <android.support.design.widget.AppBarLayout
-            android:id="@+id/tracking_app_bar_layout"
+            android:id="@+id/track_tag_app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true">
 
             <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/collapsing_tool_bar_layout"
+                android:id="@+id/create_tag_collapsing_tool_bar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
@@ -29,7 +29,7 @@
                 app:statusBarScrim="@color/primary_dark">
 
                 <ImageView
-                    android:id="@+id/tracking_image_view"
+                    android:id="@+id/track_tag_image_view"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:fitsSystemWindows="true"
@@ -38,7 +38,7 @@
                     tools:ignore="ContentDescription" />
 
                 <android.support.v7.widget.Toolbar
-                    android:id="@+id/track_tool_bar"
+                    android:id="@+id/track_tag_tool_bar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     app:layout_collapseMode="pin" />
@@ -46,18 +46,18 @@
         </android.support.design.widget.AppBarLayout>
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/full_screen_action_button"
+            android:id="@+id/track_tag_fullscreen__floating_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:src="@drawable/icon_fullscreen"
             app:backgroundTint="@color/accent"
-            app:layout_anchor="@id/tracking_app_bar_layout"
+            app:layout_anchor="@id/track_tag_app_bar_layout"
             app:layout_anchorGravity="bottom|right" />
 
         <android.support.v4.widget.NestedScrollView
-            android:id="@+id/nested_scroll_view"
+            android:id="@+id/track_tag_nested_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -84,7 +84,6 @@
                         android:paddingTop="24dp">
 
                         <TextView
-                            android:id="@+id/tracking_details_text_view"
                             style="?android:attr/listSeparatorTextViewStyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -95,14 +94,12 @@
 
                         <!--Difficulty-->
                         <LinearLayout
-                            android:id="@+id/tracking_difficulty_linear_layout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/tracking_difficulty_label_text_view"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/label_difficulty"
@@ -110,7 +107,7 @@
                                 android:textSize="20sp" />
 
                             <TextView
-                                android:id="@+id/tracking_difficulty_text_view"
+                                android:id="@+id/track_tag_difficulty_text_view"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/label_empty"
@@ -120,14 +117,12 @@
 
                         <!--Discovered-->
                         <LinearLayout
-                            android:id="@+id/tracking_discovered_linear_layout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/tracking_discovered_label_text_view"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/label_discovered"
@@ -135,7 +130,7 @@
                                 android:textSize="20sp" />
 
                             <CheckBox
-                                android:id="@+id/tracking_discovered_check_box"
+                                android:id="@+id/track_tag_discovered_check_box"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:clickable="false" />
@@ -157,7 +152,7 @@
                                 android:textSize="20sp" />
 
                             <TextView
-                                android:id="@+id/tracking_date_discovered_text_view"
+                                android:id="@+id/track_tag_date_discovered_text_view"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/label_empty"

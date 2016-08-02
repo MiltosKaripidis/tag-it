@@ -17,13 +17,13 @@
 
             <!-- Image and touch effect-->
             <FrameLayout
-                android:id="@+id/create_image_linear_layout"
+                android:id="@+id/create_tag_image_linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="300dp">
 
                 <!-- Tag picture-->
                 <ImageView
-                    android:id="@+id/create_image_view"
+                    android:id="@+id/create_tag_image_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
@@ -32,7 +32,7 @@
 
                 <!-- Picture's touch effect-->
                 <FrameLayout
-                    android:id="@+id/create_image_view_overlay"
+                    android:id="@+id/create_tag_image_view_overlay"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/selector_touch_effect"
@@ -54,7 +54,7 @@
                     android:paddingRight="16dp">
 
                     <TextView
-                        android:id="@+id/create_details_text_view"
+                        android:id="@+id/create_tag_details_text_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -65,7 +65,7 @@
 
                 <!-- Content-->
                 <RelativeLayout
-                    android:id="@+id/create_content_relative_layout"
+                    android:id="@+id/create_tag_content_relative_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingBottom="8dp"
@@ -75,19 +75,19 @@
 
                     <!-- Difficulty-->
                     <LinearLayout
-                        android:id="@+id/create_difficulty_linear_layout"
+                        android:id="@+id/create_tag_difficulty_linear_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/create_difficulty_label_text_view"
+                            android:id="@+id/create_tag_difficulty_label_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/label_difficulty"
                             android:textSize="16sp" />
 
                         <Spinner
-                            android:id="@+id/spinner"
+                            android:id="@+id/create_tag_spinner"
                             style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -103,7 +103,7 @@
                         android:gravity="end">
 
                         <Button
-                            android:id="@+id/cancel_button"
+                            android:id="@+id/create_tag_cancel_button"
                             android:layout_width="wrap_content"
                             android:layout_height="48dp"
                             android:background="@drawable/selector_raised_button_secondary"
@@ -112,7 +112,7 @@
                             tools:ignore="ButtonStyle" />
 
                         <Button
-                            android:id="@+id/tag_it_button"
+                            android:id="@+id/create_tag_tag_it_button"
                             android:layout_width="wrap_content"
                             android:layout_height="48dp"
                             android:background="@drawable/selector_raised_button"
@@ -133,19 +133,19 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/camera_action_button"
+            android:id="@+id/create_tag_camera_floating_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:src="@drawable/icon_camera"
             app:backgroundTint="@color/accent"
-            app:layout_anchor="@id/create_image_linear_layout"
+            app:layout_anchor="@id/create_tag_image_linear_layout"
             app:layout_anchorGravity="bottom|end" />
     </android.support.design.widget.CoordinatorLayout>
 
     <!-- Circular reveal content-->
     <FrameLayout
-        android:id="@+id/create_reveal_content"
+        android:id="@+id/create_tag_reveal_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/accent"

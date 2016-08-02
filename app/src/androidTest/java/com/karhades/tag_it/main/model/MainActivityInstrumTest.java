@@ -32,7 +32,7 @@ public class MainActivityInstrumTest {
 
     @Test
     public void list_scrolls() {
-        ViewInteraction recyclerView = onView(withId(R.id.tracking_recycler_view));
+        ViewInteraction recyclerView = onView(withId(R.id.track_game_recycler_view));
 
         recyclerView.perform(actionOnItemAtPosition(0, click()));
         for (int i = 0; i < 4; i++) {
@@ -43,7 +43,7 @@ public class MainActivityInstrumTest {
 
     @Test
     public void scrollItems_reverse() {
-        onView(withId(R.id.tracking_recycler_view)).perform(actionOnItemAtPosition(4, click()));
+        onView(withId(R.id.track_game_recycler_view)).perform(actionOnItemAtPosition(4, click()));
         for (int i = 0; i < 4; i++) {
             onView(withId(R.id.track_tag_pager_view_pager)).perform(swipeRight());
         }

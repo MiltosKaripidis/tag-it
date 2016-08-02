@@ -1,6 +1,6 @@
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_navigation_drawer_layout"
+    android:id="@+id/main_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
@@ -39,7 +39,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/add_action_button"
+            android:id="@+id/main_floating_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -48,7 +48,7 @@
             app:backgroundTint="@color/accent" />
 
         <ProgressBar
-            android:id="@+id/progress_bar"
+            android:id="@+id/main_progress_bar"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
 
     <!-- Navigation drawer-->
     <android.support.design.widget.NavigationView
-        android:id="@+id/navigation_view"
+        android:id="@+id/main_navigation_view"
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
