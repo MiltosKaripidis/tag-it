@@ -89,7 +89,7 @@ public class CreateGameFragment extends Fragment {
      * Transition variables.
      */
     private ViewGroup sceneRoot;
-    private ViewGroup revealContent;
+    private View revealContent;
     private ViewGroup.LayoutParams originalLayoutParams;
 
     /**
@@ -550,7 +550,7 @@ public class CreateGameFragment extends Fragment {
         addActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+                if (TransitionHelper.isTransitionSupportedAndEnabled()) {
                     startCreateTagActivityWithTransition();
                 }
                 // No transitions.
@@ -676,11 +676,11 @@ public class CreateGameFragment extends Fragment {
 
     @TargetApi(21)
     private void restoreLayoutAfterTransition() {
-        if (!TransitionHelper.isTransitionSupported() && !TransitionHelper.isTransitionEnabled) {
+        if (!TransitionHelper.isTransitionSupportedAndEnabled()) {
             return;
         }
 
-        if (revealContent.getVisibility() == View.INVISIBLE) {
+        if (revealContent == null || revealContent.getVisibility() == View.INVISIBLE) {
             return;
         }
 

@@ -222,7 +222,7 @@ public class TrackGameFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+                    if (TransitionHelper.isTransitionSupportedAndEnabled()) {
                         startTrackingTagPagerActivityWithTransition();
                     }
                     // No transitions.
@@ -255,7 +255,7 @@ public class TrackGameFragment extends Fragment {
         public void bindNfcTag(NfcTag nfcTag) {
             this.nfcTag = nfcTag;
 
-            if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+            if (TransitionHelper.isTransitionSupportedAndEnabled()) {
                 imageView.setTransitionName("image" + nfcTag.getTagId());
                 imageView.setTag("image" + nfcTag.getTagId());
             }

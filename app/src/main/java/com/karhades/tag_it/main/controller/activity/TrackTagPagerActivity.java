@@ -83,7 +83,7 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
         setupViewPager();
         setCurrentTagPage();
 
-        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+        if (TransitionHelper.isTransitionSupportedAndEnabled()) {
             enableTransitions();
         }
     }
@@ -203,7 +203,7 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
     @Override
     @TargetApi(21)
     public void finishAfterTransition() {
-        if (!TransitionHelper.isTransitionEnabled) {
+        if (!TransitionHelper.isTransitionSupportedAndEnabled()) {
             super.finishAfterTransition();
             return;
         }

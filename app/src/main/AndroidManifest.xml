@@ -90,8 +90,14 @@
         <!-- FullScreenActivity-->
         <activity
             android:name=".main.controller.activity.FullScreenActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.Translucent" />
+            android:theme="@style/AppTheme.Fullscreen" />
+
+        <!-- SettingsActivity-->
+        <activity
+            android:name=".main.controller.activity.SettingsActivity"
+            android:parentActivityName=".main.controller.activity.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Settings" />
 
         <!-- Audio Service-->
         <service android:name=".utils.AudioService" />

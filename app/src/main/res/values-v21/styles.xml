@@ -23,10 +23,18 @@
         <!-- Transitions-->
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowSharedElementEnterTransition">@transition/tracking_shared_element</item>
-        <item name="android:windowSharedElementReturnTransition">@transition/tracking_shared_element</item>
-        <item name="android:windowEnterTransition">@transition/tracking_game_window_enter_transition</item>
-        <item name="android:windowReturnTransition">@transition/tracking_game_window_return_transition</item>
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/tracking_shared_element
+        </item>
+        <item name="android:windowSharedElementReturnTransition">
+            @transition/tracking_shared_element
+        </item>
+        <item name="android:windowEnterTransition">
+            @transition/tracking_game_window_enter_transition
+        </item>
+        <item name="android:windowReturnTransition">
+            @transition/tracking_game_window_return_transition
+        </item>
 
         <!-- Custom ActionMode popup-->
         <item name="actionBarPopupTheme">@style/AppTheme.ActionMode.Overflow</item>
@@ -36,8 +44,13 @@
     </style>
 
     <!-- Style for the fullscreen activity-->
-    <style name="AppTheme.Translucent">
+    <style name="AppTheme.Fullscreen">
         <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <!-- Style for the settings activity-->
+    <style name="AppTheme.Settings">
+        <item name="android:statusBarColor">@color/primary_dark</item>
     </style>
 
     <!-- Custom style for the ActionMode's popup menu-->

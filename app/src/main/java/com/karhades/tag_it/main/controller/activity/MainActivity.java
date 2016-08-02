@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
         setupTabLayout();
         setupContextualActionBar();
 
-        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+        if (TransitionHelper.isTransitionSupportedAndEnabled()) {
             enableTransitions();
         }
 
@@ -223,7 +223,9 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
                         return true;
 
                     case R.id.navigation_settings:
-                        // DO NOTHING.
+                        // Start settings activity.
+                        Intent intent = SettingsActivity.newIntent(MainActivity.this);
+                        startActivity(intent);
                         return true;
 
                     default:
@@ -331,9 +333,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
         actionModeCallback = new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                if (TransitionHelper.isTransitionSupported()) {
-                    changeBarsColor(false);
-                }
+                changeBarsColor(false);
 
                 MenuInflater inflater = mode.getMenuInflater();
                 inflater.inflate(R.menu.contextual_action_bar, menu);
@@ -395,9 +395,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
                     return;
                 }
 
-                if (TransitionHelper.isTransitionSupported()) {
-                    changeBarsColor(true);
-                }
+                changeBarsColor(true);
 
                 createGameFragment.contextFinish();
 
@@ -457,7 +455,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
         createGameFragment = fragment;
         createGameFragment.setupFloatingActionButton(floatingActionButton);
 
-        if (TransitionHelper.isTransitionSupported()) {
+        if (TransitionHelper.isTransitionSupportedAndEnabled()) {
             ViewGroup sceneRoot = drawerLayout;
             ViewGroup revealContent = (ViewGroup) findViewById(R.id.main_reveal_content);
             createGameFragment.setupTransitionViews(sceneRoot, revealContent);
@@ -541,7 +539,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     public void onActivityReenter(int resultCode, Intent data) {
         super.onActivityReenter(resultCode, data);
 
-        if (!TransitionHelper.isTransitionEnabled)
+        if (!TransitionHelper.isTransitionSupportedAndEnabled())
             return;
 
         // If Tab 1.

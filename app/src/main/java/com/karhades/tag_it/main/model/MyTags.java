@@ -9,6 +9,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.karhades.tag_it.main.controller.fragment.SettingsFragment;
 import com.karhades.tag_it.utils.PictureLoader;
 import com.karhades.tag_it.utils.TagJsonSerializer;
 
@@ -22,7 +23,15 @@ import java.util.List;
  */
 public class MyTags {
 
+    /**
+     * Debug constant.
+     */
     private static final String TAG = "MyTags";
+
+    /**
+     * Toggle application transitions.
+     */
+    private static boolean transitionDisabled = false;
 
     /**
      * JSON file name.
@@ -59,6 +68,17 @@ public class MyTags {
         this.context = context.getApplicationContext();
 
         serializer = new TagJsonSerializer(this.context, FILENAME);
+
+        // Gets the saved transition variable from disk.
+        transitionDisabled = SettingsFragment.getStoredTransition(this.context);
+    }
+
+    public static void setTransitionDisabled(boolean transitionDisabled) {
+        MyTags.transitionDisabled = transitionDisabled;
+    }
+
+    public static boolean isTransitionDisabled() {
+        return transitionDisabled;
     }
 
     /**

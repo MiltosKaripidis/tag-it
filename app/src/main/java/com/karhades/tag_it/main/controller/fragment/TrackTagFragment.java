@@ -90,7 +90,7 @@ public class TrackTagFragment extends Fragment {
 
         getFragmentArguments();
 
-        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+        if (TransitionHelper.isTransitionSupportedAndEnabled()) {
             enableTransitions();
         }
     }
@@ -103,7 +103,7 @@ public class TrackTagFragment extends Fragment {
     }
 
     private void loadImage() {
-        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+        if (TransitionHelper.isTransitionSupportedAndEnabled()) {
             // Registers a callback to be invoked when the image has been loaded
             // to inform the activity to start the shared element transition.
             Callback picassoCallback = new Callback() {
@@ -152,7 +152,7 @@ public class TrackTagFragment extends Fragment {
     }
 
     private void hideCircularReveal() {
-        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+        if (TransitionHelper.isTransitionSupportedAndEnabled()) {
             // Hide the reveal content view.
             if (revealContent.getVisibility() == View.VISIBLE) {
                 TransitionHelper.circularHide(fullscreenActionButton, revealContent, new Runnable() {
@@ -226,7 +226,7 @@ public class TrackTagFragment extends Fragment {
         fullscreenActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+                if (TransitionHelper.isTransitionSupportedAndEnabled()) {
                     startFullScreenActivityWithTransition();
                 }
                 // No transitions.
@@ -268,7 +268,7 @@ public class TrackTagFragment extends Fragment {
     private void initializeWidgets(View view) {
         // NfcTag Picture ImageView.
         pictureImageView = (ImageView) view.findViewById(R.id.tracking_image_view);
-        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+        if (TransitionHelper.isTransitionSupportedAndEnabled()) {
             pictureImageView.setTransitionName("image" + nfcTag.getTagId());
         }
 

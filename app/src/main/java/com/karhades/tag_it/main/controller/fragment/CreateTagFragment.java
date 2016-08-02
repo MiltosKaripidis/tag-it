@@ -241,7 +241,7 @@ public class CreateTagFragment extends Fragment {
         cameraActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+                if (TransitionHelper.isTransitionSupportedAndEnabled()) {
                     takePictureWithTransition();
                 }
                 // No transitions.
