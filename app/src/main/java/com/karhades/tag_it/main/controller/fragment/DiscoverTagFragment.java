@@ -61,8 +61,6 @@ public class DiscoverTagFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setHasOptionsMenu(true);
-
         loadTags();
         setupNfcHandler();
 
@@ -192,14 +190,16 @@ public class DiscoverTagFragment extends Fragment {
             return;
         }
 
+        // Discovers the NFC tag.
         mNfcTag.setDiscovered(true);
-        // Format the Date into custom string.
+
+        // Formats the Date into a custom string.
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM (HH:mm)", Locale.getDefault());
         String formattedDate = simpleDateFormat.format(date);
         mNfcTag.setDateDiscovered(formattedDate);
 
-        // Inform user.
+        // Informs user.
         View parentView = getView();
         if (parentView != null) {
             Snackbar snackbar = Snackbar.make(parentView, mNfcTag.getTitle() + " discovered", Snackbar.LENGTH_LONG);
