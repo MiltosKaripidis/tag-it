@@ -239,6 +239,9 @@ public class CreateGameFragment extends Fragment {
         super.onResume();
 
         restoreLayoutAfterTransition();
+
+        // Updates UI.
+        adapter.notifyDataSetChanged();
     }
 
     public int contextGetSelectionSize() {
@@ -639,7 +642,7 @@ public class CreateGameFragment extends Fragment {
                     public void run() {
                         Intent intent = new Intent(getActivity(), CreateTagActivity.class);
                         Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), null).toBundle();
-                        getActivity().startActivityForResult(intent, 0, bundle);
+                        getActivity().startActivityForResult(intent, REQUEST_INSERT, bundle);
                     }
                 });
             }
@@ -671,7 +674,7 @@ public class CreateGameFragment extends Fragment {
 
     private void startCreateTagActivity() {
         Intent intent = new Intent(getActivity(), CreateTagActivity.class);
-        startActivityForResult(intent, 0);
+        startActivityForResult(intent, REQUEST_INSERT);
     }
 
     @TargetApi(21)
