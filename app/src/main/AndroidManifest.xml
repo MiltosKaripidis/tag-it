@@ -60,9 +60,9 @@
             android:parentActivityName=".main.controller.activity.MainActivity"
             android:screenOrientation="portrait" />
 
-        <!-- CreateTagPagerActivity-->
+        <!-- EditTagPagerActivity-->
         <activity
-            android:name=".main.controller.activity.CreateTagPagerActivity"
+            android:name=".main.controller.activity.EditTagPagerActivity"
             android:parentActivityName=".main.controller.activity.MainActivity"
             android:screenOrientation="portrait" />
 

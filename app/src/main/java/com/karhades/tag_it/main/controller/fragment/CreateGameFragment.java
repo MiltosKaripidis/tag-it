@@ -47,7 +47,7 @@ import android.widget.TextView;
 
 import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.activity.CreateTagActivity;
-import com.karhades.tag_it.main.controller.activity.CreateTagPagerActivity;
+import com.karhades.tag_it.main.controller.activity.EditTagPagerActivity;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcTag;
 import com.karhades.tag_it.utils.PictureLoader;
@@ -498,8 +498,8 @@ public class CreateGameFragment extends Fragment {
                 public void onClick(View v) {
                     // If Contextual Action Bar is disabled.
                     if (!adapter.isSelectionMode()) {
-                        // Start CreateTagPagerActivity.
-                        Intent intent = CreateTagPagerActivity.newIntent(getActivity(), nfcTag.getTagId());
+                        // Starts EditTagPagerActivity.
+                        Intent intent = EditTagPagerActivity.newIntent(getActivity(), nfcTag.getTagId());
                         startActivityForResult(intent, REQUEST_EDIT);
                     }
                     // If Contextual Action Bar is enabled.

@@ -16,7 +16,7 @@
     <string name="label_empty">N/A</string>
     <string name="popup_window_delete">Delete</string>
     <string name="button_cancel">CANCEL</string>
-    <string name="button_tag_it">TAG IT!</string>
+    <string name="button_tag_it">TAG IT</string>
     <string name="text_share_hint">Tap devices to share the fun.</string>
     <string name="text_empty1">Nothing to track.</string>
     <string name="text_empty2">Tap \'CREATE\' tab to add one.</string>
