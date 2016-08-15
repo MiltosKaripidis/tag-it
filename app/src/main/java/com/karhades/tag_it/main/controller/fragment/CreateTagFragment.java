@@ -6,7 +6,6 @@ package com.karhades.tag_it.main.controller.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -45,7 +44,8 @@ import com.karhades.tag_it.utils.TransitionHelper;
 import java.io.File;
 
 /**
- * Controller Fragment class that binds the creation of the tag with the data set.
+ * Controller Fragment class that binds the creation of the tag with the data set. Manages the NFC
+ * write operation.
  */
 public class CreateTagFragment extends Fragment {
 
@@ -60,6 +60,11 @@ public class CreateTagFragment extends Fragment {
      * Request constant.
      */
     private static final int REQUEST_IMAGE = 0;
+
+    /**
+     * NFC adapter.
+     */
+    private NfcHandler nfcHandler;
 
     /**
      * Widget references.
@@ -79,11 +84,6 @@ public class CreateTagFragment extends Fragment {
     private String temporaryDifficulty;
     private String temporaryPictureFilename;
     private TagItDialogFragment dialogFragment;
-    private Callbacks callbacks;
-
-    public interface Callbacks {
-        void setOnTagWriteListener(NfcHandler.OnTagWriteListener onTagWriteListener);
-    }
 
     /**
      * Transition variable.
@@ -111,29 +111,30 @@ public class CreateTagFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Make content appear behind status bar.
+        getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
         // Tell the FragmentManager that this fragment should receive
         // a call to onCreateOptionsMenu.
         setHasOptionsMenu(true);
 
         getFragmentArguments();
+        setupNfcHandler();
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    private void setupNfcHandler() {
+        nfcHandler = new NfcHandler();
+        nfcHandler.setupNfcHandler(getActivity());
+    }
 
-        try {
-            callbacks = (Callbacks) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement CreateTagFragment.Callbacks interface.");
+    public void onNewIntent(Intent intent) {
+        // Indicates whether the write operation can start.
+        boolean isReady = NfcHandler.getWriteMode();
+        if (!isReady) {
+            makeSnackBar();
+        } else {
+            nfcHandler.handleNfcWriteTag(intent);
         }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        callbacks = null;
     }
 
     @Override
@@ -141,6 +142,15 @@ public class CreateTagFragment extends Fragment {
         super.onResume();
 
         hideCircularReveal();
+
+        nfcHandler.enableForegroundDispatch();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        nfcHandler.disableForegroundDispatch();
     }
 
     @Override
@@ -372,7 +382,7 @@ public class CreateTagFragment extends Fragment {
         dialogFragment.show(getActivity().getSupportFragmentManager(), "write");
 
         // Wire a listener for a on tag write event.
-        callbacks.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
+        nfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
             @Override
             public void onTagWritten(int status, String tagId) {
 
@@ -484,10 +494,10 @@ public class CreateTagFragment extends Fragment {
         }
     }
 
-    public void makeSnackBar() {
+    private void makeSnackBar() {
         View parentView = getView();
         if (parentView != null) {
-            Snackbar.make(parentView, "Click \"TAG IT!\" to write.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(parentView, "Click \"TAG IT\" to write.", Snackbar.LENGTH_LONG).show();
         }
     }
 
