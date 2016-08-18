@@ -34,7 +34,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.karhades.tag_it.R;
-import com.karhades.tag_it.main.controller.activity.FullScreenActivity;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcHandler;
 import com.karhades.tag_it.main.model.NfcTag;
@@ -50,13 +49,6 @@ import java.io.File;
 public class CreateTagFragment extends Fragment {
 
     /**
-     * Extras constants.
-     */
-    private static final String EXTRA_POSITION = "com.karhades.tag_it.position";
-    private static final String EXTRA_TAG_ID = "com.karhades.tag_it.tag_id";
-    private static final String EXTRA_FILE_PATH = "com.karhades.tag_it.file_path";
-
-    /**
      * Request constant.
      */
     private static final int REQUEST_IMAGE = 0;
@@ -70,7 +62,6 @@ public class CreateTagFragment extends Fragment {
      * Widget references.
      */
     private ImageView imageView;
-    private ViewGroup imageViewOverlay;
     private Button cancelButton;
     private Button tagItButton;
     private Spinner difficultySpinner;
@@ -83,42 +74,28 @@ public class CreateTagFragment extends Fragment {
     private NfcTag currentNfcTag;
     private String temporaryDifficulty;
     private String temporaryPictureFilename;
-    private TagItDialogFragment dialogFragment;
+    private TagItDialogFragment tagItDialogFragment;
 
     /**
      * Transition variable.
      */
     private ViewGroup revealContent;
 
-    /**
-     * Return a CreateTagFragment with tagId as its argument.
-     * It must be called after the fragment is created and before it is added to the hosting activity.
-     *
-     * @param tagId A String containing the NfcTag ID.
-     * @return A Fragment with the above arguments.
-     */
-    public static CreateTagFragment newInstance(String tagId) {
-        Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_TAG_ID, tagId);
-
-        CreateTagFragment createTagFragment = new CreateTagFragment();
-        createTagFragment.setArguments(bundle);
-
-        return createTagFragment;
+    public static CreateTagFragment newInstance() {
+        return new CreateTagFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Make content appear behind status bar.
+        // Makes content appear behind status bar.
         getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-        // Tell the FragmentManager that this fragment should receive
+        // Tells the FragmentManager that this fragment should receive
         // a call to onCreateOptionsMenu.
         setHasOptionsMenu(true);
 
-        getFragmentArguments();
         setupNfcHandler();
     }
 
@@ -130,11 +107,13 @@ public class CreateTagFragment extends Fragment {
     public void onNewIntent(Intent intent) {
         // Indicates whether the write operation can start.
         boolean isReady = NfcHandler.getWriteMode();
+
         if (!isReady) {
             makeSnackBar();
-        } else {
-            nfcHandler.handleNfcWriteTag(intent);
+            return;
         }
+
+        nfcHandler.handleNfcWriteTag(intent);
     }
 
     @Override
@@ -157,22 +136,20 @@ public class CreateTagFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
-        // Discard the unsaved photo.
-        if (temporaryPictureFilename != null) {
-            File deleteFile = new File(temporaryPictureFilename);
-
-            if (!deleteFile.delete()) {
-                Log.e("CreateTagFragment", "Error deleting temporary file.");
-            }
-        }
+        discardTag();
     }
 
-    private void getFragmentArguments() {
-        // Get the tag ID from the CreateGameFragment (onListClick).
-        String tagId = getArguments().getString(EXTRA_TAG_ID);
+    private void discardTag() {
+        if (temporaryPictureFilename == null) {
+            return;
+        }
 
-        // Get the nfcTag through it's tag id from the arguments.
-        currentNfcTag = MyTags.get(getActivity()).getNfcTag(tagId);
+        // Discards the unsaved photo.
+        File deleteFile = new File(temporaryPictureFilename);
+
+        if (!deleteFile.delete()) {
+            Log.e("CreateTagFragment", "Error deleting temporary file.");
+        }
     }
 
     @Override
@@ -196,10 +173,6 @@ public class CreateTagFragment extends Fragment {
         // Load newly picture taken.
         if (temporaryPictureFilename != null) {
             PictureLoader.loadBitmapWithPicassoNoCache(getActivity(), temporaryPictureFilename, imageView);
-        }
-        // Load saved picture.
-        else if (currentNfcTag != null) {
-            PictureLoader.loadBitmapWithPicasso(getActivity(), currentNfcTag.getPictureFilePath(), imageView);
         }
     }
 
@@ -239,10 +212,9 @@ public class CreateTagFragment extends Fragment {
 
         if (actionBar != null) {
             // Display the caret for an ancestral navigation.
-            if (NavUtils.getParentActivityName(getActivity()) != null)
+            if (NavUtils.getParentActivityName(getActivity()) != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);
-            if (currentNfcTag != null)
-                actionBar.setTitle(currentNfcTag.getTitle());
+            }
         }
     }
 
@@ -287,19 +259,6 @@ public class CreateTagFragment extends Fragment {
 
         imageView = (ImageView) view.findViewById(R.id.create_tag_image_view);
 
-        imageViewOverlay = (ViewGroup) view.findViewById(R.id.create_tag_image_view_overlay);
-        imageViewOverlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentNfcTag != null) {
-                    Intent intent = new Intent(getActivity(), FullScreenActivity.class);
-                    String filePath = currentNfcTag.getPictureFilePath();
-                    intent.putExtra(EXTRA_FILE_PATH, filePath);
-                    startActivity(intent);
-                }
-            }
-        });
-
         tagItButton = (Button) view.findViewById(R.id.create_tag_tag_it_button);
         tagItButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -335,75 +294,49 @@ public class CreateTagFragment extends Fragment {
                 // NOT IMPLEMENTED
             }
         });
-
-        if (currentNfcTag != null) {
-            int position = 0;
-            switch (currentNfcTag.getDifficulty()) {
-                case "Easy":
-                    position = 0;
-                    break;
-                case "Medium":
-                    position = 1;
-                    break;
-                case "Hard":
-                    position = 2;
-                    break;
-            }
-
-            difficultySpinner.setSelection(position);
-        }
     }
 
     private void setupNfcWriteCallback() {
-
-        // If it's a new tag and there's no picture taken.
-        if (currentNfcTag == null && temporaryPictureFilename == null) {
+        // If there's no picture taken.
+        if (temporaryPictureFilename == null) {
             View parentView = getView();
-            if (parentView != null) {
-                Snackbar.make(parentView, "Take a picture first.", Snackbar.LENGTH_LONG).show();
+
+            if (parentView == null) {
+                return;
             }
+
+            Snackbar.make(parentView, "Take a picture first.", Snackbar.LENGTH_LONG).show();
+
             return;
         }
 
-        // Enter write mode.
+        // Enters write mode.
         NfcHandler.setWriteMode(true);
+        NfcHandler.setMode(NfcHandler.Mode.CREATE_NEW);
 
-        // If it's a new tag.
-        if (currentNfcTag == null) {
-            NfcHandler.setMode(NfcHandler.Mode.CREATE_NEW);
-        }
-        // If it already exists.
-        else {
-            NfcHandler.setMode(NfcHandler.Mode.OVERWRITE);
-        }
+        // Creates and shows the dialog.
+        tagItDialogFragment = TagItDialogFragment.newInstance();
+        tagItDialogFragment.show(getActivity().getSupportFragmentManager(), "tagItDialog");
 
-        // Create and show the dialog.
-        dialogFragment = TagItDialogFragment.newInstance();
-        dialogFragment.show(getActivity().getSupportFragmentManager(), "write");
-
-        // Wire a listener for a on tag write event.
+        // Wires a listener for an onTagWritten event.
         nfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
             @Override
             public void onTagWritten(int status, String tagId) {
-
-                // Close dialog.
-                dialogFragment.dismiss();
+                // Closes dialog.
+                tagItDialogFragment.dismiss();
 
                 // If NFC write operation was successful.
                 if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
-                    if (currentNfcTag != null) {
-                        overwriteNfcTag(tagId);
-                    } else {
-                        createNewNfcTag(tagId);
-                    }
+                    // Creates the new tag with the given tag ID.
+                    createNewNfcTag(tagId);
 
-                    // Rename temp_tag.jpg to new file path.
+                    // Renames temp_tag.jpg to new file path.
                     renameTempFile();
 
-                    // Inform user.
+                    // Informs user.
                     Toast.makeText(getActivity(), "NFC tag written!", Toast.LENGTH_SHORT).show();
 
-                    // Close activity.
+                    // Closes activity.
                     getActivity().finish();
                 }
                 // If NFC write operation was unsuccessful.
@@ -415,53 +348,33 @@ public class CreateTagFragment extends Fragment {
         });
     }
 
-    private void overwriteNfcTag(String tagId) {
-        // Overwrite current nfc tag fields.
-        currentNfcTag.setDifficulty(temporaryDifficulty);
-        currentNfcTag.setTagId(tagId);
-        currentNfcTag.setDiscovered(false);
-        currentNfcTag.setDateDiscovered(null);
-
-        // Clear memory cache for previous image to refresh ImageView.
-        PictureLoader.invalidateWithPicasso(getActivity(), currentNfcTag.getPictureFilePath());
-
-        // Get Nfc Tag's position to inform RecyclerView.Adapter.
-        int position = MyTags.get(getActivity()).getNfcTags().indexOf(currentNfcTag);
-        // Set result for REQUEST_EDIT and set position as an intent extra.
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_POSITION, position);
-
-        // Set result for REQUEST_EDIT.
-        getActivity().setResult(Activity.RESULT_OK, intent);
-    }
-
     private void createNewNfcTag(String tagId) {
+        // Gets the next available number for the new tag.
         int number = MyTags.get(getActivity()).getNfcTags().size() + 1;
 
+        // Creates new tag with the following fields.
         NfcTag newNfcTag = new NfcTag("Tag " + number, temporaryDifficulty, tagId);
 
-        // Add new tag to NfcTags list.
+        // Adds new tag to NfcTags list.
         MyTags.get(getActivity()).addNfcTag(newNfcTag);
 
-        // Set new tag as current instance member.
+        // Sets new tag as current instance member.
         currentNfcTag = newNfcTag;
 
-        // Set result for REQUEST_NEW.
+        // Sets result for REQUEST_NEW.
         getActivity().setResult(Activity.RESULT_OK);
     }
 
     private void renameTempFile() {
-        if (temporaryPictureFilename != null) {
-            File tempFile = new File(temporaryPictureFilename);
-            String renamedPath = tempFile.getParent() + File.separator + "Tag" + currentNfcTag.getTagId() + ".jpg";
-            File renamedFile = new File(renamedPath);
+        File tempFile = new File(temporaryPictureFilename);
+        String renamedPath = tempFile.getParent() + File.separator + "Tag" + currentNfcTag.getTagId() + ".jpg";
+        File renamedFile = new File(renamedPath);
 
-            if (tempFile.renameTo(renamedFile)) {
-                temporaryPictureFilename = null;
-                currentNfcTag.setPictureFilePath(renamedFile.getAbsolutePath());
-            } else {
-                Log.e("CreateTagFragment", "Error while renaming: " + renamedFile.getAbsolutePath());
-            }
+        if (tempFile.renameTo(renamedFile)) {
+            currentNfcTag.setPictureFilePath(renamedFile.getAbsolutePath());
+            temporaryPictureFilename = null;
+        } else {
+            Log.e("CreateTagFragment", "Error while renaming: " + renamedFile.getAbsolutePath());
         }
     }
 
@@ -496,9 +409,12 @@ public class CreateTagFragment extends Fragment {
 
     private void makeSnackBar() {
         View parentView = getView();
-        if (parentView != null) {
-            Snackbar.make(parentView, "Click \"TAG IT\" to write.", Snackbar.LENGTH_LONG).show();
+
+        if (parentView == null) {
+            return;
         }
+
+        Snackbar.make(parentView, "Click \"TAG IT\" to write.", Snackbar.LENGTH_LONG).show();
     }
 
     private void hideCircularReveal() {
