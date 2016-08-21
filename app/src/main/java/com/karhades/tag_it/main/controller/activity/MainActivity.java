@@ -461,11 +461,9 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
         createGameFragment = fragment;
         createGameFragment.setupFloatingActionButton(floatingActionButton);
 
-        if (TransitionHelper.isTransitionSupportedAndEnabled()) {
-            ViewGroup sceneRoot = drawerLayout;
-            ViewGroup revealContent = (ViewGroup) findViewById(R.id.main_reveal_content);
-            createGameFragment.setupTransitionViews(sceneRoot, revealContent);
-        }
+        ViewGroup sceneRoot = drawerLayout;
+        ViewGroup revealContent = (ViewGroup) findViewById(R.id.main_reveal_content);
+        createGameFragment.setupTransitionViews(sceneRoot, revealContent);
     }
 
     @Override
