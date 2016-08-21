@@ -66,8 +66,11 @@ public class TrackGameFragment extends Fragment {
     public void updateUi() {
         // Updates the UI.
         nfcTags = MyTags.get(getActivity()).getNfcTags();
-        // Refresh the NfcTag list.
+
+        // Refreshes the NfcTag list.
         adapter.notifyDataSetChanged();
+
+        hideRecyclerViewIfEmpty();
     }
 
     @Override

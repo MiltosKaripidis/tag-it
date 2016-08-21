@@ -3,8 +3,8 @@
     <string name="dummy_title">TITLE</string>
     <string name="dummy_difficulty">HARD</string>
     <string name="dummy_empty_text">No NFC Tags.</string>
-    <string name="dummy_empty_text1">Tap</string>
-    <string name="dummy_empty_text2">to add one.</string>
+    <string name="dummy_empty_text1">"Tap "</string>
+    <string name="dummy_empty_text2">" to add one."</string>
     <string name="dummy_username">Karhades</string>
     <string name="dummy_email">xbroodlordx@gmail.com</string>
 
