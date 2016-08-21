@@ -113,7 +113,7 @@ public class CreateTagFragment extends Fragment {
             return;
         }
 
-        nfcHandler.handleNfcWriteTag(intent);
+        nfcHandler.handleNfcTagWrite(intent);
     }
 
     @Override
@@ -312,7 +312,7 @@ public class CreateTagFragment extends Fragment {
 
         // Enters write mode.
         NfcHandler.setWriteMode(true);
-        NfcHandler.setMode(NfcHandler.Mode.CREATE_NEW);
+        NfcHandler.setMode(NfcHandler.Mode.CREATE);
 
         // Creates and shows the dialog.
         tagItDialogFragment = TagItDialogFragment.newInstance();
@@ -361,7 +361,7 @@ public class CreateTagFragment extends Fragment {
         // Sets new tag as current instance member.
         currentNfcTag = newNfcTag;
 
-        // Sets result for REQUEST_NEW.
+        // Sets result for REQUEST_INSERT.
         getActivity().setResult(Activity.RESULT_OK);
     }
 

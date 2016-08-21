@@ -130,7 +130,7 @@ public class NfcHandler {
      * Enum describing the write mode.
      */
     public enum Mode {
-        OVERWRITE, CREATE_NEW
+        CREATE, OVERWRITE
     }
 
     public static void setMode(Mode mode) {
@@ -243,27 +243,66 @@ public class NfcHandler {
     }
 
     /**
-     * Handles an NFC tag discovery and write data on it.
+     * Handles an NFC tag discovery and writes data on it.
      *
      * @param intent The NFC intent to resolve the tag discovery type.
-     * @return A boolean indicating whether the write operation is ready
-     * to start.
+     * @return A boolean indicating whether the write operation succeeded.
      */
-    public boolean handleNfcWriteTag(Intent intent) {
+    public boolean handleNfcTagWrite(Intent intent) {
         // If any tag technology is discovered.
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())
                 || NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())
                 || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
-            // Get the extra from the intent containing the tag.
+
+            // Gets the extra from the intent containing the tag.
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
-            // Get the discovered tag ID.
-            String tagId = getTagId(tag);
+            // A String representing the ID that will be written on the tag.
+            String tagId = null;
 
-            // Return the operation result.
+            // If it's a new tag.
+            if (mode.equals(Mode.CREATE)) {
+                tagId = createTagId(tag);
+            }
+            // If it's an existing tag.
+            else if (mode.equals(Mode.OVERWRITE)) {
+                tagId = getTagId(tag);
+            }
+
+            // Returns the operation result.
             return writeTag(tag, tagId);
         }
+
         return false;
+    }
+
+    /**
+     * Creates a new tag ID for the specified tag. Returns null if the tag exists within the
+     * application.
+     *
+     * @param tag The discovered NFC tag.
+     * @return A string representing the new tag ID or null if the tag already exists.
+     */
+    private String createTagId(Tag tag) {
+        try {
+            String tagId = getTagId(tag);
+
+            // Searches if the tag exists.
+            NfcTag nfcTag = MyTags.get(activity).getNfcTag(tagId);
+
+            // If NFC tag exists, don't create another one.
+            if (nfcTag != null) {
+                throw new TagExistsException("NFC tag already exists!");
+            }
+
+            // Creates and returns the new tag ID.
+            UUID uuid = UUID.randomUUID();
+            return uuid.toString();
+        } catch (TagExistsException e) {
+            Log.e(TAG, "Error retrieving tag ID. " + e.getMessage(), e);
+            Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
+            return null;
+        }
     }
 
     /**
@@ -275,77 +314,28 @@ public class NfcHandler {
      * occurred.
      */
     private String getTagId(Tag tag) {
-        // Get the NDEF formatted tag.
+        // Gets the NDEF formatted tag.
         Ndef ndef = Ndef.get(tag);
 
-        // The tag ID that will be returned.
-        String newTagId = null;
-
         try {
-            // Enable I/O operations with NFC tag.
-            ndef.connect();
+            // Reads the cached NdefMessage from the NFC tag at discovery time.
+            NdefMessage ndefMessage = ndef.getCachedNdefMessage();
 
-            // Read the NdefMessage from the NFC tag.
-            NdefMessage ndefMessage = ndef.getNdefMessage();
-            // If it isn't NDEF formatted.
-            if (ndefMessage == null) {
-                // Create a new tag ID.
-                UUID uuid = UUID.randomUUID();
-                newTagId = uuid.toString();
-
-                // Return the new tag ID.
-                return newTagId;
-            }
-
-            // Get the first NdefRecord from the NdefMessage.
+            // Gets the first NdefRecord from the NdefMessage.
             NdefRecord ndefRecord = ndefMessage.getRecords()[0];
-            // Get the ID of NdefRecord.
-            String oldTagId = new String(ndefRecord.getId());
 
-            // If it's a new tag.
-            if (mode == Mode.CREATE_NEW) {
-                // Search if the tag exists.
-                NfcTag nfcTag = MyTags.get(activity).getNfcTag(oldTagId);
-
-                // If NFC tag exists, don't create another one.
-                if (nfcTag != null) {
-                    throw new TagExistsException("NFC tag already exists!");
-                }
-
-                // Create a new NdefRecord ID.
-                UUID uuid = UUID.randomUUID();
-                newTagId = uuid.toString();
-            }
-            // If it's a rewrite.
-            else if (mode == Mode.OVERWRITE) {
-                // Get the existing NdefRecord ID.
-                newTagId = oldTagId;
-            }
-
-            // Return the new tag ID.
-            return newTagId;
-        } catch (TagExistsException e) {
-            Log.e(TAG, "Error retrieving tag ID. " + e.getMessage(), e);
-
-            // Inform user.
-            Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
-        } catch (FormatException | IOException e) {
-            Log.e(TAG, "Error reading tag " + e.getMessage(), e);
-        } finally {
-            if (ndef != null) {
-                try {
-                    ndef.close();
-                } catch (IOException e) {
-                    Log.e(TAG, "Error closing tag " + e.getMessage(), e);
-                }
-            }
+            // Gets the old tag ID of the NdefRecord.
+            return new String(ndefRecord.getId());
+        } catch (NullPointerException e) {
+            Log.e(TAG, e.getMessage(), e);
+            Toast.makeText(activity, "Write operation was interrupted", Toast.LENGTH_LONG).show();
+            return null;
         }
-        return null;
     }
 
     /**
-     * Writes the MIME type and payload to the specified tag
-     * and return the operation result.
+     * Writes the NdefMessage to the specified tag and returns the operation result. Causes RF
+     * activity.
      *
      * @param tag   The Tag object representing the NFC tag.
      * @param tagId A String representing the ID that will
@@ -354,49 +344,52 @@ public class NfcHandler {
      * succeeded.
      */
     private boolean writeTag(Tag tag, String tagId) {
-        // Get the NDEF formatted tag.
+        if (tagId == null) {
+            throw new NullPointerException("Tag ID cannot be null.");
+        }
+
+        // Gets the NDEF formatted tag.
         Ndef ndef = Ndef.get(tag);
 
         try {
-            if (tagId == null) {
-                throw new NullPointerException("Tag ID cannot be null.");
-            }
-
-            // Enable I/O operations with NFC tag.
+            // Enables I/O operations with NFC tag.
             ndef.connect();
 
-            // Get an NdefMessage that will be written on the tag.
+            // Gets an NdefMessage that will be written on the tag.
             NdefMessage ndefMessage = createNdefMessage(tagId);
-            // Write the NdefMessage to the tag.
+
+            // Writes the NdefMessage to the tag.
             ndef.writeNdefMessage(ndefMessage);
 
-            // Set STATUS_OK.
+            // Sets STATUS_OK.
             onTagWriteListener.onTagWritten(OnTagWriteListener.STATUS_OK, tagId);
 
             // Write operation succeeded.
             return true;
-        } catch (Exception e) {
-            Log.e(TAG, "Error when writing NdefMessage to NfcTag. " + e.getMessage(), e);
+        } catch (NullPointerException | IOException | FormatException e) {
+            Log.e(TAG, "Write operation was interrupted. " + e.getMessage(), e);
 
-            // Set STATUS_ERROR.
+            // Sets STATUS_ERROR.
             onTagWriteListener.onTagWritten(OnTagWriteListener.STATUS_ERROR, null);
+
+            // Write operation failed.
+            return false;
         } finally {
             if (ndef != null) {
                 try {
                     ndef.close();
                 } catch (IOException e) {
-                    Log.e(TAG, "Error closing tag " + e.getMessage(), e);
+                    Log.e(TAG, "Error closing tag. " + e.getMessage(), e);
                 }
             }
+
             if (onTagWriteListener != null) {
                 onTagWriteListener = null;
             }
 
-            // Set write mode to default value.
+            // Sets write mode to default value.
             writeMode = false;
         }
-        // Write operation failed.
-        return false;
     }
 
     /**
@@ -419,10 +412,10 @@ public class NfcHandler {
         // Payload data.
         byte[] payload = "tag_it".getBytes();
 
-        // Create an NdefRecord that will be encapsulated into an NdefMessage.
+        // Creates an NdefRecord that will be encapsulated into an NdefMessage.
         NdefRecord ndefRecord = new NdefRecord(tnf, mimeType, id, payload);
 
-        // Create an NdefMessage that contains the NdefRecord and
+        // Creates an NdefMessage that contains the NdefRecord and
         // will be encapsulated into an intent.
         return new NdefMessage(ndefRecord);
     }
@@ -435,7 +428,7 @@ public class NfcHandler {
      * @return A String representing the discovered tag ID or null if
      * an error occurred.
      */
-    public String handleNfcReadTag(Intent intent) {
+    public String handleNfcTagRead(Intent intent) {
         try {
             if (!intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
                 throw new TagNotRegisteredException("NFC tag isn't NDEF formatted.");
@@ -465,14 +458,14 @@ public class NfcHandler {
             return null;
         } catch (NullPointerException e) {
             Log.e(TAG, e.getMessage(), e);
-            Toast.makeText(activity, "Reading operation was interrupted", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "Read operation was interrupted", Toast.LENGTH_LONG).show();
             return null;
         }
     }
 
     /**
-     * Reads the NdefRecord of NdefMessage and returns
-     * the ID for the specified tag.
+     * Reads the NdefRecord of NdefMessage and returns the ID for the specified tag. Doesn't cause
+     * any RF activity.
      *
      * @param tag The Tag object representing the NFC tag.
      * @return The tag ID or null if an error occurred.
@@ -483,37 +476,20 @@ public class NfcHandler {
         // Gets the NDEF formatted tag.
         Ndef ndef = Ndef.get(tag);
 
-        try {
-            // Enables I/O operations.
-            ndef.connect();
+        // Reads the cached NdefMessage from the NFC tag at discovery time.
+        NdefMessage ndefMessage = ndef.getCachedNdefMessage();
+        // Gets the first NdefRecord from the NdefMessage.
+        NdefRecord ndefRecord = ndefMessage.getRecords()[0];
 
-            // Reads the NdefMessage from the NFC tag.
-            NdefMessage ndefMessage = ndef.getNdefMessage();
-            // Gets the first NdefRecord from the NdefMessage.
-            NdefRecord ndefRecord = ndefMessage.getRecords()[0];
+        // Gets the payload from the NdefRecord.
+        String payload = new String(ndefRecord.getPayload());
 
-            // Gets the payload from the NdefRecord.
-            String payload = new String(ndefRecord.getPayload());
-
-            if (!payload.equals("tag_it")) {
-                throw new TagNotRegisteredException("NFC tag payload doesn't match.");
-            }
-
-            // Returns the ID of NdefRecord.
-            return new String(ndefRecord.getId());
-
-        } catch (FormatException | IOException e) {
-            Log.e(TAG, "Error reading tag.", e);
-            throw new NullPointerException("Reading operation was interrupted.");
-        } finally {
-            if (ndef != null) {
-                try {
-                    ndef.close();
-                } catch (IOException e) {
-                    Log.e(TAG, "Error closing tag. " + e.getMessage(), e);
-                }
-            }
+        if (!payload.equals("tag_it")) {
+            throw new TagNotRegisteredException("NFC tag payload doesn't match.");
         }
+
+        // Returns the ID of NdefRecord.
+        return new String(ndefRecord.getId());
     }
 
     /**

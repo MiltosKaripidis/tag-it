@@ -80,7 +80,7 @@ public class DiscoverTagFragment extends Fragment {
     private void setupNfcHandler() {
         mNfcHandler = new NfcHandler();
         mNfcHandler.setupNfcHandler(getActivity());
-        mDiscoveredTagId = mNfcHandler.handleNfcReadTag(getActivity().getIntent());
+        mDiscoveredTagId = mNfcHandler.handleNfcTagRead(getActivity().getIntent());
     }
 
     @Override
