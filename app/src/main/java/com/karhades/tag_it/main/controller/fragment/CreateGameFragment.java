@@ -143,6 +143,7 @@ public class CreateGameFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO: Doesn't get called.
         if (requestCode == REQUEST_INSERT) {
             if (resultCode == Activity.RESULT_OK) {
                 adapter.notifyItemInserted(nfcTags.size());
@@ -242,6 +243,7 @@ public class CreateGameFragment extends Fragment {
 
         // Updates UI.
         adapter.notifyDataSetChanged();
+        hideRecyclerViewIfEmpty();
     }
 
     public int contextGetSelectionSize() {
