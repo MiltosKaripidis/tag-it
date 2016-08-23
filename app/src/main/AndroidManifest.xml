@@ -98,8 +98,5 @@
             android:parentActivityName=".main.controller.activity.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Settings" />
-
-        <!-- Audio Service-->
-        <service android:name=".utils.AudioService" />
     </application>
 </manifest>
