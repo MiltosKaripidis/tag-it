@@ -71,35 +71,35 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     /**
      * Transition variables.
      */
-    private Bundle bundle;
+    private Bundle mBundle;
 
     /**
      * Widget references.
      */
-    private DrawerLayout drawerLayout;
-    private CoordinatorLayout coordinatorLayout;
-    private NavigationView navigationView;
-    private Toolbar toolbar;
-    private AppBarLayout appBarLayout;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private FloatingActionButton floatingActionButton;
-    private ProgressBar progressBar;
+    private DrawerLayout mDrawerLayout;
+    private CoordinatorLayout mCoordinatorLayout;
+    private NavigationView mNavigationView;
+    private Toolbar mToolbar;
+    private AppBarLayout mAppBarLayout;
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
+    private FloatingActionButton mFloatingActionButton;
+    private ProgressBar mProgressBar;
 
     /**
      * Instance variables.
      */
-    private ActionMode actionMode;
-    private ActionMode.Callback actionModeCallback;
-    private boolean isSelectAllItemVisible;
-    private TrackGameFragment trackGameFragment;
-    private CreateGameFragment createGameFragment;
-    private AsyncTaskLoader asyncTaskLoader;
+    private ActionMode mActionMode;
+    private ActionMode.Callback mActionModeCallback;
+    private boolean mIsSelectAllItemVisible;
+    private TrackGameFragment mTrackGameFragment;
+    private CreateGameFragment mCreateGameFragment;
+    private AsyncTaskLoader mAsyncTaskLoader;
 
     /**
      * NFC adapter.
      */
-    private NfcHandler nfcHandler;
+    private NfcHandler mNfcHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,8 +135,8 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
      * Loads the tags asynchronously from the external storage.
      */
     private void loadTags() {
-        asyncTaskLoader = new AsyncTaskLoader();
-        asyncTaskLoader.execute();
+        mAsyncTaskLoader = new AsyncTaskLoader();
+        mAsyncTaskLoader.execute();
     }
 
     @Override
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        nfcHandler.handleAndroidBeamReceivedFiles(intent);
+        mNfcHandler.handleAndroidBeamReceivedFiles(intent);
     }
 
     @Override
@@ -160,8 +160,8 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
         disableContextualActionBar();
 
         // Close NavigationView.
-        if (drawerLayout.isDrawerOpen(navigationView)) {
-            drawerLayout.closeDrawer(navigationView);
+        if (mDrawerLayout.isDrawerOpen(mNavigationView)) {
+            mDrawerLayout.closeDrawer(mNavigationView);
         }
         // Close Activity.
         else {
@@ -174,55 +174,55 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
         switch (item.getItemId()) {
             // Navigation Icon.
             case android.R.id.home:
-                drawerLayout.openDrawer(navigationView);
+                mDrawerLayout.openDrawer(mNavigationView);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void setupNFC() {
-        nfcHandler = new NfcHandler();
-        nfcHandler.setupNfcHandler(this);
-        nfcHandler.registerAndroidBeamShareFiles();
-        nfcHandler.handleAndroidBeamReceivedFiles(getIntent());
+        mNfcHandler = new NfcHandler();
+        mNfcHandler.setupNfcHandler(this);
+        mNfcHandler.registerAndroidBeamShareFiles();
+        mNfcHandler.handleAndroidBeamReceivedFiles(getIntent());
     }
 
     private void setupProgressBar() {
-        progressBar = (ProgressBar) findViewById(R.id.main_progress_bar);
+        mProgressBar = (ProgressBar) findViewById(R.id.main_progress_bar);
     }
 
     private void setupFloatingActionButton() {
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.main_floating_action_button);
+        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.main_floating_action_button);
     }
 
     private void setupCoordinatorLayout() {
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_layout);
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_layout);
     }
 
     @SuppressWarnings("ConstantConditions")
     private void setupNavigationDrawer() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.main_navigation_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
+        mNavigationView = (NavigationView) findViewById(R.id.main_navigation_view);
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                drawerLayout.closeDrawer(navigationView);
+                mDrawerLayout.closeDrawer(mNavigationView);
 
                 if (item.getGroupId() == R.id.group_primary) {
-                    navigationView.setCheckedItem(item.getItemId());
+                    mNavigationView.setCheckedItem(item.getItemId());
                 }
 
                 switch (item.getItemId()) {
                     case R.id.navigation_tracking:
-                        tabLayout.getTabAt(0).select();
+                        mTabLayout.getTabAt(0).select();
                         return true;
 
                     case R.id.navigation_share:
-                        tabLayout.getTabAt(1).select();
+                        mTabLayout.getTabAt(1).select();
                         return true;
 
                     case R.id.navigation_create:
-                        tabLayout.getTabAt(2).select();
+                        mTabLayout.getTabAt(2).select();
                         return true;
 
                     case R.id.navigation_settings:
@@ -243,9 +243,9 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
 
     @SuppressWarnings("deprecation")
     private void setupToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.main_tool_bar);
+        mToolbar = (Toolbar) findViewById(R.id.main_tool_bar);
         // Substitute the action bar for this toolbar.
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(getResources().getDrawable(R.drawable.icon_hamburger_menu));
@@ -254,29 +254,29 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     }
 
     private void setupAppBarLayout() {
-        appBarLayout = (AppBarLayout) findViewById(R.id.main_app_bar_layout);
+        mAppBarLayout = (AppBarLayout) findViewById(R.id.main_app_bar_layout);
     }
 
     @SuppressWarnings("deprecation, ConstantConditions")
     private void setupTabLayout() {
-        tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
-        tabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_normal));
-        tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
-        tabLayout.setupWithViewPager(viewPager);
+        mTabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
+        mTabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_normal));
+        mTabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
+        mTabLayout.setupWithViewPager(mViewPager);
         // Set tab names.
         String[] tabNames = getResources().getStringArray(R.array.tab_names);
         for (int i = 0; i < tabNames.length; i++) {
-            tabLayout.getTabAt(i).setText(tabNames[i]);
+            mTabLayout.getTabAt(i).setText(tabNames[i]);
         }
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
+                mViewPager.setCurrentItem(tab.getPosition());
 
-                Menu menu = navigationView.getMenu();
-                navigationView.setCheckedItem(menu.getItem(tab.getPosition()).getItemId());
+                Menu menu = mNavigationView.getMenu();
+                mNavigationView.setCheckedItem(menu.getItem(tab.getPosition()).getItemId());
 
-                appBarLayout.setExpanded(true, true);
+                mAppBarLayout.setExpanded(true, true);
             }
 
             @Override
@@ -297,28 +297,28 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
         adapter.addFragment(ShareGameFragment.newInstance());
         adapter.addFragment(CreateGameFragment.newInstance());
 
-        viewPager = (ViewPager) findViewById(R.id.main_view_pager);
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager = (ViewPager) findViewById(R.id.main_view_pager);
+        mViewPager.setAdapter(adapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 // If Tab 1.
                 if (position == 0) {
-                    floatingActionButton.hide();
+                    mFloatingActionButton.hide();
                 }
                 // If Tab 2.
                 else if (position == 1) {
-                    floatingActionButton.hide();
+                    mFloatingActionButton.hide();
                 }
                 // If Tab 3.
                 else if (position == 2) {
                     // If idle.
                     if (positionOffset == 0) {
-                        floatingActionButton.show();
+                        mFloatingActionButton.show();
                     }
                     // If dragging.
                     else if (positionOffset > 0) {
-                        floatingActionButton.hide();
+                        mFloatingActionButton.hide();
                     }
                 }
             }
@@ -336,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     }
 
     private void setupContextualActionBar() {
-        actionModeCallback = new ActionMode.Callback() {
+        mActionModeCallback = new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 changeBarsColor(false);
@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
                 MenuItem selectAllItem = menu.findItem(R.id.context_bar_select_all_item);
                 MenuItem clearSelectionItem = menu.findItem(R.id.context_bar_clear_selection_item);
 
-                if (isSelectAllItemVisible) {
+                if (mIsSelectAllItemVisible) {
                     selectAllItem.setVisible(false);
                     clearSelectionItem.setVisible(true);
                 } else {
@@ -366,24 +366,24 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 // If Tab 2 is selected.
-                if (createGameFragment != null) {
+                if (mCreateGameFragment != null) {
                     switch (item.getItemId()) {
                         case R.id.context_bar_delete_item:
-                            int size = createGameFragment.contextGetSelectionSize();
+                            int size = mCreateGameFragment.contextGetSelectionSize();
                             DeleteDialogFragment.newInstance(size).show(getSupportFragmentManager(), "delete");
                             return true;
                         case R.id.context_bar_select_all_item:
-                            createGameFragment.contextSelectAll();
+                            mCreateGameFragment.contextSelectAll();
 
                             // Invalidate menu item.
-                            isSelectAllItemVisible = true;
+                            mIsSelectAllItemVisible = true;
                             mode.invalidate();
                             return true;
                         case R.id.context_bar_clear_selection_item:
-                            createGameFragment.contextClearSelection();
+                            mCreateGameFragment.contextClearSelection();
 
                             // Invalidate menu item.
-                            isSelectAllItemVisible = false;
+                            mIsSelectAllItemVisible = false;
 
                             mode.invalidate();
                             return true;
@@ -397,38 +397,38 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
             @Override
             public void onDestroyActionMode(ActionMode mode) {
                 // If Tab 2 is selected.
-                if (createGameFragment == null) {
+                if (mCreateGameFragment == null) {
                     return;
                 }
 
                 changeBarsColor(true);
 
-                createGameFragment.contextFinish();
+                mCreateGameFragment.contextFinish();
 
                 // Invalidate menu item.
-                isSelectAllItemVisible = false;
+                mIsSelectAllItemVisible = false;
                 mode.invalidate();
 
-                actionMode = null;
+                mActionMode = null;
             }
         };
     }
 
     private void doPositiveClick() {
-        int size = createGameFragment.contextGetSelectionSize();
+        int size = mCreateGameFragment.contextGetSelectionSize();
 
-        createGameFragment.contextDeleteSelectedItems();
+        mCreateGameFragment.contextDeleteSelectedItems();
         disableContextualActionBar();
 
         String deletionSize = getResources().getQuantityString(R.plurals.snackbar_deleted_plural, size);
         // Inform user.
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, deletionSize, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(mCoordinatorLayout, deletionSize, Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 
     private void disableContextualActionBar() {
-        if (actionMode != null) {
-            actionMode.finish();
+        if (mActionMode != null) {
+            mActionMode.finish();
         }
     }
 
@@ -437,17 +437,17 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
      */
     @Override
     public void onItemLongClicked() {
-        if (actionMode == null) {
+        if (mActionMode == null) {
             // Start contextual action mode.
-            actionMode = toolbar.startActionMode(actionModeCallback);
+            mActionMode = mToolbar.startActionMode(mActionModeCallback);
         }
     }
 
     @Override
     public void onItemClicked(int tagsSelected) {
-        actionMode.setTitle(tagsSelected + " selected");
+        mActionMode.setTitle(tagsSelected + " selected");
 
-        MenuItem deleteItem = actionMode.getMenu().findItem(R.id.context_bar_delete_item);
+        MenuItem deleteItem = mActionMode.getMenu().findItem(R.id.context_bar_delete_item);
         // If there are no selected tags.
         if (tagsSelected == 0) {
             deleteItem.setVisible(false);
@@ -458,18 +458,18 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
 
     @Override
     public void onFragmentAttached(CreateGameFragment fragment) {
-        createGameFragment = fragment;
-        createGameFragment.setupFloatingActionButton(floatingActionButton);
+        mCreateGameFragment = fragment;
+        mCreateGameFragment.setupFloatingActionButton(mFloatingActionButton);
 
-        ViewGroup sceneRoot = drawerLayout;
+        ViewGroup sceneRoot = mDrawerLayout;
         ViewGroup revealContent = (ViewGroup) findViewById(R.id.main_reveal_content);
-        createGameFragment.setupTransitionViews(sceneRoot, revealContent);
+        mCreateGameFragment.setupTransitionViews(sceneRoot, revealContent);
     }
 
     @Override
     public void onItemDeleted(String title) {
         // Inform user.
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, title + " deleted", Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(mCoordinatorLayout, title + " deleted", Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 
@@ -478,24 +478,24 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
      */
     @Override
     public void onFragmentResumed(TrackGameFragment fragment) {
-        trackGameFragment = fragment;
+        mTrackGameFragment = fragment;
 
         // If fragment is created before the AsyncTask finishes, the UI update should be done on the
         // onPostExecute method to avoid duplicate updates.
-        if (asyncTaskLoader.getStatus() == AsyncTask.Status.RUNNING) {
+        if (mAsyncTaskLoader.getStatus() == AsyncTask.Status.RUNNING) {
             return;
         }
 
-        progressBar.setVisibility(View.GONE);
-        trackGameFragment.updateUi();
+        mProgressBar.setVisibility(View.GONE);
+        mTrackGameFragment.updateUi();
     }
 
     @SuppressWarnings("deprecation")
     @TargetApi(21)
     private void changeBarsColor(boolean isContextualActionBarVisible) {
         if (isContextualActionBarVisible) {
-            tabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_normal));
-            tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
+            mTabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_normal));
+            mTabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
 
             animateStatusBar(getResources().getColor(R.color.accent_dark), getResources().getColor(R.color.primary_dark));
             animateTabLayout(getResources().getColor(R.color.accent), getResources().getColor(R.color.primary));
@@ -508,8 +508,8 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
                 }
             }, 400);
         } else {
-            tabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_activated));
-            tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.primary));
+            mTabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_activated));
+            mTabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.primary));
 
             animateStatusBar(getResources().getColor(R.color.primary_dark), getResources().getColor(R.color.accent_dark));
             animateTabLayout(getResources().getColor(R.color.primary), getResources().getColor(R.color.accent));
@@ -531,7 +531,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
 
     @TargetApi(21)
     private void animateTabLayout(int colorFrom, int colorTo) {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofArgb(tabLayout, "backgroundColor", colorFrom, colorTo);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofArgb(mTabLayout, "backgroundColor", colorFrom, colorTo);
         objectAnimator.setDuration(300);
         objectAnimator.setStartDelay(20);
         objectAnimator.start();
@@ -547,10 +547,10 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
             return;
 
         // If Tab 1.
-        if (trackGameFragment != null) {
-            final RecyclerView recyclerView = trackGameFragment.getRecyclerView();
+        if (mTrackGameFragment != null) {
+            final RecyclerView recyclerView = mTrackGameFragment.getRecyclerView();
 
-            bundle = new Bundle(data.getExtras());
+            mBundle = new Bundle(data.getExtras());
 
             int oldTagPosition = data.getIntExtra(EXTRA_OLD_TAG_POSITION, -1);
             int currentTagPosition = data.getIntExtra(EXTRA_CURRENT_TAG_POSITION, -1);
@@ -642,12 +642,12 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
         setExitSharedElementCallback(new SharedElementCallback() {
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                final RecyclerView recyclerView = trackGameFragment.getRecyclerView();
+                final RecyclerView recyclerView = mTrackGameFragment.getRecyclerView();
 
                 // If TrackTagPagerActivity returns to MainActivity.
-                if (bundle != null) {
-                    int oldTagPosition = bundle.getInt(EXTRA_OLD_TAG_POSITION);
-                    int currentTagPosition = bundle.getInt(EXTRA_CURRENT_TAG_POSITION);
+                if (mBundle != null) {
+                    int oldTagPosition = mBundle.getInt(EXTRA_OLD_TAG_POSITION);
+                    int currentTagPosition = mBundle.getInt(EXTRA_CURRENT_TAG_POSITION);
 
                     // If currentPosition != oldPosition the user must have swiped to a different
                     // page in the ViewPager. We must update the shared element so that the
@@ -672,7 +672,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
                         }
                     }
                     // Delete the previous positions.
-                    bundle = null;
+                    mBundle = null;
                 } else {
                     //TODO: When status bar is transparent, it is null and imageView overlaps it.
                     // If bundle is null, then the activity is exiting.
@@ -713,7 +713,7 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -728,12 +728,12 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
 
             // If fragment isn't created yet, it cannot update it's UI and should be done on the
             // onResume method instead.
-            if (trackGameFragment == null) {
+            if (mTrackGameFragment == null) {
                 return;
             }
 
-            progressBar.setVisibility(View.GONE);
-            trackGameFragment.updateUi();
+            mProgressBar.setVisibility(View.GONE);
+            mTrackGameFragment.updateUi();
         }
     }
 }

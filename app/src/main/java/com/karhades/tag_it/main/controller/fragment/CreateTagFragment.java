@@ -56,30 +56,30 @@ public class CreateTagFragment extends Fragment {
     /**
      * NFC adapter.
      */
-    private NfcHandler nfcHandler;
+    private NfcHandler mNfcHandler;
 
     /**
      * Widget references.
      */
-    private ImageView imageView;
-    private Button cancelButton;
-    private Button tagItButton;
-    private Spinner difficultySpinner;
-    private FloatingActionButton cameraActionButton;
-    private Toolbar toolbar;
+    private ImageView mPictureImageView;
+    private Button mCancelButton;
+    private Button mTagItButton;
+    private Spinner mDifficultySpinner;
+    private FloatingActionButton mCameraActionButton;
+    private Toolbar mToolbar;
 
     /**
      * Instance variables.
      */
-    private NfcTag currentNfcTag;
-    private String temporaryDifficulty;
-    private String temporaryPictureFilename;
-    private TagItDialogFragment tagItDialogFragment;
+    private NfcTag mCurrentNfcTag;
+    private String mTemporaryDifficulty;
+    private String mTemporaryPictureFilename;
+    private TagItDialogFragment mTagItDialogFragment;
 
     /**
      * Transition variable.
      */
-    private ViewGroup revealContent;
+    private ViewGroup mRevealContent;
 
     public static CreateTagFragment newInstance() {
         return new CreateTagFragment();
@@ -100,8 +100,8 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void setupNfcHandler() {
-        nfcHandler = new NfcHandler();
-        nfcHandler.setupNfcHandler(getActivity());
+        mNfcHandler = new NfcHandler();
+        mNfcHandler.setupNfcHandler(getActivity());
     }
 
     public void onNewIntent(Intent intent) {
@@ -113,7 +113,7 @@ public class CreateTagFragment extends Fragment {
             return;
         }
 
-        nfcHandler.handleNfcTagWrite(intent);
+        mNfcHandler.handleNfcTagWrite(intent);
     }
 
     @Override
@@ -122,14 +122,14 @@ public class CreateTagFragment extends Fragment {
 
         hideCircularReveal();
 
-        nfcHandler.enableForegroundDispatch();
+        mNfcHandler.enableForegroundDispatch();
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        nfcHandler.disableForegroundDispatch();
+        mNfcHandler.disableForegroundDispatch();
     }
 
     @Override
@@ -140,12 +140,12 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void discardTag() {
-        if (temporaryPictureFilename == null) {
+        if (mTemporaryPictureFilename == null) {
             return;
         }
 
         // Discards the unsaved photo.
-        File deleteFile = new File(temporaryPictureFilename);
+        File deleteFile = new File(mTemporaryPictureFilename);
 
         if (!deleteFile.delete()) {
             Log.e("CreateTagFragment", "Error deleting temporary file.");
@@ -171,8 +171,8 @@ public class CreateTagFragment extends Fragment {
         super.onStart();
 
         // Load newly picture taken.
-        if (temporaryPictureFilename != null) {
-            PictureLoader.loadBitmapWithPicassoNoCache(getActivity(), temporaryPictureFilename, imageView);
+        if (mTemporaryPictureFilename != null) {
+            PictureLoader.loadBitmapWithPicassoNoCache(getActivity(), mTemporaryPictureFilename, mPictureImageView);
         }
     }
 
@@ -182,7 +182,7 @@ public class CreateTagFragment extends Fragment {
             if (resultCode == Activity.RESULT_OK) {
 
                 File tempFile = createExternalStoragePrivateFile();
-                temporaryPictureFilename = tempFile.getAbsolutePath();
+                mTemporaryPictureFilename = tempFile.getAbsolutePath();
             }
         }
     }
@@ -199,13 +199,13 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void setupToolbar(View view) {
-        toolbar = (Toolbar) view.findViewById(R.id.create_tag_tool_bar);
+        mToolbar = (Toolbar) view.findViewById(R.id.create_tag_tool_bar);
 
         // Retrieve an AppCompatActivity hosting activity to get the supported actionbar.
         AppCompatActivity activity = (AppCompatActivity) getActivity();
 
         // Set the toolbar as the new actionbar.
-        activity.setSupportActionBar(toolbar);
+        activity.setSupportActionBar(mToolbar);
 
         // Get the action bar.
         ActionBar actionBar = activity.getSupportActionBar();
@@ -219,8 +219,8 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void setupFloatingActionButton(View view) {
-        cameraActionButton = (FloatingActionButton) view.findViewById(R.id.create_tag_camera_floating_action_button);
-        cameraActionButton.setOnClickListener(new View.OnClickListener() {
+        mCameraActionButton = (FloatingActionButton) view.findViewById(R.id.create_tag_camera_floating_action_button);
+        mCameraActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (TransitionHelper.isTransitionSupportedAndEnabled()) {
@@ -257,36 +257,36 @@ public class CreateTagFragment extends Fragment {
     private void initializeWidgets(View view) {
         setupSpinner(view);
 
-        imageView = (ImageView) view.findViewById(R.id.create_tag_image_view);
+        mPictureImageView = (ImageView) view.findViewById(R.id.create_tag_image_view);
 
-        tagItButton = (Button) view.findViewById(R.id.create_tag_tag_it_button);
-        tagItButton.setOnClickListener(new View.OnClickListener() {
+        mTagItButton = (Button) view.findViewById(R.id.create_tag_tag_it_button);
+        mTagItButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setupNfcWriteCallback();
             }
         });
 
-        cancelButton = (Button) view.findViewById(R.id.create_tag_cancel_button);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
+        mCancelButton = (Button) view.findViewById(R.id.create_tag_cancel_button);
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().finish();
             }
         });
 
-        revealContent = (ViewGroup) view.findViewById(R.id.create_tag_reveal_content);
+        mRevealContent = (ViewGroup) view.findViewById(R.id.create_tag_reveal_content);
     }
 
     private void setupSpinner(View view) {
-        difficultySpinner = (Spinner) view.findViewById(R.id.create_tag_spinner);
+        mDifficultySpinner = (Spinner) view.findViewById(R.id.create_tag_spinner);
         ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.array_difficulty, android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        difficultySpinner.setAdapter(arrayAdapter);
-        difficultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mDifficultySpinner.setAdapter(arrayAdapter);
+        mDifficultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                temporaryDifficulty = parent.getItemAtPosition(position).toString();
+                mTemporaryDifficulty = parent.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -298,7 +298,7 @@ public class CreateTagFragment extends Fragment {
 
     private void setupNfcWriteCallback() {
         // If there's no picture taken.
-        if (temporaryPictureFilename == null) {
+        if (mTemporaryPictureFilename == null) {
             View parentView = getView();
 
             if (parentView == null) {
@@ -315,15 +315,15 @@ public class CreateTagFragment extends Fragment {
         NfcHandler.setMode(NfcHandler.Mode.CREATE);
 
         // Creates and shows the dialog.
-        tagItDialogFragment = TagItDialogFragment.newInstance();
-        tagItDialogFragment.show(getActivity().getSupportFragmentManager(), "tagItDialog");
+        mTagItDialogFragment = TagItDialogFragment.newInstance();
+        mTagItDialogFragment.show(getActivity().getSupportFragmentManager(), "tagItDialog");
 
         // Wires a listener for an onTagWritten event.
-        nfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
+        mNfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
             @Override
             public void onTagWritten(int status, String tagId) {
                 // Closes dialog.
-                tagItDialogFragment.dismiss();
+                mTagItDialogFragment.dismiss();
 
                 // If NFC write operation was successful.
                 if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
@@ -353,26 +353,26 @@ public class CreateTagFragment extends Fragment {
         int number = MyTags.get(getActivity()).getNfcTags().size() + 1;
 
         // Creates new tag with the following fields.
-        NfcTag newNfcTag = new NfcTag("Tag " + number, temporaryDifficulty, tagId);
+        NfcTag newNfcTag = new NfcTag("Tag " + number, mTemporaryDifficulty, tagId);
 
         // Adds new tag to NfcTags list.
         MyTags.get(getActivity()).addNfcTag(newNfcTag);
 
         // Sets new tag as current instance member.
-        currentNfcTag = newNfcTag;
+        mCurrentNfcTag = newNfcTag;
 
         // Sets result for REQUEST_INSERT.
         getActivity().setResult(Activity.RESULT_OK);
     }
 
     private void renameTempFile() {
-        File tempFile = new File(temporaryPictureFilename);
-        String renamedPath = tempFile.getParent() + File.separator + "Tag" + currentNfcTag.getTagId() + ".jpg";
+        File tempFile = new File(mTemporaryPictureFilename);
+        String renamedPath = tempFile.getParent() + File.separator + "Tag" + mCurrentNfcTag.getTagId() + ".jpg";
         File renamedFile = new File(renamedPath);
 
         if (tempFile.renameTo(renamedFile)) {
-            currentNfcTag.setPictureFilePath(renamedFile.getAbsolutePath());
-            temporaryPictureFilename = null;
+            mCurrentNfcTag.setPictureFilePath(renamedFile.getAbsolutePath());
+            mTemporaryPictureFilename = null;
         } else {
             Log.e("CreateTagFragment", "Error while renaming: " + renamedFile.getAbsolutePath());
         }
@@ -418,11 +418,11 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void hideCircularReveal() {
-        if (revealContent.getVisibility() == View.INVISIBLE) {
+        if (mRevealContent.getVisibility() == View.INVISIBLE) {
             return;
         }
 
-        TransitionHelper.circularHide(cameraActionButton, revealContent, new Runnable() {
+        TransitionHelper.circularHide(mCameraActionButton, mRevealContent, new Runnable() {
             @Override
             public void run() {
                 // DO NOTHING
@@ -431,7 +431,7 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void showCircularReveal() {
-        TransitionHelper.circularShow(cameraActionButton, revealContent, new Runnable() {
+        TransitionHelper.circularShow(mCameraActionButton, mRevealContent, new Runnable() {
             @Override
             public void run() {
                 takePicture();

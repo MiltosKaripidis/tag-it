@@ -26,12 +26,12 @@ import java.util.List;
  */
 public class TagJsonSerializer {
 
-    private Context context;
-    private String filename;
+    private Context mContext;
+    private String mFilename;
 
     public TagJsonSerializer(Context context, String filename) {
-        this.context = context;
-        this.filename = filename;
+        mContext = context;
+        mFilename = filename;
     }
 
     /**
@@ -50,7 +50,7 @@ public class TagJsonSerializer {
             jsonArray.put(nfcTag.toJson());
         }
 
-        File file = new File(context.getExternalFilesDir(null) + File.separator + filename);
+        File file = new File(mContext.getExternalFilesDir(null) + File.separator + mFilename);
 
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         fileOutputStream.write(jsonArray.toString().getBytes());
@@ -68,7 +68,7 @@ public class TagJsonSerializer {
         // Create a new tag list that will be returned.
         List<NfcTag> loadedTags = new ArrayList<>();
 
-        File file = new File(context.getExternalFilesDir(null) + File.separator + filename);
+        File file = new File(mContext.getExternalFilesDir(null) + File.separator + mFilename);
         FileInputStream fileInputStream = new FileInputStream(file);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 

@@ -40,9 +40,9 @@ public class EditTagPagerActivity extends AppCompatActivity implements ViewPager
     /**
      * Instance variables.
      */
-    private FragmentAdapter fragmentAdapter;
-    private List<NfcTag> nfcTags;
-    private String tagId;
+    private FragmentAdapter mFragmentAdapter;
+    private List<NfcTag> mNfcTags;
+    private String mTagId;
 
     public static Intent newIntent(Context context, String tagId) {
         Intent intent = new Intent(context, EditTagPagerActivity.class);
@@ -56,10 +56,10 @@ public class EditTagPagerActivity extends AppCompatActivity implements ViewPager
         setContentView(R.layout.activity_edit_tag_pager);
 
         // Gets the nfcTags from MyTags.
-        nfcTags = MyTags.get(this).getNfcTags();
+        mNfcTags = MyTags.get(this).getNfcTags();
 
         // Gets the NfcTag ID from CreateGameFragment.
-        tagId = getIntent().getStringExtra(EXTRA_TAG_ID);
+        mTagId = getIntent().getStringExtra(EXTRA_TAG_ID);
 
         setupViewPager();
     }
@@ -68,7 +68,10 @@ public class EditTagPagerActivity extends AppCompatActivity implements ViewPager
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        EditTagFragment editTagFragment = fragmentAdapter.getCurrentFragment();
+        // Gets current EditTagFragment instance.
+        EditTagFragment editTagFragment = mFragmentAdapter.getCurrentFragment();
+
+        // Calls fragment's onNewIntent.
         editTagFragment.onNewIntent(intent);
     }
 
@@ -77,9 +80,9 @@ public class EditTagPagerActivity extends AppCompatActivity implements ViewPager
         ViewPager viewPager = (ViewPager) findViewById(R.id.edit_tag_pager_view_pager);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentAdapter = new FragmentAdapter(fragmentManager);
+        mFragmentAdapter = new FragmentAdapter(fragmentManager);
 
-        viewPager.setAdapter(fragmentAdapter);
+        viewPager.setAdapter(mFragmentAdapter);
         viewPager.setPageTransformer(true, this);
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -89,7 +92,7 @@ public class EditTagPagerActivity extends AppCompatActivity implements ViewPager
 
             @Override
             public void onPageSelected(int i) {
-                NfcTag nfcTag = nfcTags.get(i);
+                NfcTag nfcTag = mNfcTags.get(i);
                 setTitle(nfcTag.getTitle());
             }
 
@@ -100,8 +103,8 @@ public class EditTagPagerActivity extends AppCompatActivity implements ViewPager
         });
 
         // Change to the appropriate page when started.
-        for (int i = 0; i < nfcTags.size(); i++) {
-            if (nfcTags.get(i).getTagId().equals(tagId)) {
+        for (int i = 0; i < mNfcTags.size(); i++) {
+            if (mNfcTags.get(i).getTagId().equals(mTagId)) {
                 viewPager.setCurrentItem(i);
                 break;
             }
@@ -152,20 +155,20 @@ public class EditTagPagerActivity extends AppCompatActivity implements ViewPager
 
         private EditTagFragment currentFragment;
 
-        public FragmentAdapter(FragmentManager fm) {
-            super(fm);
+        public FragmentAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
         }
 
         @Override
         public Fragment getItem(int position) {
-            NfcTag nfcTag = nfcTags.get(position);
+            NfcTag nfcTag = mNfcTags.get(position);
 
             return EditTagFragment.newInstance(nfcTag.getTagId());
         }
 
         @Override
         public int getCount() {
-            return nfcTags.size();
+            return mNfcTags.size();
         }
 
         @Override

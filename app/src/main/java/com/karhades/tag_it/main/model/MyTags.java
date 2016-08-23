@@ -31,7 +31,7 @@ public class MyTags {
     /**
      * Toggle application transitions.
      */
-    private static boolean transitionDisabled = false;
+    private static boolean sTransitionDisabled = false;
 
     /**
      * JSON file name.
@@ -41,22 +41,22 @@ public class MyTags {
     /**
      * Singleton instance.
      */
-    private static MyTags myTags;
+    private static MyTags sMyTags;
 
     /**
      * Context for starting activities, using private storage, etc.
      */
-    private Context context;
+    private Context mContext;
 
     /**
      * List of NfcTag objects.
      */
-    private List<NfcTag> nfcTags;
+    private List<NfcTag> mNfcTags;
 
     /**
      * Helper class for saving and loading NfcTag objects in JSON format.
      */
-    private TagJsonSerializer serializer;
+    private TagJsonSerializer mSerializer;
 
     /**
      * Private constructor that gets called only
@@ -65,20 +65,20 @@ public class MyTags {
      * @param context The Context needed for Android.
      */
     private MyTags(Context context) {
-        this.context = context.getApplicationContext();
+        mContext = context.getApplicationContext();
 
-        serializer = new TagJsonSerializer(this.context, FILENAME);
+        mSerializer = new TagJsonSerializer(mContext, FILENAME);
 
         // Gets the saved transition variable from disk.
-        transitionDisabled = SettingsFragment.getStoredTransition(this.context);
+        sTransitionDisabled = SettingsFragment.getStoredTransition(mContext);
     }
 
     public static void setTransitionDisabled(boolean transitionDisabled) {
-        MyTags.transitionDisabled = transitionDisabled;
+        MyTags.sTransitionDisabled = transitionDisabled;
     }
 
     public static boolean isTransitionDisabled() {
-        return transitionDisabled;
+        return sTransitionDisabled;
     }
 
     /**
@@ -86,7 +86,7 @@ public class MyTags {
      */
     public void saveTags() {
         try {
-            serializer.saveTagsExternal(nfcTags);
+            mSerializer.saveTagsExternal(mNfcTags);
         } catch (Exception e) {
             Log.e(TAG, "Error saving tags: " + e.getMessage());
         }
@@ -97,12 +97,12 @@ public class MyTags {
      */
     public void loadTags() {
         try {
-            nfcTags = serializer.loadTagsExternal();
+            mNfcTags = mSerializer.loadTagsExternal();
         } catch (FileNotFoundException e) {
-            nfcTags = new ArrayList<>();
+            mNfcTags = new ArrayList<>();
             Log.e(TAG, "File tags.txt not found.", e);
         } catch (Exception e) {
-            nfcTags = new ArrayList<>();
+            mNfcTags = new ArrayList<>();
             Log.e(TAG, "Error loading tags: " + e.getMessage(), e);
         }
     }
@@ -114,10 +114,10 @@ public class MyTags {
      * @return The MyTags Object reference.
      */
     public static MyTags get(Context context) {
-        if (myTags == null) {
-            myTags = new MyTags(context);
+        if (sMyTags == null) {
+            sMyTags = new MyTags(context);
         }
-        return myTags;
+        return sMyTags;
     }
 
     /**
@@ -126,7 +126,7 @@ public class MyTags {
      * @return The List containing the tags.
      */
     public List<NfcTag> getNfcTags() {
-        return nfcTags;
+        return mNfcTags;
     }
 
     /**
@@ -136,7 +136,7 @@ public class MyTags {
      * @return The NfcTag with this tag id.
      */
     public NfcTag getNfcTag(String tagId) {
-        for (NfcTag nfcTag : nfcTags) {
+        for (NfcTag nfcTag : mNfcTags) {
             if (nfcTag.getTagId().equals(tagId)) {
                 return nfcTag;
             }
@@ -151,7 +151,7 @@ public class MyTags {
      */
     public void addNfcTag(NfcTag nfcTag) {
         // Add to list.
-        nfcTags.add(nfcTag);
+        mNfcTags.add(nfcTag);
     }
 
     /**
@@ -161,7 +161,7 @@ public class MyTags {
      */
     public void deleteNfcTag(NfcTag nfcTag) {
         // Clear memory cache for previous image to refresh ImageView.
-        PictureLoader.invalidateWithPicasso(context, nfcTag.getPictureFilePath());
+        PictureLoader.invalidateWithPicasso(mContext, nfcTag.getPictureFilePath());
 
         if (nfcTag.getPictureFilePath() != null) {
             // Delete file from disk.
@@ -172,7 +172,7 @@ public class MyTags {
         }
 
         // Remove from list.
-        nfcTags.remove(nfcTag);
+        mNfcTags.remove(nfcTag);
     }
 
     /**
@@ -181,7 +181,7 @@ public class MyTags {
     public void reorderNfcTags() {
         int title = 1;
 
-        for (NfcTag nfcTag : nfcTags) {
+        for (NfcTag nfcTag : mNfcTags) {
             nfcTag.setTitle("Tag " + title);
             title++;
         }
@@ -199,16 +199,16 @@ public class MyTags {
         saveTags();
 
         // Create a URI array with a size of [NFC tag picture URIs + tags.txt file URI].
-        Uri[] fileUris = new Uri[nfcTags.size() + 1];
+        Uri[] fileUris = new Uri[mNfcTags.size() + 1];
 
         // Create the tags.txt file URI.
-        File tagsFile = new File(context.getExternalFilesDir(null) + File.separator + "tags.txt");
+        File tagsFile = new File(mContext.getExternalFilesDir(null) + File.separator + "tags.txt");
         setWorldReadable(tagsFile);
         fileUris[0] = Uri.fromFile(tagsFile);
 
         // Create the NFC tag picture file URIs.
-        for (int i = 0; i < nfcTags.size(); i++) {
-            File file = new File(nfcTags.get(i).getPictureFilePath());
+        for (int i = 0; i < mNfcTags.size(); i++) {
+            File file = new File(mNfcTags.get(i).getPictureFilePath());
             setWorldReadable(file);
             Uri uri = Uri.fromFile(file);
             fileUris[i + 1] = uri;

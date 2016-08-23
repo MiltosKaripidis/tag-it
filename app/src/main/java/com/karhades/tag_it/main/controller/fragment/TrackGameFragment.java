@@ -40,15 +40,15 @@ public class TrackGameFragment extends Fragment {
     /**
      * Widget references.
      */
-    private RecyclerView recyclerView;
-    private LinearLayout emptyLinearLayout;
+    private RecyclerView mRecyclerView;
+    private LinearLayout mEmptyLinearLayout;
 
     /**
      * Instance variables.
      */
-    private List<NfcTag> nfcTags;
-    private NfcTagAdapter adapter;
-    private Callbacks callbacks;
+    private List<NfcTag> mNfcTags;
+    private NfcTagAdapter mNfcTagAdapter;
+    private Callbacks mCallbacks;
 
     public interface Callbacks {
         void onFragmentResumed(TrackGameFragment fragment);
@@ -65,10 +65,10 @@ public class TrackGameFragment extends Fragment {
 
     public void updateUi() {
         // Updates the UI.
-        nfcTags = MyTags.get(getActivity()).getNfcTags();
+        mNfcTags = MyTags.get(getActivity()).getNfcTags();
 
         // Refreshes the NfcTag list.
-        adapter.notifyDataSetChanged();
+        mNfcTagAdapter.notifyDataSetChanged();
 
         hideRecyclerViewIfEmpty();
     }
@@ -78,7 +78,7 @@ public class TrackGameFragment extends Fragment {
         super.onAttach(context);
 
         try {
-            callbacks = (Callbacks) context;
+            mCallbacks = (Callbacks) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement TrackGameFragment.Callbacks interface");
         }
@@ -88,7 +88,7 @@ public class TrackGameFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
 
-        callbacks = null;
+        mCallbacks = null;
     }
 
     @Override
@@ -102,8 +102,8 @@ public class TrackGameFragment extends Fragment {
     }
 
     private void setupRecyclerView(View view) {
-        adapter = new NfcTagAdapter();
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        mNfcTagAdapter = new NfcTagAdapter();
+        mNfcTagAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
@@ -119,27 +119,27 @@ public class TrackGameFragment extends Fragment {
             }
         });
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.track_game_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.track_game_recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setAdapter(mNfcTagAdapter);
     }
 
     public RecyclerView getRecyclerView() {
-        return recyclerView;
+        return mRecyclerView;
     }
 
     private void setupEmptyView(View view) {
-        emptyLinearLayout = (LinearLayout) view.findViewById(R.id.track_game_empty_linear_layout);
+        mEmptyLinearLayout = (LinearLayout) view.findViewById(R.id.track_game_empty_linear_layout);
     }
 
     private void hideRecyclerViewIfEmpty() {
-        boolean shouldHide = nfcTags == null || nfcTags.size() == 0;
+        boolean shouldHide = mNfcTags == null || mNfcTags.size() == 0;
         if (shouldHide) {
-            recyclerView.setVisibility(View.INVISIBLE);
-            emptyLinearLayout.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.INVISIBLE);
+            mEmptyLinearLayout.setVisibility(View.VISIBLE);
         } else {
-            recyclerView.setVisibility(View.VISIBLE);
-            emptyLinearLayout.setVisibility(View.INVISIBLE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mEmptyLinearLayout.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -147,7 +147,7 @@ public class TrackGameFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        callbacks.onFragmentResumed(this);
+        mCallbacks.onFragmentResumed(this);
     }
 
     /**
@@ -290,13 +290,13 @@ public class TrackGameFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(NfcTagHolder nfcTagHolder, int position) {
-            NfcTag nfcTag = nfcTags.get(position);
+            NfcTag nfcTag = mNfcTags.get(position);
             nfcTagHolder.bindNfcTag(nfcTag);
         }
 
         @Override
         public int getItemCount() {
-            return (nfcTags == null) ? 0 : nfcTags.size();
+            return (mNfcTags == null) ? 0 : mNfcTags.size();
         }
     }
 }

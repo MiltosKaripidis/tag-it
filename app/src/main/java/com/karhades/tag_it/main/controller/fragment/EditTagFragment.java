@@ -64,30 +64,30 @@ public class EditTagFragment extends Fragment {
     /**
      * NFC adapter.
      */
-    private NfcHandler nfcHandler;
+    private NfcHandler mNfcHandler;
 
     /**
      * Widget references.
      */
-    private ImageView imageView;
-    private ViewGroup imageViewOverlay;
-    private Button tagItButton;
-    private Spinner difficultySpinner;
-    private FloatingActionButton cameraActionButton;
-    private Toolbar toolbar;
+    private ImageView mPictureImageView;
+    private ViewGroup mOverlayImageView;
+    private Button mTagItButton;
+    private Spinner mDifficultySpinner;
+    private FloatingActionButton mCameraActionButton;
+    private Toolbar mToolbar;
 
     /**
      * Instance variables.
      */
-    private NfcTag currentNfcTag;
-    private String temporaryDifficulty;
-    private String temporaryPictureFilename;
-    private TagItDialogFragment dialogFragment;
+    private NfcTag mCurrentNfcTag;
+    private String mTemporaryDifficulty;
+    private String mTemporaryPictureFilename;
+    private TagItDialogFragment mTagItDialogFragment;
 
     /**
      * Transition variable.
      */
-    private ViewGroup revealContent;
+    private ViewGroup mRevealContent;
 
     /**
      * Return an EditTagFragment with tagId as its argument.
@@ -123,12 +123,12 @@ public class EditTagFragment extends Fragment {
         String tagId = getArguments().getString(EXTRA_TAG_ID);
 
         // Gets the nfcTag through it's tag ID from the arguments.
-        currentNfcTag = MyTags.get(getActivity()).getNfcTag(tagId);
+        mCurrentNfcTag = MyTags.get(getActivity()).getNfcTag(tagId);
     }
 
     private void setupNFC() {
-        nfcHandler = new NfcHandler();
-        nfcHandler.setupNfcHandler(getActivity());
+        mNfcHandler = new NfcHandler();
+        mNfcHandler.setupNfcHandler(getActivity());
     }
 
     @Override
@@ -143,13 +143,13 @@ public class EditTagFragment extends Fragment {
     }
 
     private void setupToolbar(View view) {
-        toolbar = (Toolbar) view.findViewById(R.id.edit_tag_tool_bar);
+        mToolbar = (Toolbar) view.findViewById(R.id.edit_tag_tool_bar);
 
         // Retrieve an AppCompatActivity hosting activity to get the supported actionbar.
         AppCompatActivity activity = (AppCompatActivity) getActivity();
 
         // Set the toolbar as the new actionbar.
-        activity.setSupportActionBar(toolbar);
+        activity.setSupportActionBar(mToolbar);
 
         // Get the action bar.
         ActionBar actionBar = activity.getSupportActionBar();
@@ -159,15 +159,15 @@ public class EditTagFragment extends Fragment {
             if (NavUtils.getParentActivityName(getActivity()) != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);
             }
-            if (currentNfcTag != null) {
-                actionBar.setTitle(currentNfcTag.getTitle());
+            if (mCurrentNfcTag != null) {
+                actionBar.setTitle(mCurrentNfcTag.getTitle());
             }
         }
     }
 
     private void setupFloatingActionButton(View view) {
-        cameraActionButton = (FloatingActionButton) view.findViewById(R.id.edit_tag_camera_floating_action_button);
-        cameraActionButton.setOnClickListener(new View.OnClickListener() {
+        mCameraActionButton = (FloatingActionButton) view.findViewById(R.id.edit_tag_camera_floating_action_button);
+        mCameraActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (TransitionHelper.isTransitionSupportedAndEnabled()) {
@@ -184,41 +184,41 @@ public class EditTagFragment extends Fragment {
     private void initializeWidgets(View view) {
         setupSpinner(view);
 
-        imageView = (ImageView) view.findViewById(R.id.edit_tag_image_view);
+        mPictureImageView = (ImageView) view.findViewById(R.id.edit_tag_image_view);
 
-        imageViewOverlay = (ViewGroup) view.findViewById(R.id.edit_tag_image_view_overlay);
-        imageViewOverlay.setOnClickListener(new View.OnClickListener() {
+        mOverlayImageView = (ViewGroup) view.findViewById(R.id.edit_tag_image_view_overlay);
+        mOverlayImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentNfcTag != null) {
+                if (mCurrentNfcTag != null) {
                     Intent intent = new Intent(getActivity(), FullScreenActivity.class);
-                    String filePath = currentNfcTag.getPictureFilePath();
+                    String filePath = mCurrentNfcTag.getPictureFilePath();
                     intent.putExtra(EXTRA_FILE_PATH, filePath);
                     startActivity(intent);
                 }
             }
         });
 
-        tagItButton = (Button) view.findViewById(R.id.edit_tag_tag_it_button);
-        tagItButton.setOnClickListener(new View.OnClickListener() {
+        mTagItButton = (Button) view.findViewById(R.id.edit_tag_tag_it_button);
+        mTagItButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setupNfcWriteCallback();
             }
         });
 
-        revealContent = (ViewGroup) view.findViewById(R.id.edit_tag_reveal_content);
+        mRevealContent = (ViewGroup) view.findViewById(R.id.edit_tag_reveal_content);
     }
 
     private void setupSpinner(View view) {
-        difficultySpinner = (Spinner) view.findViewById(R.id.edit_tag_spinner);
+        mDifficultySpinner = (Spinner) view.findViewById(R.id.edit_tag_spinner);
         ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.array_difficulty, android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        difficultySpinner.setAdapter(arrayAdapter);
-        difficultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mDifficultySpinner.setAdapter(arrayAdapter);
+        mDifficultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                temporaryDifficulty = parent.getItemAtPosition(position).toString();
+                mTemporaryDifficulty = parent.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -227,9 +227,9 @@ public class EditTagFragment extends Fragment {
             }
         });
 
-        if (currentNfcTag != null) {
+        if (mCurrentNfcTag != null) {
             int position = 0;
-            switch (currentNfcTag.getDifficulty()) {
+            switch (mCurrentNfcTag.getDifficulty()) {
                 case "Easy":
                     position = 0;
                     break;
@@ -241,7 +241,7 @@ public class EditTagFragment extends Fragment {
                     break;
             }
 
-            difficultySpinner.setSelection(position);
+            mDifficultySpinner.setSelection(position);
         }
     }
 
@@ -250,12 +250,12 @@ public class EditTagFragment extends Fragment {
         super.onStart();
 
         // Loads newly picture taken.
-        if (temporaryPictureFilename != null) {
-            PictureLoader.loadBitmapWithPicassoNoCache(getActivity(), temporaryPictureFilename, imageView);
+        if (mTemporaryPictureFilename != null) {
+            PictureLoader.loadBitmapWithPicassoNoCache(getActivity(), mTemporaryPictureFilename, mPictureImageView);
         }
         // Loads saved picture.
-        else if (currentNfcTag != null) {
-            PictureLoader.loadBitmapWithPicasso(getActivity(), currentNfcTag.getPictureFilePath(), imageView);
+        else if (mCurrentNfcTag != null) {
+            PictureLoader.loadBitmapWithPicasso(getActivity(), mCurrentNfcTag.getPictureFilePath(), mPictureImageView);
         }
     }
 
@@ -266,7 +266,7 @@ public class EditTagFragment extends Fragment {
         if (!isReady) {
             makeSnackBar();
         } else {
-            nfcHandler.handleNfcTagWrite(intent);
+            mNfcHandler.handleNfcTagWrite(intent);
         }
     }
 
@@ -284,7 +284,7 @@ public class EditTagFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        nfcHandler.enableForegroundDispatch();
+        mNfcHandler.enableForegroundDispatch();
 
         hideCircularReveal();
     }
@@ -293,7 +293,7 @@ public class EditTagFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        nfcHandler.disableForegroundDispatch();
+        mNfcHandler.disableForegroundDispatch();
     }
 
     @Override
@@ -301,8 +301,8 @@ public class EditTagFragment extends Fragment {
         super.onDestroy();
 
         // Discards the unsaved photo.
-        if (temporaryPictureFilename != null) {
-            File deleteFile = new File(temporaryPictureFilename);
+        if (mTemporaryPictureFilename != null) {
+            File deleteFile = new File(mTemporaryPictureFilename);
 
             if (!deleteFile.delete()) {
                 Log.e("EditTagFragment", "Error deleting temporary file.");
@@ -330,7 +330,7 @@ public class EditTagFragment extends Fragment {
             if (resultCode == Activity.RESULT_OK) {
 
                 File tempFile = createExternalStoragePrivateFile();
-                temporaryPictureFilename = tempFile.getAbsolutePath();
+                mTemporaryPictureFilename = tempFile.getAbsolutePath();
             }
         }
     }
@@ -358,7 +358,7 @@ public class EditTagFragment extends Fragment {
     private void setupNfcWriteCallback() {
 
         // If it's a new tag and there's no picture taken.
-        if (currentNfcTag == null && temporaryPictureFilename == null) {
+        if (mCurrentNfcTag == null && mTemporaryPictureFilename == null) {
             View parentView = getView();
 
             if (parentView == null) {
@@ -375,16 +375,16 @@ public class EditTagFragment extends Fragment {
         NfcHandler.setMode(NfcHandler.Mode.OVERWRITE);
 
         // Creates and show the dialog.
-        dialogFragment = TagItDialogFragment.newInstance();
-        dialogFragment.show(getActivity().getSupportFragmentManager(), "write");
+        mTagItDialogFragment = TagItDialogFragment.newInstance();
+        mTagItDialogFragment.show(getActivity().getSupportFragmentManager(), "write");
 
         // Wires a listener for an onTagWrite event.
-        nfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
+        mNfcHandler.setOnTagWriteListener(new NfcHandler.OnTagWriteListener() {
             @Override
             public void onTagWritten(int status, String tagId) {
 
                 // Closes dialog.
-                dialogFragment.dismiss();
+                mTagItDialogFragment.dismiss();
 
                 // If NFC write operation was successful.
                 if (status == NfcHandler.OnTagWriteListener.STATUS_OK) {
@@ -411,16 +411,16 @@ public class EditTagFragment extends Fragment {
 
     private void overwriteNfcTag(String tagId) {
         // Overwrite current nfc tag fields.
-        currentNfcTag.setDifficulty(temporaryDifficulty);
-        currentNfcTag.setTagId(tagId);
-        currentNfcTag.setDiscovered(false);
-        currentNfcTag.setDateDiscovered(null);
+        mCurrentNfcTag.setDifficulty(mTemporaryDifficulty);
+        mCurrentNfcTag.setTagId(tagId);
+        mCurrentNfcTag.setDiscovered(false);
+        mCurrentNfcTag.setDateDiscovered(null);
 
         // Clear memory cache for previous image to refresh ImageView.
-        PictureLoader.invalidateWithPicasso(getActivity(), currentNfcTag.getPictureFilePath());
+        PictureLoader.invalidateWithPicasso(getActivity(), mCurrentNfcTag.getPictureFilePath());
 
         // Get Nfc Tag's position to inform RecyclerView.Adapter.
-        int position = MyTags.get(getActivity()).getNfcTags().indexOf(currentNfcTag);
+        int position = MyTags.get(getActivity()).getNfcTags().indexOf(mCurrentNfcTag);
         // Set result for REQUEST_EDIT and set position as an intent extra.
         Intent intent = new Intent();
         intent.putExtra(EXTRA_POSITION, position);
@@ -430,14 +430,14 @@ public class EditTagFragment extends Fragment {
     }
 
     private void renameTempFile() {
-        if (temporaryPictureFilename != null) {
-            File tempFile = new File(temporaryPictureFilename);
-            String renamedPath = tempFile.getParent() + File.separator + "Tag" + currentNfcTag.getTagId() + ".jpg";
+        if (mTemporaryPictureFilename != null) {
+            File tempFile = new File(mTemporaryPictureFilename);
+            String renamedPath = tempFile.getParent() + File.separator + "Tag" + mCurrentNfcTag.getTagId() + ".jpg";
             File renamedFile = new File(renamedPath);
 
             if (tempFile.renameTo(renamedFile)) {
-                temporaryPictureFilename = null;
-                currentNfcTag.setPictureFilePath(renamedFile.getAbsolutePath());
+                mTemporaryPictureFilename = null;
+                mCurrentNfcTag.setPictureFilePath(renamedFile.getAbsolutePath());
             } else {
                 Log.e("EditTagFragment", "Error while renaming: " + renamedFile.getAbsolutePath());
             }
@@ -474,11 +474,11 @@ public class EditTagFragment extends Fragment {
     }
 
     private void hideCircularReveal() {
-        if (revealContent.getVisibility() == View.INVISIBLE) {
+        if (mRevealContent.getVisibility() == View.INVISIBLE) {
             return;
         }
 
-        TransitionHelper.circularHide(cameraActionButton, revealContent, new Runnable() {
+        TransitionHelper.circularHide(mCameraActionButton, mRevealContent, new Runnable() {
             @Override
             public void run() {
                 // DO NOTHING
@@ -487,7 +487,7 @@ public class EditTagFragment extends Fragment {
     }
 
     private void showCircularReveal() {
-        TransitionHelper.circularShow(cameraActionButton, revealContent, new Runnable() {
+        TransitionHelper.circularShow(mCameraActionButton, mRevealContent, new Runnable() {
             @Override
             public void run() {
                 takePicture();

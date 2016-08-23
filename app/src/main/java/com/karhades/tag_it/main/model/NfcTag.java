@@ -25,12 +25,12 @@ public class NfcTag {
     /**
      * Instance fields.
      */
-    private String tagId;
-    private String title;
-    private String pictureFilePath;
-    private String difficulty;
-    private boolean discovered;
-    private String dateDiscovered;
+    private String mTagId;
+    private String mTitle;
+    private String mPictureFilePath;
+    private String mDifficulty;
+    private boolean mDiscovered;
+    private String mDateDiscovered;
 
     /**
      * Simple constructor of NfcTag.
@@ -40,9 +40,9 @@ public class NfcTag {
      * @param tagId A String indicating the id of the tag.
      */
     public NfcTag(String title, String difficulty, String tagId) {
-        this.title = title;
-        this.difficulty = difficulty;
-        this.tagId = tagId;
+        mTitle = title;
+        mDifficulty = difficulty;
+        mTagId = tagId;
     }
 
     /**
@@ -53,13 +53,13 @@ public class NfcTag {
      * @throws JSONException
      */
     public NfcTag(JSONObject jsonObject) throws JSONException {
-        difficulty = jsonObject.getString(JSON_DIFFICULTY);
-        tagId = jsonObject.getString(JSON_TAG_ID);
-        title = jsonObject.getString(JSON_TITLE);
-        pictureFilePath = jsonObject.getString(JSON_PICTURE_FILE_PATH);
-        discovered = jsonObject.getBoolean(JSON_DISCOVERED);
+        mDifficulty = jsonObject.getString(JSON_DIFFICULTY);
+        mTagId = jsonObject.getString(JSON_TAG_ID);
+        mTitle = jsonObject.getString(JSON_TITLE);
+        mPictureFilePath = jsonObject.getString(JSON_PICTURE_FILE_PATH);
+        mDiscovered = jsonObject.getBoolean(JSON_DISCOVERED);
         if (jsonObject.has(DATE_DISCOVERED)) {
-            dateDiscovered = jsonObject.getString(DATE_DISCOVERED);
+            mDateDiscovered = jsonObject.getString(DATE_DISCOVERED);
         }
     }
 
@@ -72,63 +72,63 @@ public class NfcTag {
      */
     public JSONObject toJson() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(JSON_DIFFICULTY, difficulty);
-        jsonObject.put(JSON_TAG_ID, tagId);
-        jsonObject.put(JSON_TITLE, title);
-        jsonObject.put(JSON_PICTURE_FILE_PATH, pictureFilePath);
-        jsonObject.put(JSON_DISCOVERED, discovered);
-        if (dateDiscovered != null) {
-            jsonObject.put(DATE_DISCOVERED, dateDiscovered);
+        jsonObject.put(JSON_DIFFICULTY, mDifficulty);
+        jsonObject.put(JSON_TAG_ID, mTagId);
+        jsonObject.put(JSON_TITLE, mTitle);
+        jsonObject.put(JSON_PICTURE_FILE_PATH, mPictureFilePath);
+        jsonObject.put(JSON_DISCOVERED, mDiscovered);
+        if (mDateDiscovered != null) {
+            jsonObject.put(DATE_DISCOVERED, mDateDiscovered);
         }
 
         return jsonObject;
     }
 
     public String getPictureFilePath() {
-        return pictureFilePath;
+        return mPictureFilePath;
     }
 
     public void setPictureFilePath(String pictureFilePath) {
-        this.pictureFilePath = pictureFilePath;
+        mPictureFilePath = pictureFilePath;
     }
 
     public String getTitle() {
-        return title;
+        return mTitle;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        mTitle = title;
     }
 
     public String getDifficulty() {
-        return difficulty;
+        return mDifficulty;
     }
 
     public void setDifficulty(String difficulty) {
-        this.difficulty = difficulty;
+        mDifficulty = difficulty;
     }
 
     public boolean isDiscovered() {
-        return discovered;
+        return mDiscovered;
     }
 
     public void setDiscovered(boolean discovered) {
-        this.discovered = discovered;
+        mDiscovered = discovered;
     }
 
     public String getTagId() {
-        return tagId;
+        return mTagId;
     }
 
     public void setTagId(String tagId) {
-        this.tagId = tagId;
+        mTagId = tagId;
     }
 
     public String getDateDiscovered() {
-        return dateDiscovered;
+        return mDateDiscovered;
     }
 
     public void setDateDiscovered(String dateDiscovered) {
-        this.dateDiscovered = dateDiscovered;
+        mDateDiscovered = dateDiscovered;
     }
 }

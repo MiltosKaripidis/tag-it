@@ -19,9 +19,15 @@ import com.karhades.tag_it.utils.PictureLoader;
  */
 public class FullScreenActivity extends Activity {
 
+    /**
+     * Extra constant.
+     */
     private static final String EXTRA_FILE_PATH = "com.karhades.tag_it.file_path";
 
-    private ImageView imageView;
+    /**
+     * Instance variable.
+     */
+    private ImageView mImageView;
 
     public static Intent newIntent(Context context, String filePath) {
         Intent intent = new Intent(context, FullScreenActivity.class);
@@ -40,8 +46,8 @@ public class FullScreenActivity extends Activity {
     }
 
     private void initializeWidgets() {
-        imageView = (ImageView) findViewById(R.id.fullscreen_image_view);
-        imageView.setOnClickListener(new View.OnClickListener() {
+        mImageView = (ImageView) findViewById(R.id.fullscreen_image_view);
+        mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 toggleSystemUI();
@@ -54,7 +60,7 @@ public class FullScreenActivity extends Activity {
         String filePath = getIntent().getStringExtra(EXTRA_FILE_PATH);
 
         // Load image.
-        PictureLoader.loadBitmapWithPicasso(this, filePath, imageView);
+        PictureLoader.loadBitmapWithPicasso(this, filePath, mImageView);
     }
 
     private void toggleSystemUI() {

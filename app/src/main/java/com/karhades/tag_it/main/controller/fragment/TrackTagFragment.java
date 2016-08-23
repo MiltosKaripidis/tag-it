@@ -48,22 +48,22 @@ public class TrackTagFragment extends Fragment {
     /**
      * Instance variable.
      */
-    private NfcTag nfcTag;
+    private NfcTag mNfcTag;
 
     /**
      * Widget references.
      */
-    private ImageView pictureImageView;
-    private TextView difficultyTextView;
-    private CheckBox discoveredCheckBox;
-    private TextView dateDiscoveredTextView;
-    private Toolbar toolbar;
-    private FloatingActionButton fullscreenActionButton;
+    private ImageView mPictureImageView;
+    private TextView mDifficultyTextView;
+    private CheckBox mDiscoveredCheckBox;
+    private TextView mDateDiscoveredTextView;
+    private Toolbar mToolbar;
+    private FloatingActionButton mFullscreenActionButton;
 
     /**
      * Transition variable.
      */
-    private ViewGroup revealContent;
+    private ViewGroup mRevealContent;
 
     /**
      * Returns a TrackTagFragment with tagId as its argument.
@@ -109,10 +109,10 @@ public class TrackTagFragment extends Fragment {
             Callback picassoCallback = new Callback() {
                 @Override
                 public void onSuccess() {
-                    pictureImageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                    mPictureImageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                         @Override
                         public boolean onPreDraw() {
-                            pictureImageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                            mPictureImageView.getViewTreeObserver().removeOnPreDrawListener(this);
 
                             getActivity().startPostponedEnterTransition();
 
@@ -126,11 +126,11 @@ public class TrackTagFragment extends Fragment {
                     Log.e("TrackTagFragment", "There was an error loading image with Picasso");
                 }
             };
-            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), pictureImageView, picassoCallback);
+            PictureLoader.loadBitmapWithPicasso(getActivity(), mNfcTag.getPictureFilePath(), mPictureImageView, picassoCallback);
         }
         // No transitions.
         else {
-            PictureLoader.loadBitmapWithPicasso(getActivity(), nfcTag.getPictureFilePath(), pictureImageView);
+            PictureLoader.loadBitmapWithPicasso(getActivity(), mNfcTag.getPictureFilePath(), mPictureImageView);
         }
     }
 
@@ -143,19 +143,19 @@ public class TrackTagFragment extends Fragment {
     }
 
     private void updateUI() {
-        toolbar.setTitle(nfcTag.getTitle());
-        difficultyTextView.setText(nfcTag.getDifficulty());
-        discoveredCheckBox.setChecked(nfcTag.isDiscovered());
-        if (nfcTag.getDateDiscovered() != null) {
-            dateDiscoveredTextView.setText(nfcTag.getDateDiscovered());
+        mToolbar.setTitle(mNfcTag.getTitle());
+        mDifficultyTextView.setText(mNfcTag.getDifficulty());
+        mDiscoveredCheckBox.setChecked(mNfcTag.isDiscovered());
+        if (mNfcTag.getDateDiscovered() != null) {
+            mDateDiscoveredTextView.setText(mNfcTag.getDateDiscovered());
         }
     }
 
     private void hideCircularReveal() {
         if (TransitionHelper.isTransitionSupportedAndEnabled()) {
             // Hide the reveal content view.
-            if (revealContent.getVisibility() == View.VISIBLE) {
-                TransitionHelper.circularHide(fullscreenActionButton, revealContent, new Runnable() {
+            if (mRevealContent.getVisibility() == View.VISIBLE) {
+                TransitionHelper.circularHide(mFullscreenActionButton, mRevealContent, new Runnable() {
                     @Override
                     public void run() {
                         // DO NOTHING
@@ -171,7 +171,7 @@ public class TrackTagFragment extends Fragment {
         String tagId = getArguments().getString(EXTRA_TAG_ID);
 
         // Get the nfcTag through it's tag id from the arguments.
-        nfcTag = MyTags.get(getActivity()).getNfcTag(tagId);
+        mNfcTag = MyTags.get(getActivity()).getNfcTag(tagId);
     }
 
     @Override
@@ -203,13 +203,13 @@ public class TrackTagFragment extends Fragment {
      * @param view A view needed for the findViewById() method.
      */
     private void setupToolbar(View view) {
-        toolbar = (Toolbar) view.findViewById(R.id.track_tag_tool_bar);
+        mToolbar = (Toolbar) view.findViewById(R.id.track_tag_tool_bar);
 
         // Retrieve an AppCompatActivity hosting activity to get the supported actionbar.
         AppCompatActivity activity = (AppCompatActivity) getActivity();
 
         // Set the toolbar as the new actionbar.
-        activity.setSupportActionBar(toolbar);
+        activity.setSupportActionBar(mToolbar);
 
         // Get the action bar.
         ActionBar actionBar = activity.getSupportActionBar();
@@ -222,8 +222,8 @@ public class TrackTagFragment extends Fragment {
     }
 
     private void setupFloatingActionButton(View view) {
-        fullscreenActionButton = (FloatingActionButton) view.findViewById(R.id.track_tag_fullscreen__floating_action_button);
-        fullscreenActionButton.setOnClickListener(new View.OnClickListener() {
+        mFullscreenActionButton = (FloatingActionButton) view.findViewById(R.id.track_tag_fullscreen__floating_action_button);
+        mFullscreenActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (TransitionHelper.isTransitionSupportedAndEnabled()) {
@@ -240,11 +240,11 @@ public class TrackTagFragment extends Fragment {
     @TargetApi(21)
     @SuppressWarnings("NullArgumentToVariableArgMethod")
     private void startFullScreenActivityWithTransition() {
-        TransitionHelper.circularShow(fullscreenActionButton, revealContent, new Runnable() {
+        TransitionHelper.circularShow(mFullscreenActionButton, mRevealContent, new Runnable() {
             @Override
             public void run() {
                 Intent intent = new Intent(getActivity(), FullScreenActivity.class);
-                String filePath = nfcTag.getPictureFilePath();
+                String filePath = mNfcTag.getPictureFilePath();
                 intent.putExtra(EXTRA_FILE_PATH, filePath);
                 // Deactivate the default transitions for a better circular reveal experience.
                 Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), null).toBundle();
@@ -254,7 +254,7 @@ public class TrackTagFragment extends Fragment {
     }
 
     private void startFullScreenActivity() {
-        String filePath = nfcTag.getPictureFilePath();
+        String filePath = mNfcTag.getPictureFilePath();
 
         Intent intent = FullScreenActivity.newIntent(getActivity(), filePath);
         startActivity(intent);
@@ -267,27 +267,27 @@ public class TrackTagFragment extends Fragment {
      */
     private void initializeWidgets(View view) {
         // NfcTag Picture ImageView.
-        pictureImageView = (ImageView) view.findViewById(R.id.track_tag_image_view);
+        mPictureImageView = (ImageView) view.findViewById(R.id.track_tag_image_view);
         if (TransitionHelper.isTransitionSupportedAndEnabled()) {
-            pictureImageView.setTransitionName("image" + nfcTag.getTagId());
+            mPictureImageView.setTransitionName("image" + mNfcTag.getTagId());
         }
 
         // NfcTag Difficulty TextView.
-        difficultyTextView = (TextView) view.findViewById(R.id.track_tag_difficulty_text_view);
+        mDifficultyTextView = (TextView) view.findViewById(R.id.track_tag_difficulty_text_view);
 
         // NfcTag discovered CheckBox.
-        discoveredCheckBox = (CheckBox) view.findViewById(R.id.track_tag_discovered_check_box);
+        mDiscoveredCheckBox = (CheckBox) view.findViewById(R.id.track_tag_discovered_check_box);
 
         // NfcTag Date discovered TextView.
-        dateDiscoveredTextView = (TextView) view.findViewById(R.id.track_tag_date_discovered_text_view);
+        mDateDiscoveredTextView = (TextView) view.findViewById(R.id.track_tag_date_discovered_text_view);
 
         // A hidden FrameLayout that will cover the whole screen on transition start.
-        revealContent = (ViewGroup) view.findViewById(R.id.tracking_reveal_content);
+        mRevealContent = (ViewGroup) view.findViewById(R.id.tracking_reveal_content);
     }
 
     private void showActionButton() {
-        fullscreenActionButton.setVisibility(View.VISIBLE);
-        fullscreenActionButton.animate()
+        mFullscreenActionButton.setVisibility(View.VISIBLE);
+        mFullscreenActionButton.animate()
                 .scaleX(1)
                 .scaleY(1);
     }
@@ -300,16 +300,16 @@ public class TrackTagFragment extends Fragment {
      *                 of the action button.
      */
     public void hideActionButtonOnExit(Runnable runnable) {
-        fullscreenActionButton.animate()
+        mFullscreenActionButton.animate()
                 .scaleX(0)
                 .scaleY(0)
                 .withEndAction(runnable);
     }
 
     private void hideActionButton() {
-        fullscreenActionButton.setScaleX(0);
-        fullscreenActionButton.setScaleY(0);
-        fullscreenActionButton.setVisibility(View.INVISIBLE);
+        mFullscreenActionButton.setScaleX(0);
+        mFullscreenActionButton.setScaleY(0);
+        mFullscreenActionButton.setVisibility(View.INVISIBLE);
     }
 
     @TargetApi(21)

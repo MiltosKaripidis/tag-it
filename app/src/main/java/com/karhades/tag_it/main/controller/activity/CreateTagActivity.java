@@ -25,8 +25,13 @@ public class CreateTagActivity extends SingleFragmentActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
+        // Gets FragmentManager.
         FragmentManager fragmentManager = getSupportFragmentManager();
+
+        // Gets CreateTagFragment through it's ID.
         CreateTagFragment createTagFragment = (CreateTagFragment) fragmentManager.findFragmentById(R.id.fragment_container);
+
+        // Calls fragment's onNewIntent.
         createTagFragment.onNewIntent(intent);
     }
 }

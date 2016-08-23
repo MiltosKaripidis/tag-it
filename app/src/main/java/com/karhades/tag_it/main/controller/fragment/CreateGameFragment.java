@@ -75,27 +75,27 @@ public class CreateGameFragment extends Fragment {
     /**
      * Widget variables.
      */
-    private RecyclerView recyclerView;
-    private NfcTagAdapter adapter;
-    private FloatingActionButton addActionButton;
-    private LinearLayout emptyLinearLayout;
+    private RecyclerView mRecyclerView;
+    private NfcTagAdapter mNfcTagAdapter;
+    private FloatingActionButton mAddActionButton;
+    private LinearLayout mEmptyLinearLayout;
 
     /**
      * Instance variables.
      */
-    private List<NfcTag> nfcTags;
+    private List<NfcTag> mNfcTags;
 
     /**
      * Transition variables.
      */
-    private ViewGroup sceneRoot;
-    private View revealContent;
-    private ViewGroup.LayoutParams originalLayoutParams;
+    private ViewGroup mSceneRoot;
+    private View mRevealContent;
+    private ViewGroup.LayoutParams mOriginalLayoutParams;
 
     /**
      * Interface variable.
      */
-    private Callbacks callbacks;
+    private Callbacks mCallbacks;
 
     /**
      * Interface definition for a callback to be invoked when
@@ -119,7 +119,7 @@ public class CreateGameFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        nfcTags = MyTags.get(getActivity()).getNfcTags();
+        mNfcTags = MyTags.get(getActivity()).getNfcTags();
     }
 
     @Override
@@ -127,18 +127,18 @@ public class CreateGameFragment extends Fragment {
         super.onAttach(context);
 
         try {
-            callbacks = (Callbacks) context;
+            mCallbacks = (Callbacks) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement CreateGameFragment.Callbacks interface.");
         }
-        callbacks.onFragmentAttached(this);
+        mCallbacks.onFragmentAttached(this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
 
-        callbacks = null;
+        mCallbacks = null;
     }
 
     @Override
@@ -146,11 +146,11 @@ public class CreateGameFragment extends Fragment {
         // TODO: Doesn't get called.
         if (requestCode == REQUEST_INSERT) {
             if (resultCode == Activity.RESULT_OK) {
-                adapter.notifyItemInserted(nfcTags.size());
+                mNfcTagAdapter.notifyItemInserted(mNfcTags.size());
             }
         } else if (requestCode == REQUEST_EDIT) {
             if (resultCode == Activity.RESULT_OK) {
-                adapter.notifyItemChanged(data.getIntExtra(EXTRA_POSITION, -1));
+                mNfcTagAdapter.notifyItemChanged(data.getIntExtra(EXTRA_POSITION, -1));
             }
         } else if (requestCode == REQUEST_DELETE) {
             if (resultCode == Activity.RESULT_OK) {
@@ -162,10 +162,10 @@ public class CreateGameFragment extends Fragment {
                 int adapterPosition = (int) data.getSerializableExtra(DeleteDialogFragment.EXTRA_ADAPTER_POSITION);
 
                 // Deletes the selected NFC tag.
-                adapter.deleteSelectedItem(nfcTag, adapterPosition);
+                mNfcTagAdapter.deleteSelectedItem(nfcTag, adapterPosition);
 
                 // Invokes MainActivity's callback method.
-                callbacks.onItemDeleted(nfcTag.getTitle());
+                mCallbacks.onItemDeleted(nfcTag.getTitle());
             }
         }
     }
@@ -181,13 +181,13 @@ public class CreateGameFragment extends Fragment {
     }
 
     private void setupRecyclerView(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.create_game_recycler_view);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.create_game_recycler_view);
         // Forces the recycling of items (Default=2).
-        recyclerView.setItemViewCacheSize(0);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter = new NfcTagAdapter();
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        mRecyclerView.setItemViewCacheSize(0);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mNfcTagAdapter = new NfcTagAdapter();
+        mNfcTagAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
@@ -202,36 +202,36 @@ public class CreateGameFragment extends Fragment {
                 hideRecyclerViewIfEmpty();
             }
         });
-        recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.setAdapter(mNfcTagAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 // If scrolling down (dy > 0).
                 // The faster the scrolling the bigger the dy.
                 if (dy > 0) {
-                    addActionButton.hide();
+                    mAddActionButton.hide();
                 }
                 // If scrolling up.
                 else if (dy < 0) {
-                    addActionButton.show();
+                    mAddActionButton.show();
                 }
             }
         });
     }
 
     private void setupEmptyView(View view) {
-        emptyLinearLayout = (LinearLayout) view.findViewById(R.id.create_game_empty_linear_layout);
+        mEmptyLinearLayout = (LinearLayout) view.findViewById(R.id.create_game_empty_linear_layout);
         hideRecyclerViewIfEmpty();
     }
 
     private void hideRecyclerViewIfEmpty() {
-        if (nfcTags == null || nfcTags.size() == 0) {
-            recyclerView.setVisibility(View.INVISIBLE);
-            emptyLinearLayout.setVisibility(View.VISIBLE);
+        if (mNfcTags == null || mNfcTags.size() == 0) {
+            mRecyclerView.setVisibility(View.INVISIBLE);
+            mEmptyLinearLayout.setVisibility(View.VISIBLE);
         } else {
-            recyclerView.setVisibility(View.VISIBLE);
-            emptyLinearLayout.setVisibility(View.INVISIBLE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mEmptyLinearLayout.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -242,31 +242,31 @@ public class CreateGameFragment extends Fragment {
         restoreLayoutAfterTransition();
 
         // Updates UI.
-        adapter.notifyDataSetChanged();
+        mNfcTagAdapter.notifyDataSetChanged();
         hideRecyclerViewIfEmpty();
     }
 
     public int contextGetSelectionSize() {
-        return adapter.getSelectionSize();
+        return mNfcTagAdapter.getSelectionSize();
     }
 
     public void contextDeleteSelectedItems() {
-        adapter.deleteSelectedItems();
+        mNfcTagAdapter.deleteSelectedItems();
 
         reorderNfcTags();
     }
 
     public void contextSelectAll() {
-        adapter.selectAll();
+        mNfcTagAdapter.selectAll();
     }
 
     public void contextClearSelection() {
-        adapter.clearSelection();
+        mNfcTagAdapter.clearSelection();
     }
 
     public void contextFinish() {
-        adapter.setSelectionMode(false);
-        adapter.clearSelection();
+        mNfcTagAdapter.setSelectionMode(false);
+        mNfcTagAdapter.clearSelection();
     }
 
     /**
@@ -293,7 +293,7 @@ public class CreateGameFragment extends Fragment {
         // Replace the contents of a view (invoked by the layout manager).
         @Override
         public void onBindViewHolder(NfcTagHolder nfcTagHolder, int position) {
-            NfcTag nfcTag = nfcTags.get(position);
+            NfcTag nfcTag = mNfcTags.get(position);
 
             // Fix the recycling of the holders.
             if (isSelected(position)) {
@@ -307,7 +307,7 @@ public class CreateGameFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return (nfcTags == null) ? 0 : nfcTags.size();
+            return (mNfcTags == null) ? 0 : mNfcTags.size();
         }
 
         public void setSelectionMode(boolean isSelectableMode) {
@@ -331,26 +331,26 @@ public class CreateGameFragment extends Fragment {
         }
 
         public void selectAll() {
-            for (int i = 0; i < nfcTags.size(); i++) {
-                View view = recyclerView.getChildAt(i);
+            for (int i = 0; i < mNfcTags.size(); i++) {
+                View view = mRecyclerView.getChildAt(i);
                 if (view instanceof CardView) {
                     view.setActivated(true);
                 }
                 selectedItems.put(i, true);
             }
-            callbacks.onItemClicked(getSelectionSize());
+            mCallbacks.onItemClicked(getSelectionSize());
         }
 
         public void clearSelection() {
             selectedItems.clear();
 
-            for (int i = 0; i < nfcTags.size(); i++) {
-                View view = recyclerView.getChildAt(i);
+            for (int i = 0; i < mNfcTags.size(); i++) {
+                View view = mRecyclerView.getChildAt(i);
                 if (view instanceof CardView) {
                     view.setActivated(false);
                 }
             }
-            callbacks.onItemClicked(getSelectionSize());
+            mCallbacks.onItemClicked(getSelectionSize());
         }
 
         public int getSelectionSize() {
@@ -358,10 +358,10 @@ public class CreateGameFragment extends Fragment {
         }
 
         public void deleteSelectedItems() {
-            for (int i = nfcTags.size(); i >= 0; i--) {
+            for (int i = mNfcTags.size(); i >= 0; i--) {
                 if (isSelected(i)) {
                     // Gets the selected NFC tag.
-                    NfcTag nfcTag = nfcTags.get(i);
+                    NfcTag nfcTag = mNfcTags.get(i);
 
                     // Deletes the selected NFC tag.
                     MyTags.get(getActivity()).deleteNfcTag(nfcTag);
@@ -394,13 +394,13 @@ public class CreateGameFragment extends Fragment {
         private ImageButton moreImageButton;
 
         private NfcTag nfcTag;
-        private NfcTagAdapter adapter;
+        private NfcTagAdapter nfcTagAdapter;
 
         @SuppressWarnings("deprecation")
         public NfcTagHolder(View view) {
             super(view);
 
-            adapter = (NfcTagAdapter) recyclerView.getAdapter();
+            nfcTagAdapter = (NfcTagAdapter) mRecyclerView.getAdapter();
 
             setupTouchListener(view);
             setupClickListener(view);
@@ -424,14 +424,14 @@ public class CreateGameFragment extends Fragment {
 
         private void selectItem(View view) {
             // Highlight selected view.
-            if (adapter.isSelected(getAdapterPosition())) {
+            if (nfcTagAdapter.isSelected(getAdapterPosition())) {
                 view.setActivated(false);
             } else {
                 view.setActivated(true);
             }
 
-            adapter.toggleSelection(getAdapterPosition());
-            callbacks.onItemClicked(adapter.getSelectionSize());
+            nfcTagAdapter.toggleSelection(getAdapterPosition());
+            mCallbacks.onItemClicked(nfcTagAdapter.getSelectionSize());
         }
 
         @SuppressLint("InflateParams")
@@ -499,7 +499,7 @@ public class CreateGameFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     // If Contextual Action Bar is disabled.
-                    if (!adapter.isSelectionMode()) {
+                    if (!nfcTagAdapter.isSelectionMode()) {
                         // Starts EditTagPagerActivity.
                         Intent intent = EditTagPagerActivity.newIntent(getActivity(), nfcTag.getTagId());
                         startActivityForResult(intent, REQUEST_EDIT);
@@ -517,10 +517,10 @@ public class CreateGameFragment extends Fragment {
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    callbacks.onItemLongClicked();
+                    mCallbacks.onItemLongClicked();
 
                     // Enable selection mode.
-                    adapter.setSelectionMode(true);
+                    nfcTagAdapter.setSelectionMode(true);
 
                     // Toggle selected view.
                     selectItem(view);
@@ -545,14 +545,14 @@ public class CreateGameFragment extends Fragment {
             @Override
             public void run() {
                 MyTags.get(getActivity()).reorderNfcTags();
-                adapter.notifyItemRangeChanged(0, MyTags.get(getActivity()).getNfcTags().size());
+                mNfcTagAdapter.notifyItemRangeChanged(0, MyTags.get(getActivity()).getNfcTags().size());
             }
         }, 1000);
     }
 
     public void setupFloatingActionButton(View view) {
-        addActionButton = (FloatingActionButton) view;
-        addActionButton.setOnClickListener(new View.OnClickListener() {
+        mAddActionButton = (FloatingActionButton) view;
+        mAddActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (TransitionHelper.isTransitionSupportedAndEnabled()) {
@@ -622,9 +622,9 @@ public class CreateGameFragment extends Fragment {
     }
 
     public void setupTransitionViews(ViewGroup sceneRoot, ViewGroup revealContent) {
-        this.sceneRoot = sceneRoot;
-        this.revealContent = revealContent;
-        originalLayoutParams = addActionButton.getLayoutParams();
+        mSceneRoot = sceneRoot;
+        mRevealContent = revealContent;
+        mOriginalLayoutParams = mAddActionButton.getLayoutParams();
     }
 
     @TargetApi(21)
@@ -639,7 +639,7 @@ public class CreateGameFragment extends Fragment {
 
             @Override
             public void onTransitionEnd(Transition transition) {
-                TransitionHelper.circularShow(addActionButton, revealContent, new Runnable() {
+                TransitionHelper.circularShow(mAddActionButton, mRevealContent, new Runnable() {
                     @Override
                     public void run() {
                         Intent intent = new Intent(getActivity(), CreateTagActivity.class);
@@ -666,12 +666,12 @@ public class CreateGameFragment extends Fragment {
         });
 
         // Curved motion transition.
-        TransitionManager.beginDelayedTransition(sceneRoot, transition);
+        TransitionManager.beginDelayedTransition(mSceneRoot, transition);
 
         // Changes the action button's gravity from bottom|right to center.
         CoordinatorLayout.LayoutParams newLayoutParams = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.WRAP_CONTENT, CoordinatorLayout.LayoutParams.WRAP_CONTENT);
         newLayoutParams.gravity = Gravity.CENTER;
-        addActionButton.setLayoutParams(newLayoutParams);
+        mAddActionButton.setLayoutParams(newLayoutParams);
     }
 
     private void startCreateTagActivity() {
@@ -685,21 +685,21 @@ public class CreateGameFragment extends Fragment {
             return;
         }
 
-        if (revealContent == null || revealContent.getVisibility() == View.INVISIBLE) {
+        if (mRevealContent == null || mRevealContent.getVisibility() == View.INVISIBLE) {
             return;
         }
 
-        TransitionHelper.circularHide(addActionButton, revealContent, new Runnable() {
+        TransitionHelper.circularHide(mAddActionButton, mRevealContent, new Runnable() {
             @Override
             public void run() {
                 // Gets the transition from the XML file.
                 Transition transition = TransitionInflater.from(getActivity()).inflateTransition(R.transition.changebounds_with_arcmotion);
 
                 // Curved motion transition.
-                TransitionManager.beginDelayedTransition(sceneRoot, transition);
+                TransitionManager.beginDelayedTransition(mSceneRoot, transition);
 
                 // Revert action button to it's original position.
-                addActionButton.setLayoutParams(originalLayoutParams);
+                mAddActionButton.setLayoutParams(mOriginalLayoutParams);
             }
         });
     }
