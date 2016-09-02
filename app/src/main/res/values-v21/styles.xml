@@ -3,7 +3,7 @@
     <!-- Default app style-->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Background color-->
-        <item name="android:colorBackground">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
 
         <!-- App colors-->
         <item name="android:colorPrimary">@color/primary</item>
@@ -20,22 +20,6 @@
         <!-- Status bar-->
         <item name="android:statusBarColor">@android:color/transparent</item>
 
-        <!-- Transitions-->
-        <item name="android:windowActivityTransitions">true</item>
-        <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowSharedElementEnterTransition">
-            @transition/tracking_shared_element
-        </item>
-        <item name="android:windowSharedElementReturnTransition">
-            @transition/tracking_shared_element
-        </item>
-        <item name="android:windowEnterTransition">
-            @transition/tracking_game_window_enter_transition
-        </item>
-        <item name="android:windowReturnTransition">
-            @transition/tracking_game_window_return_transition
-        </item>
-
         <!-- Custom ActionMode popup-->
         <item name="actionBarPopupTheme">@style/AppTheme.ActionMode.Overflow</item>
 
@@ -44,14 +28,22 @@
 
         <!-- Custom spinner-->
         <item name="android:spinnerItemStyle">@style/AppTheme.Spinner</item>
+
+        <!-- Activity enter transition-->
+        <item name="android:windowEnterTransition">@transition/fade</item>
     </style>
 
-    <!-- Style for the fullscreen activity-->
+    <!-- TrackTagPagerActivity theme-->
+    <style name="AppTheme.TrackTagPagerActivity">
+        <item name="android:windowEnterTransition">@transition/slide_with_fade</item>
+    </style>
+
+    <!-- FullscreenActivity theme-->
     <style name="AppTheme.Fullscreen">
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
-    <!-- Style for the settings activity-->
+    <!-- SettingsActivity theme-->
     <style name="AppTheme.Settings">
         <item name="android:statusBarColor">@color/primary_dark</item>
     </style>

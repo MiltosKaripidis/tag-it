@@ -85,6 +85,8 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
 
         if (TransitionHelper.isTransitionSupportedAndEnabled()) {
             enableTransitions();
+
+            supportPostponeEnterTransition();
         }
     }
 
@@ -233,9 +235,6 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
     private void enableTransitions() {
         mCurrentTagPosition = getIntent().getIntExtra(EXTRA_CURRENT_TAG_POSITION, -1);
         mOldTagPosition = mCurrentTagPosition;
-        // Postpone the loading of Activity until
-        // the shared element is ready to transition.
-        postponeEnterTransition();
 
         setEnterSharedElementCallback(new SharedElementCallback() {
             @Override

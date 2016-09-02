@@ -558,18 +558,18 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
             // If user swiped to another tag.
             if (oldTagPosition != currentTagPosition) {
                 recyclerView.scrollToPosition(currentTagPosition);
-
-                // Wait for RecyclerView to load it's layout.
-                postponeEnterTransition();
-                recyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                    @Override
-                    public boolean onPreDraw() {
-                        recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-                        startPostponedEnterTransition();
-                        return true;
-                    }
-                });
             }
+
+            // Wait for RecyclerView to load it's layout.
+            supportPostponeEnterTransition();
+            recyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                    supportStartPostponedEnterTransition();
+                    return true;
+                }
+            });
         }
     }
 

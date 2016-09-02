@@ -58,7 +58,8 @@
         <activity
             android:name=".main.controller.activity.TrackTagPagerActivity"
             android:parentActivityName=".main.controller.activity.MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.TrackTagPagerActivity" />
 
         <!-- EditTagPagerActivity-->
         <activity

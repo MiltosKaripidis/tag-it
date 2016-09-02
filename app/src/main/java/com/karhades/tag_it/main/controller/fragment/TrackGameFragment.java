@@ -187,7 +187,6 @@ public class TrackGameFragment extends Fragment {
             titleTextView = (TextView) view.findViewById(R.id.row_track_title_text_view);
 
             difficultyTextView = (TextView) view.findViewById(R.id.row_track_difficulty_text_view);
-            difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
 
             discoveredCheckBox = (CheckBox) view.findViewById(R.id.row_track_discovered_check_box);
         }

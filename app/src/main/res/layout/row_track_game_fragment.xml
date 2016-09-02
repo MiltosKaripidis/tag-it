@@ -6,7 +6,6 @@
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
     android:layout_marginTop="8dp"
-    android:clickable="true"
     android:foreground="@drawable/selector_touch_effect"
     card_view:cardBackgroundColor="@android:color/white"
     card_view:cardCornerRadius="2dp"
@@ -51,7 +50,7 @@
                 android:paddingBottom="16dp"
                 android:paddingLeft="16dp"
                 android:text="@string/dummy_difficulty"
-                android:textColor="?android:attr/textColorSecondary"
+                android:textColor="@color/accent"
                 android:textSize="14sp" />
 
             <CheckBox

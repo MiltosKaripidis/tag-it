@@ -643,7 +643,7 @@ public class CreateGameFragment extends Fragment {
                     @Override
                     public void run() {
                         Intent intent = new Intent(getActivity(), CreateTagActivity.class);
-                        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), null).toBundle();
+                        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle();
                         getActivity().startActivityForResult(intent, REQUEST_INSERT, bundle);
                     }
                 });

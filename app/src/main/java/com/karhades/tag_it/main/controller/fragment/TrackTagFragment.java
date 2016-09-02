@@ -114,7 +114,7 @@ public class TrackTagFragment extends Fragment {
                         public boolean onPreDraw() {
                             mPictureImageView.getViewTreeObserver().removeOnPreDrawListener(this);
 
-                            getActivity().startPostponedEnterTransition();
+                            getActivity().supportStartPostponedEnterTransition();
 
                             return true;
                         }
@@ -247,7 +247,7 @@ public class TrackTagFragment extends Fragment {
                 String filePath = mNfcTag.getPictureFilePath();
                 intent.putExtra(EXTRA_FILE_PATH, filePath);
                 // Deactivate the default transitions for a better circular reveal experience.
-                Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), null).toBundle();
+                Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle();
                 getActivity().startActivity(intent, bundle);
             }
         });
