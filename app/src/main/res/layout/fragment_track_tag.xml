@@ -85,6 +85,7 @@
                         android:paddingRight="16dp"
                         android:paddingTop="24dp">
 
+                        <!-- Details label-->
                         <TextView
                             style="?android:attr/listSeparatorTextViewStyle"
                             android:layout_width="match_parent"
@@ -92,7 +93,7 @@
                             android:layout_marginBottom="24dp"
                             android:text="@string/label_details"
                             android:textColor="@color/primary"
-                            android:textSize="24sp" />
+                            android:textSize="20sp" />
 
                         <!--Difficulty-->
                         <LinearLayout
@@ -106,7 +107,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/label_difficulty"
                                 android:textColor="?android:attr/textColorPrimary"
-                                android:textSize="20sp" />
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/track_tag_difficulty_text_view"
@@ -129,7 +130,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/label_discovered"
                                 android:textColor="?android:attr/textColorPrimary"
-                                android:textSize="20sp" />
+                                android:textSize="16sp" />
 
                             <CheckBox
                                 android:id="@+id/track_tag_discovered_check_box"
@@ -151,7 +152,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/label_date_discovered"
                                 android:textColor="?android:attr/textColorPrimary"
-                                android:textSize="20sp" />
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/track_tag_date_discovered_text_view"

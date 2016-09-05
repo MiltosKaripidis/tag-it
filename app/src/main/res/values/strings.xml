@@ -1,7 +1,5 @@
 <resources>
 
-    <string name="dummy_title">TITLE</string>
-    <string name="dummy_difficulty">HARD</string>
     <string name="dummy_empty_text">No NFC Tags.</string>
     <string name="dummy_empty_text1">"Tap "</string>
     <string name="dummy_empty_text2">" to add one."</string>
@@ -27,6 +25,7 @@
     <string name="navigation_share">Share</string>
     <string name="navigation_create">Create</string>
     <string name="navigation_settings">Settings</string>
+    <string name="hint_title">Title (Could be a hint...)</string>
 
     <string-array name="array_difficulty">
         <item>Easy</item>

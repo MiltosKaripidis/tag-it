@@ -12,6 +12,7 @@
         <item name="android:colorControlActivated">@color/accent</item>
         <item name="android:textColorPrimary">@color/primary_text</item>
         <item name="android:textColorSecondary">@color/secondary_text</item>
+        <item name="android:editTextColor">@color/secondary_text</item>
 
         <!-- Contextual action bar-->
         <item name="windowActionModeOverlay">true</item>
@@ -67,5 +68,11 @@
     <!-- Custom style for the spinner-->
     <style name="AppTheme.Spinner" parent="@android:style/Widget.Material.TextView.SpinnerItem">
         <item name="android:textColor">@color/secondary_text</item>
+    </style>
+
+    <!-- Custom style for the TextInputLayout-->
+    <style name="AppTheme.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:textSize">16sp</item>
     </style>
 </resources>
