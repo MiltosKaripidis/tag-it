@@ -32,6 +32,9 @@
 
         <!-- Activity enter transition-->
         <item name="android:windowEnterTransition">@transition/fade</item>
+
+        <!-- Custom back navigation icon-->
+        <item name="navigationIcon">@drawable/icon_back_arrow</item>
     </style>
 
     <!-- TrackTagPagerActivity theme-->
