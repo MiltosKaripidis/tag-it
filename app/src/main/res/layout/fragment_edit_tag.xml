@@ -14,12 +14,12 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/edit_tag_app_bar_layout"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="wrap_content"
             android:fitsSystemWindows="true">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark"
                 app:contentScrim="@color/primary"
@@ -32,14 +32,14 @@
                 <FrameLayout
                     android:id="@+id/edit_tag_image_linear_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:fitsSystemWindows="true">
 
                     <!-- Tag picture-->
                     <ImageView
                         android:id="@+id/edit_tag_image_view"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="250dp"
                         android:fitsSystemWindows="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/image_no_image"
@@ -105,13 +105,12 @@
 
                         <!-- Details label-->
                         <TextView
-                            style="?android:attr/listSeparatorTextViewStyle"
+                            style="@style/TextAppearance.AppCompat.Title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="24dp"
                             android:text="@string/label_details"
-                            android:textColor="@color/primary"
-                            android:textSize="20sp" />
+                            android:textColor="@color/primary" />
 
                         <!-- Title-->
                         <LinearLayout
@@ -123,7 +122,7 @@
                             <android.support.design.widget.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                app:hintTextAppearance="@style/AppTheme.TextInputLayout">
+                                app:hintTextAppearance="@style/TextAppearance.AppCompat.Subhead">
 
                                 <android.support.design.widget.TextInputEditText
                                     android:id="@+id/edit_tag_title_edit_text"
@@ -142,11 +141,10 @@
                             android:orientation="vertical">
 
                             <TextView
+                                style="@style/TextAppearance.AppCompat.Subhead"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/label_difficulty"
-                                android:textColor="@color/primary_text"
-                                android:textSize="16sp" />
+                                android:text="@string/label_difficulty" />
 
                             <Spinner
                                 android:id="@+id/edit_tag_spinner"
@@ -162,8 +160,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/button_tag_it"
-                            android:textColor="@color/accent"
-                            android:textSize="16sp" />
+                            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                            android:textColor="@color/accent" />
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
             </LinearLayout>

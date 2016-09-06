@@ -24,7 +24,7 @@
             <ImageView
                 android:id="@+id/discover_image_view"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="250dp"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/image_no_image"
@@ -62,13 +62,12 @@
                 android:paddingTop="24dp">
 
                 <TextView
-                    style="?android:attr/listSeparatorTextViewStyle"
+                    style="@style/TextAppearance.AppCompat.Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
                     android:text="@string/label_details"
-                    android:textColor="@color/primary"
-                    android:textSize="24sp" />
+                    android:textColor="@color/primary" />
 
                 <!-- Difficulty-->
                 <LinearLayout
@@ -78,19 +77,18 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_difficulty"
-                        android:textColor="@color/primary_text"
-                        android:textSize="20sp" />
+                        android:text="@string/label_difficulty" />
 
                     <TextView
                         android:id="@+id/discover_difficulty_text_view"
+                        style="@style/TextAppearance.AppCompat.Body1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_empty"
-                        android:textColor="@color/accent"
-                        android:textSize="16sp" />
+                        android:textColor="@color/accent" />
                 </LinearLayout>
 
                 <!-- Discovered-->
@@ -101,11 +99,10 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_discovered"
-                        android:textColor="@color/primary_text"
-                        android:textSize="20sp" />
+                        android:text="@string/label_discovered" />
 
                     <CheckBox
                         android:id="@+id/discover_discovered_check_box"
@@ -120,19 +117,18 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_date_discovered"
-                        android:textColor="@color/primary_text"
-                        android:textSize="20sp" />
+                        android:text="@string/label_date_discovered" />
 
                     <TextView
                         android:id="@+id/discover_date_discovered_text_view"
+                        style="@style/TextAppearance.AppCompat.Body1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_empty"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="16sp" />
+                        android:textColor="@color/secondary_text" />
                 </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>

@@ -34,17 +34,17 @@
 
             <TextView
                 android:id="@+id/row_create_title_text_view"
+                style="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="10"
+                android:maxLength="15"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:paddingTop="16dp"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textSize="20sp" />
+                android:paddingTop="16dp" />
 
             <TextView
                 android:id="@+id/row_create_difficulty_text_view"
+                style="@style/TextAppearance.AppCompat.Body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/row_create_title_text_view"

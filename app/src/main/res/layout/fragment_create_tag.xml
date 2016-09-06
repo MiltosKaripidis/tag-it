@@ -18,13 +18,13 @@
             <FrameLayout
                 android:id="@+id/create_tag_image_linear_layout"
                 android:layout_width="match_parent"
-                android:layout_height="300dp">
+                android:layout_height="wrap_content">
 
                 <!-- Tag picture-->
                 <ImageView
                     android:id="@+id/create_tag_image_view"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="250dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/image_no_image"
                     tools:ignore="ContentDescription" />
@@ -54,12 +54,12 @@
 
                     <TextView
                         android:id="@+id/create_tag_details_text_view"
+                        style="@style/TextAppearance.AppCompat.Headline"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/label_details"
-                        android:textColor="@android:color/white"
-                        android:textSize="34sp" />
+                        android:textColor="@android:color/white" />
                 </FrameLayout>
 
                 <!-- Content-->
@@ -76,14 +76,16 @@
                     <LinearLayout
                         android:id="@+id/create_tag_difficulty_linear_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/create_tag_difficulty_label_text_view"
+                            style="@style/TextAppearance.AppCompat.Subhead"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/label_difficulty"
-                            android:textSize="16sp" />
+                            android:text="@string/label_difficulty" />
 
                         <Spinner
                             android:id="@+id/create_tag_spinner"
@@ -103,21 +105,21 @@
 
                         <Button
                             android:id="@+id/create_tag_cancel_button"
+                            style="@style/TextAppearance.AppCompat.Button"
                             android:layout_width="wrap_content"
                             android:layout_height="48dp"
                             android:background="@drawable/selector_raised_button_secondary"
                             android:text="@string/button_cancel"
-                            android:textColor="@android:color/black"
-                            tools:ignore="ButtonStyle" />
+                            android:textColor="@android:color/black" />
 
                         <Button
                             android:id="@+id/create_tag_tag_it_button"
+                            style="@style/TextAppearance.AppCompat.Button"
                             android:layout_width="wrap_content"
                             android:layout_height="48dp"
                             android:background="@drawable/selector_raised_button"
                             android:text="@string/button_tag_it"
-                            android:textColor="@android:color/white"
-                            tools:ignore="ButtonStyle" />
+                            android:textColor="@android:color/white" />
                     </LinearLayout>
                 </RelativeLayout>
             </LinearLayout>

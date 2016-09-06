@@ -72,10 +72,4 @@
     <style name="AppTheme.Spinner" parent="@android:style/Widget.Material.TextView.SpinnerItem">
         <item name="android:textColor">@color/secondary_text</item>
     </style>
-
-    <!-- Custom style for the TextInputLayout-->
-    <style name="AppTheme.TextInputLayout" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/primary_text</item>
-        <item name="android:textSize">16sp</item>
-    </style>
 </resources>
