@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
@@ -62,7 +63,7 @@ public class CreateTagFragment extends Fragment {
      * Widget references.
      */
     private ImageView mPictureImageView;
-    private Button mCancelButton;
+    private TextInputEditText mTitleEditText;
     private Button mTagItButton;
     private Spinner mDifficultySpinner;
     private FloatingActionButton mCameraActionButton;
@@ -72,6 +73,7 @@ public class CreateTagFragment extends Fragment {
      * Instance variables.
      */
     private NfcTag mCurrentNfcTag;
+    private String mTemporaryTitle;
     private String mTemporaryDifficulty;
     private String mTemporaryPictureFilename;
     private TagItDialogFragment mTagItDialogFragment;
@@ -200,6 +202,7 @@ public class CreateTagFragment extends Fragment {
 
     private void setupToolbar(View view) {
         mToolbar = (Toolbar) view.findViewById(R.id.create_tag_tool_bar);
+        mToolbar.setTitle("Create");
 
         // Retrieve an AppCompatActivity hosting activity to get the supported actionbar.
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -259,19 +262,13 @@ public class CreateTagFragment extends Fragment {
 
         mPictureImageView = (ImageView) view.findViewById(R.id.create_tag_image_view);
 
+        mTitleEditText = (TextInputEditText) view.findViewById(R.id.create_tag_title_edit_text);
+
         mTagItButton = (Button) view.findViewById(R.id.create_tag_tag_it_button);
         mTagItButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setupNfcWriteCallback();
-            }
-        });
-
-        mCancelButton = (Button) view.findViewById(R.id.create_tag_cancel_button);
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().finish();
             }
         });
 
@@ -349,11 +346,12 @@ public class CreateTagFragment extends Fragment {
     }
 
     private void createNewNfcTag(String tagId) {
-        // Gets the next available number for the new tag.
-        int number = MyTags.get(getActivity()).getNfcTags().size() + 1;
+        // If edit text is empty, it keeps the same title, else the inserted one.
+        mTemporaryTitle = mTitleEditText.getText().toString().equals("") ? mCurrentNfcTag.getTitle()
+                : mTitleEditText.getText().toString();
 
         // Creates new tag with the following fields.
-        NfcTag newNfcTag = new NfcTag("Tag " + number, mTemporaryDifficulty, tagId);
+        NfcTag newNfcTag = new NfcTag(mTemporaryTitle, mTemporaryDifficulty, tagId);
 
         // Adds new tag to NfcTags list.
         MyTags.get(getActivity()).addNfcTag(newNfcTag);

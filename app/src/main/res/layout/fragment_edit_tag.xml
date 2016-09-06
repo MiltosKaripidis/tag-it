@@ -28,32 +28,15 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                 app:statusBarScrim="@color/primary_dark">
 
-                <!-- Image and touch effect-->
-                <FrameLayout
-                    android:id="@+id/edit_tag_image_linear_layout"
+                <!-- Tag picture-->
+                <ImageView
+                    android:id="@+id/edit_tag_image_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fitsSystemWindows="true">
-
-                    <!-- Tag picture-->
-                    <ImageView
-                        android:id="@+id/edit_tag_image_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="250dp"
-                        android:fitsSystemWindows="true"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/image_no_image"
-                        app:layout_collapseMode="parallax"
-                        tools:ignore="ContentDescription" />
-
-                    <!-- Picture's touch effect-->
-                    <FrameLayout
-                        android:id="@+id/edit_tag_image_view_overlay"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/selector_touch_effect"
-                        android:clickable="true" />
-                </FrameLayout>
+                    android:layout_height="250dp"
+                    android:fitsSystemWindows="true"
+                    android:scaleType="centerCrop"
+                    app:layout_collapseMode="parallax"
+                    tools:ignore="ContentDescription" />
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/edit_tag_tool_bar"

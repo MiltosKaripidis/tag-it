@@ -71,7 +71,6 @@ public class EditTagFragment extends Fragment {
      * Widget references.
      */
     private ImageView mPictureImageView;
-    private ViewGroup mOverlayImageView;
     private Button mTagItButton;
     private TextInputEditText mTitleEditText;
     private Spinner mDifficultySpinner;
@@ -190,9 +189,7 @@ public class EditTagFragment extends Fragment {
         mTitleEditText = (TextInputEditText) view.findViewById(R.id.edit_tag_title_edit_text);
 
         mPictureImageView = (ImageView) view.findViewById(R.id.edit_tag_image_view);
-
-        mOverlayImageView = (ViewGroup) view.findViewById(R.id.edit_tag_image_view_overlay);
-        mOverlayImageView.setOnClickListener(new View.OnClickListener() {
+        mPictureImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mCurrentNfcTag != null) {

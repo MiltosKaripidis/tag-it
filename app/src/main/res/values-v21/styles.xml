@@ -47,8 +47,8 @@
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
-    <!-- SettingsActivity theme-->
-    <style name="AppTheme.Settings">
+    <!-- Status bar theme-->
+    <style name="AppTheme.StatusBar">
         <item name="android:statusBarColor">@color/primary_dark</item>
     </style>
 
