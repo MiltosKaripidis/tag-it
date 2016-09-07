@@ -1,13 +1,12 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/create_coordinator_layout"
+    android:id="@+id/create_game_coordinator_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background">
+    android:layout_height="match_parent">
 
     <!-- Main content-->
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/create_recycler_view"
+        android:id="@+id/create_game_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -19,11 +18,12 @@
 
     <!-- Empty view-->
     <LinearLayout
-        android:id="@+id/create_empty_linear_layout"
+        android:id="@+id/create_game_empty_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
+        android:paddingBottom="?attr/actionBarSize"
         android:visibility="invisible">
 
         <TextView

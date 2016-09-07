@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.controller.fragment;
 
 import android.os.Bundle;
@@ -10,9 +14,13 @@ import com.karhades.tag_it.R;
 
 
 /**
- * Created by Karhades on 20-Sep-15.
+ * Controller Fragment class that binds the share tab with the data set.
  */
 public class ShareGameFragment extends Fragment {
+
+    public static ShareGameFragment newInstance() {
+        return new ShareGameFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

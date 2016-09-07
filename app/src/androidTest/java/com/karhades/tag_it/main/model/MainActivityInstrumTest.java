@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.model;
 
 import android.support.test.espresso.ViewInteraction;
@@ -28,20 +32,20 @@ public class MainActivityInstrumTest {
 
     @Test
     public void list_scrolls() {
-        ViewInteraction recyclerView = onView(withId(R.id.tracking_recycler_view));
+        ViewInteraction recyclerView = onView(withId(R.id.track_game_recycler_view));
 
         recyclerView.perform(actionOnItemAtPosition(0, click()));
         for (int i = 0; i < 4; i++) {
-            onView(withId(R.id.tracking_tag_pager_view_pager)).perform(swipeLeft());
+            onView(withId(R.id.track_tag_pager_view_pager)).perform(swipeLeft());
         }
         pressBack();
     }
 
     @Test
     public void scrollItems_reverse() {
-        onView(withId(R.id.tracking_recycler_view)).perform(actionOnItemAtPosition(4, click()));
+        onView(withId(R.id.track_game_recycler_view)).perform(actionOnItemAtPosition(4, click()));
         for (int i = 0; i < 4; i++) {
-            onView(withId(R.id.tracking_tag_pager_view_pager)).perform(swipeRight());
+            onView(withId(R.id.track_tag_pager_view_pager)).perform(swipeRight());
         }
         pressBack();
     }

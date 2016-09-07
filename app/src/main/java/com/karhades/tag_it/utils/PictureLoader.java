@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.utils;
 
 import android.content.Context;
@@ -11,7 +15,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 
 /**
- * Created by Karhades on 15-10-15.
+ * Helper class for loading images.
  */
 public class PictureLoader {
 

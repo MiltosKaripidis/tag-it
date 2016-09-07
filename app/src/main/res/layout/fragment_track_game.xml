@@ -3,7 +3,7 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/tracking_recycler_view"
+        android:id="@+id/track_game_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -11,11 +11,12 @@
         android:scrollbars="vertical" />
 
     <LinearLayout
-        android:id="@+id/tracking_empty_linear_layout"
+        android:id="@+id/track_game_empty_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical"
+        android:paddingBottom="?attr/actionBarSize"
         android:visibility="invisible">
 
         <TextView

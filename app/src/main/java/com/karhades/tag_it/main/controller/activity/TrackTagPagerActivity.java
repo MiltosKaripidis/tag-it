@@ -1,7 +1,12 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.controller.activity;
 
 import android.annotation.TargetApi;
 import android.app.SharedElementCallback;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,29 +16,27 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
 import com.karhades.tag_it.R;
-import com.karhades.tag_it.main.controller.fragment.TrackingTagFragment;
+import com.karhades.tag_it.main.controller.fragment.TrackTagFragment;
 import com.karhades.tag_it.main.model.MyTags;
-import com.karhades.tag_it.main.model.NfcHandler;
 import com.karhades.tag_it.main.model.NfcTag;
 import com.karhades.tag_it.utils.TransitionHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Karhades - PC on 4/15/2015.
+ * Controller Activity class that hosts TrackTagFragment and enables paging.
  */
-public class TrackingTagPagerActivity extends AppCompatActivity implements ViewPager.PageTransformer {
+public class TrackTagPagerActivity extends AppCompatActivity implements ViewPager.PageTransformer {
 
     /**
      * Extras constants.
      */
-    public static final String EXTRA_CURRENT_TAG_POSITION = "com.karhades.tag_it.current_tag_position";
-    public static final String EXTRA_OLD_TAG_POSITION = "com.karhades.tag_it.old_tag_position";
+    private static final String EXTRA_TAG_ID = "com.karhades.tag_it.tag_id";
+    private static final String EXTRA_CURRENT_TAG_POSITION = "com.karhades.tag_it.current_tag_position";
+    private static final String EXTRA_OLD_TAG_POSITION = "com.karhades.tag_it.old_tag_position";
 
     /**
      * ViewPager.PageTransformer constant.
@@ -43,134 +46,60 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
     /**
      * Widget reference.
      */
-    private ViewPager viewPager;
+    private ViewPager mViewPager;
 
     /**
      * Instance variables.
      */
-    private ArrayList<NfcTag> nfcTags;
-    private FragmentAdapter fragmentAdapter;
-    private String tagId;
-    private boolean isTagDiscovered;
-
-    /**
-     * NFC adapter.
-     */
-    private NfcHandler nfcHandler;
+    private List<NfcTag> mNfcTags;
+    private FragmentAdapter mFragmentAdapter;
+    private String mTagId;
 
     /**
      * Transition variables.
      */
-    private int currentTagPosition;
-    private int originalTagPosition;
-    private boolean isReturning;
+    private int mCurrentTagPosition;
+    private int mOldTagPosition;
+    private boolean mIsReturning;
+
+    public static Intent newIntent(Context context, String tagId, int position) {
+        Intent intent = new Intent(context, TrackTagPagerActivity.class);
+        intent.putExtra(EXTRA_TAG_ID, tagId);
+        intent.putExtra(EXTRA_CURRENT_TAG_POSITION, position);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tracking_tag_pager);
+        setContentView(R.layout.activity_track_tag_pager);
 
-        // Get the list of NFC tags.
-        nfcTags = MyTags.get(this).getNfcTags();
+        // Gets the NfcTag ID from TrackGameFragment.
+        mTagId = getIntent().getStringExtra(EXTRA_TAG_ID);
 
-        getIntentExtras(getIntent());
-        setupNFC();
+        // Gets the NFC tags list.
+        mNfcTags = MyTags.get(this).getNfcTags();
+
         setupViewPager();
+        setCurrentTagPage();
 
-        if (isTagDiscovered) {
-            solveNfcTagAfterViewPagerLoad();
-        }
-
-        if (TransitionHelper.isTransitionSupported() && TransitionHelper.isTransitionEnabled) {
+        if (TransitionHelper.isTransitionSupportedAndEnabled()) {
             enableTransitions();
+
+            supportPostponeEnterTransition();
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        nfcHandler.disableForegroundDispatch();
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        // Get the ID of the discovered tag.
-        tagId = nfcHandler.handleNfcReadTag(intent);
-        // If there was no error.
-        if (tagId != null) {
-            setCurrentTagPage();
-            solveNfcTag();
-        }
-    }
-
-    private void solveNfcTag() {
-        TrackingTagFragment fragment = fragmentAdapter.getCurrentFragment();
-        if (fragment != null) {
-            fragment.solveNfcTag(tagId);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        nfcHandler.enableForegroundDispatch();
-    }
-
-    private void getIntentExtras(Intent intent) {
-        // Gets the NfcTag ID either from the onListClick() of TrackingGameFragment
-        // or from NFC tag discovery.
-        tagId = intent.getStringExtra(TrackingTagFragment.EXTRA_TAG_ID);
-
-        isTagDiscovered = intent.getBooleanExtra(TrackingTagFragment.EXTRA_TAG_DISCOVERED, false);
-
-        currentTagPosition = intent.getIntExtra(EXTRA_CURRENT_TAG_POSITION, -1);
-        originalTagPosition = currentTagPosition;
-    }
-
-    private void setupNFC() {
-        nfcHandler = new NfcHandler();
-        nfcHandler.setupNfcHandler(this);
-
-        // Get the ID of the discovered tag.
-        String tagId = nfcHandler.handleNfcReadTag(getIntent());
-        // If there was no error.
-        if (tagId != null) {
-            this.tagId = tagId;
-            isTagDiscovered = true;
-        }
-    }
-
-    /**
-     * Wait for the ViewPager to finish loading it's content
-     * before solving the NFC tag.
-     */
-    private void solveNfcTagAfterViewPagerLoad() {
-        viewPager.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                viewPager.getViewTreeObserver().removeOnPreDrawListener(this);
-
-                solveNfcTag();
-
-                return true;
-            }
-        });
     }
 
     @SuppressWarnings("deprecation")
     private void setupViewPager() {
-        viewPager = (ViewPager) findViewById(R.id.tracking_tag_pager_view_pager);
+        mViewPager = (ViewPager) findViewById(R.id.track_tag_pager_view_pager);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentAdapter = new FragmentAdapter(fragmentManager);
+        mFragmentAdapter = new FragmentAdapter(fragmentManager);
 
-        viewPager.setAdapter(fragmentAdapter);
-        viewPager.setPageTransformer(true, this);
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager.setAdapter(mFragmentAdapter);
+        mViewPager.setPageTransformer(true, this);
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 // DO NOTHING
@@ -178,9 +107,9 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
 
             @Override
             public void onPageSelected(int position) {
-                currentTagPosition = position;
+                mCurrentTagPosition = position;
 
-                NfcTag nfcTag = nfcTags.get(position);
+                NfcTag nfcTag = mNfcTags.get(position);
                 setTitle(nfcTag.getTitle());
             }
 
@@ -189,16 +118,14 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
                 // DO NOTHING
             }
         });
-
-        setCurrentTagPage();
     }
 
     private void setCurrentTagPage() {
-        NfcTag nfcTag = MyTags.get(this).getNfcTag(tagId);
+        NfcTag nfcTag = MyTags.get(this).getNfcTag(mTagId);
         int position = MyTags.get(this).getNfcTags().indexOf(nfcTag);
 
         if (position != -1) {
-            viewPager.setCurrentItem(position);
+            mViewPager.setCurrentItem(position);
         }
     }
 
@@ -244,7 +171,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
 
     private class FragmentAdapter extends FragmentStatePagerAdapter {
 
-        private TrackingTagFragment currentFragment;
+        private TrackTagFragment fragment;
 
         public FragmentAdapter(FragmentManager fm) {
             super(fm);
@@ -252,66 +179,70 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
 
         @Override
         public Fragment getItem(int position) {
-            NfcTag nfcTag = nfcTags.get(position);
+            NfcTag nfcTag = mNfcTags.get(position);
 
-            return TrackingTagFragment.newInstance(nfcTag.getTagId());
+            return TrackTagFragment.newInstance(nfcTag.getTagId());
         }
 
         @Override
         public int getCount() {
-            return nfcTags.size();
+            return (mNfcTags == null) ? 0 : mNfcTags.size();
         }
 
         @Override
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             super.setPrimaryItem(container, position, object);
 
-            currentFragment = (TrackingTagFragment) object;
+            fragment = (TrackTagFragment) object;
         }
 
-        public TrackingTagFragment getCurrentFragment() {
-            return currentFragment;
+        public TrackTagFragment getCurrentFragment() {
+            return fragment;
         }
     }
 
     // Used for transitions.
-    @TargetApi(21)
     @Override
+    @TargetApi(21)
     public void finishAfterTransition() {
-        if (TransitionHelper.isTransitionEnabled) {
-            isReturning = true;
+        if (!TransitionHelper.isTransitionSupportedAndEnabled()) {
+            super.finishAfterTransition();
+            return;
+        }
 
+        TrackTagFragment fragment = mFragmentAdapter.getCurrentFragment();
+        if (fragment != null) {
+            mIsReturning = true;
             // Hide the fragment's action button and pass a runnable to run after
             // the animation ends.
-            fragmentAdapter.getCurrentFragment().hideActionButtonOnExit(new Runnable() {
+            fragment.hideActionButtonOnExit(new Runnable() {
                 @Override
                 public void run() {
                     Intent intent = new Intent();
-                    intent.putExtra(EXTRA_OLD_TAG_POSITION, originalTagPosition);
-                    intent.putExtra(EXTRA_CURRENT_TAG_POSITION, currentTagPosition);
+                    intent.putExtra(EXTRA_OLD_TAG_POSITION, mOldTagPosition);
+                    intent.putExtra(EXTRA_CURRENT_TAG_POSITION, mCurrentTagPosition);
                     setResult(RESULT_OK, intent);
 
-                    TrackingTagPagerActivity.super.finishAfterTransition();
+                    TrackTagPagerActivity.super.finishAfterTransition();
                 }
             });
         } else {
-            TrackingTagPagerActivity.super.finishAfterTransition();
+            super.finishAfterTransition();
         }
     }
 
     @TargetApi(21)
     private void enableTransitions() {
-        // Postpone the loading of Activity until
-        // the shared element is ready to transition.
-        postponeEnterTransition();
+        mCurrentTagPosition = getIntent().getIntExtra(EXTRA_CURRENT_TAG_POSITION, -1);
+        mOldTagPosition = mCurrentTagPosition;
 
         setEnterSharedElementCallback(new SharedElementCallback() {
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                // If it's returning to MainActivity (TrackingGameFragment).
-                if (isReturning) {
+                // If it's returning to MainActivity (TrackGameFragment).
+                if (mIsReturning) {
                     // Get shared view.
-                    View sharedView = fragmentAdapter.getCurrentFragment().getSharedElement();
+                    View sharedView = mFragmentAdapter.getCurrentFragment().getSharedElement();
 
                     // If shared view was recycled.
                     if (sharedView == null) {
@@ -322,7 +253,7 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
                         sharedElements.clear();
                     }
                     // If user swiped to another tag.
-                    else if (currentTagPosition != originalTagPosition) {
+                    else if (mCurrentTagPosition != mOldTagPosition) {
                         // Clear all the previous registrations.
                         names.clear();
                         sharedElements.clear();
@@ -332,9 +263,15 @@ public class TrackingTagPagerActivity extends AppCompatActivity implements ViewP
                         sharedElements.put(sharedView.getTransitionName(), sharedView);
                     }
 
+                    // If bundle is null, then the activity is exiting.
+                    View statusBar = findViewById(android.R.id.statusBarBackground);
                     // Add the NavigationBar to shared elements to avoid blinking.
                     View navigationBar = findViewById(android.R.id.navigationBarBackground);
 
+                    if (statusBar != null) {
+                        names.add(statusBar.getTransitionName());
+                        sharedElements.put(statusBar.getTransitionName(), statusBar);
+                    }
                     if (navigationBar != null) {
                         names.add(navigationBar.getTransitionName());
                         sharedElements.put(navigationBar.getTransitionName(), navigationBar);

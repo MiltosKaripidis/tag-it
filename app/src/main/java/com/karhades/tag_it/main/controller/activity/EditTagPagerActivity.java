@@ -1,5 +1,10 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.controller.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,17 +16,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.karhades.tag_it.R;
-import com.karhades.tag_it.main.controller.fragment.CreateTagFragment;
+import com.karhades.tag_it.main.controller.fragment.EditTagFragment;
 import com.karhades.tag_it.main.model.MyTags;
-import com.karhades.tag_it.main.model.NfcHandler;
 import com.karhades.tag_it.main.model.NfcTag;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by Karhades on 15-Sep-15.
+ * Controller Activity class that hosts EditTagFragment and enables paging.
  */
-public class CreateTagPagerActivity extends AppCompatActivity implements ViewPager.PageTransformer, CreateTagFragment.Callbacks {
+public class EditTagPagerActivity extends AppCompatActivity implements ViewPager.PageTransformer {
+
+    /**
+     * Extra constant.
+     */
+    private static final String EXTRA_TAG_ID = "com.karhades.tag_it.tag_id";
 
     /**
      * ViewPager.PageTransformer constant.
@@ -29,88 +38,51 @@ public class CreateTagPagerActivity extends AppCompatActivity implements ViewPag
     private static final float MIN_SCALE = 0.75f;
 
     /**
-     * Widget references.
-     */
-    private ViewPager viewPager;
-
-    /**
      * Instance variables.
      */
-    private FragmentAdapter fragmentAdapter;
-    private ArrayList<NfcTag> nfcTags;
-    private String tagId;
+    private FragmentAdapter mFragmentAdapter;
+    private List<NfcTag> mNfcTags;
+    private String mTagId;
 
-    /**
-     * NFC adapter.
-     */
-    private NfcHandler nfcHandler;
+    public static Intent newIntent(Context context, String tagId) {
+        Intent intent = new Intent(context, EditTagPagerActivity.class);
+        intent.putExtra(EXTRA_TAG_ID, tagId);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_tag_pager);
+        setContentView(R.layout.activity_edit_tag_pager);
 
-        // Make content appear behind status bar.
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        // Gets the nfcTags from MyTags.
+        mNfcTags = MyTags.get(this).getNfcTags();
 
-        // Get the nfcTags from MyTags.
-        nfcTags = MyTags.get(this).getNfcTags();
+        // Gets the NfcTag ID from CreateGameFragment.
+        mTagId = getIntent().getStringExtra(EXTRA_TAG_ID);
 
-        getIntentExtras();
         setupViewPager();
-        setupNFC();
-    }
-
-    private void setupNFC() {
-        nfcHandler = new NfcHandler();
-        nfcHandler.setupNfcHandler(this);
-    }
-
-    @Override
-    public void setOnTagWriteListener(NfcHandler.OnTagWriteListener onTagWriteListener) {
-        nfcHandler.setOnTagWriteListener(onTagWriteListener);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        nfcHandler.disableForegroundDispatch();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        nfcHandler.enableForegroundDispatch();
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        // Indicates whether the write operation can start.
-        boolean isReady = NfcHandler.getWriteMode();
-        if (!isReady) {
-            fragmentAdapter.getCurrentFragment().makeSnackBar();
-        } else {
-            nfcHandler.handleNfcWriteTag(intent);
-        }
-    }
+        // Gets current EditTagFragment instance.
+        EditTagFragment editTagFragment = mFragmentAdapter.getCurrentFragment();
 
-    private void getIntentExtras() {
-        // Get the NfcTag ID from the onListClick() of CreateGameFragment.
-        tagId = getIntent().getStringExtra(CreateTagFragment.EXTRA_TAG_ID);
+        // Calls fragment's onNewIntent.
+        editTagFragment.onNewIntent(intent);
     }
 
     @SuppressWarnings("deprecation")
     private void setupViewPager() {
-        viewPager = (ViewPager) findViewById(R.id.create_tag_pager_view_pager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.edit_tag_pager_view_pager);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentAdapter = new FragmentAdapter(fragmentManager);
+        mFragmentAdapter = new FragmentAdapter(fragmentManager);
 
-        viewPager.setAdapter(fragmentAdapter);
+        viewPager.setAdapter(mFragmentAdapter);
         viewPager.setPageTransformer(true, this);
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -120,7 +92,7 @@ public class CreateTagPagerActivity extends AppCompatActivity implements ViewPag
 
             @Override
             public void onPageSelected(int i) {
-                NfcTag nfcTag = nfcTags.get(i);
+                NfcTag nfcTag = mNfcTags.get(i);
                 setTitle(nfcTag.getTitle());
             }
 
@@ -131,8 +103,8 @@ public class CreateTagPagerActivity extends AppCompatActivity implements ViewPag
         });
 
         // Change to the appropriate page when started.
-        for (int i = 0; i < nfcTags.size(); i++) {
-            if (nfcTags.get(i).getTagId().equals(tagId)) {
+        for (int i = 0; i < mNfcTags.size(); i++) {
+            if (mNfcTags.get(i).getTagId().equals(mTagId)) {
                 viewPager.setCurrentItem(i);
                 break;
             }
@@ -181,32 +153,32 @@ public class CreateTagPagerActivity extends AppCompatActivity implements ViewPag
 
     private class FragmentAdapter extends FragmentStatePagerAdapter {
 
-        private CreateTagFragment currentFragment;
+        private EditTagFragment currentFragment;
 
-        public FragmentAdapter(FragmentManager fm) {
-            super(fm);
+        public FragmentAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
         }
 
         @Override
         public Fragment getItem(int position) {
-            NfcTag nfcTag = nfcTags.get(position);
+            NfcTag nfcTag = mNfcTags.get(position);
 
-            return CreateTagFragment.newInstance(nfcTag.getTagId());
+            return EditTagFragment.newInstance(nfcTag.getTagId());
         }
 
         @Override
         public int getCount() {
-            return nfcTags.size();
+            return mNfcTags.size();
         }
 
         @Override
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             super.setPrimaryItem(container, position, object);
 
-            currentFragment = (CreateTagFragment) object;
+            currentFragment = (EditTagFragment) object;
         }
 
-        public CreateTagFragment getCurrentFragment() {
+        public EditTagFragment getCurrentFragment() {
             return currentFragment;
         }
     }

@@ -12,7 +12,7 @@
         android:fitsSystemWindows="true">
 
         <android.support.design.widget.AppBarLayout
-            android:id="@+id/create_tag_app_bar_layout"
+            android:id="@+id/edit_tag_app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true">
@@ -30,22 +30,31 @@
 
                 <!-- Tag picture-->
                 <ImageView
-                    android:id="@+id/create_tag_image_view"
+                    android:id="@+id/edit_tag_image_view"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:fitsSystemWindows="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/image_no_image"
                     app:layout_collapseMode="parallax"
                     tools:ignore="ContentDescription" />
 
                 <android.support.v7.widget.Toolbar
-                    android:id="@+id/create_tag_tool_bar"
+                    android:id="@+id/edit_tag_tool_bar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     app:layout_collapseMode="pin" />
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/edit_tag_camera_floating_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:src="@drawable/icon_camera"
+            app:backgroundTint="@color/accent"
+            app:layout_anchor="@id/edit_tag_app_bar_layout"
+            app:layout_anchorGravity="bottom|end" />
 
         <!-- Main content-->
         <android.support.v4.widget.NestedScrollView
@@ -99,7 +108,7 @@
                                 app:hintTextAppearance="@style/TextAppearance.AppCompat.Subhead">
 
                                 <android.support.design.widget.TextInputEditText
-                                    android:id="@+id/create_tag_title_edit_text"
+                                    android:id="@+id/edit_tag_title_edit_text"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:hint="@string/hint_title"
@@ -121,7 +130,7 @@
                                 android:text="@string/label_difficulty" />
 
                             <Spinner
-                                android:id="@+id/create_tag_spinner"
+                                android:id="@+id/edit_tag_spinner"
                                 style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -129,7 +138,7 @@
                         </LinearLayout>
 
                         <Button
-                            android:id="@+id/create_tag_tag_it_button"
+                            android:id="@+id/edit_tag_tag_it_button"
                             style="?attr/borderlessButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -140,21 +149,11 @@
                 </android.support.v7.widget.CardView>
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/create_tag_camera_floating_action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:src="@drawable/icon_camera"
-            app:backgroundTint="@color/accent"
-            app:layout_anchor="@id/create_tag_app_bar_layout"
-            app:layout_anchorGravity="bottom|end" />
     </android.support.design.widget.CoordinatorLayout>
 
     <!-- Circular reveal content-->
     <FrameLayout
-        android:id="@+id/create_tag_reveal_content"
+        android:id="@+id/edit_tag_reveal_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/accent"

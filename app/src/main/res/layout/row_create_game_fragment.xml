@@ -34,24 +34,23 @@
 
             <TextView
                 android:id="@+id/row_create_title_text_view"
+                style="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingTop="8dp"
-                android:text="@string/dummy_title"
-                android:textSize="20sp" />
+                android:maxLength="15"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="16dp" />
 
             <TextView
                 android:id="@+id/row_create_difficulty_text_view"
+                style="@style/TextAppearance.AppCompat.Body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/row_create_title_text_view"
-                android:paddingBottom="8dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:text="@string/dummy_difficulty"
-                android:textSize="20sp" />
+                android:paddingBottom="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp" />
 
             <ImageButton
                 android:id="@+id/row_create_more_image_button"
@@ -59,11 +58,12 @@
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@id/row_create_title_text_view"
                 android:layout_alignRight="@id/row_create_title_text_view"
+                android:layout_centerInParent="true"
                 android:background="@android:color/white"
-                android:paddingBottom="20dp"
+                android:paddingBottom="28dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:paddingTop="20dp"
+                android:paddingTop="28dp"
                 android:src="@drawable/selector_row_image_button"
                 tools:ignore="ContentDescription" />
         </RelativeLayout>

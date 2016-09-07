@@ -36,10 +36,9 @@
             </intent-filter>
         </activity>
 
-        <!-- TrackingTagPagerActivity-->
+        <!-- DiscoverTagActivity-->
         <activity
-            android:name=".main.controller.activity.TrackingTagPagerActivity"
-            android:launchMode="singleTask"
+            android:name=".main.controller.activity.DiscoverTagActivity"
             android:parentActivityName=".main.controller.activity.MainActivity"
             android:screenOrientation="portrait">
 
@@ -55,9 +54,16 @@
             </intent-filter>
         </activity>
 
-        <!-- CreateTagPagerActivity-->
+        <!-- TrackTagPagerActivity-->
         <activity
-            android:name=".main.controller.activity.CreateTagPagerActivity"
+            android:name=".main.controller.activity.TrackTagPagerActivity"
+            android:parentActivityName=".main.controller.activity.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.TrackTagPagerActivity" />
+
+        <!-- EditTagPagerActivity-->
+        <activity
+            android:name=".main.controller.activity.EditTagPagerActivity"
             android:parentActivityName=".main.controller.activity.MainActivity"
             android:screenOrientation="portrait" />
 
@@ -65,7 +71,8 @@
         <activity
             android:name=".main.controller.activity.CreateTagActivity"
             android:parentActivityName=".main.controller.activity.MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.StatusBar">
 
             <!--TECH_DISCOVERED-->
             <intent-filter>
@@ -85,10 +92,13 @@
         <!-- FullScreenActivity-->
         <activity
             android:name=".main.controller.activity.FullScreenActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppThemeTranslucent" />
+            android:theme="@style/AppTheme.Fullscreen" />
 
-        <!-- Audio Service-->
-        <service android:name=".utils.AudioService" />
+        <!-- SettingsActivity-->
+        <activity
+            android:name=".main.controller.activity.SettingsActivity"
+            android:parentActivityName=".main.controller.activity.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.StatusBar" />
     </application>
 </manifest>

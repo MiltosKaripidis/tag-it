@@ -1,14 +1,23 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.controller.activity;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.app.Dialog;
+import android.app.SharedElementCallback;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -23,52 +32,74 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.ProgressBar;
 
 import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.fragment.CreateGameFragment;
 import com.karhades.tag_it.main.controller.fragment.ShareGameFragment;
-import com.karhades.tag_it.main.controller.fragment.TrackingGameFragment;
-import com.karhades.tag_it.main.controller.fragment.TrackingTagFragment;
+import com.karhades.tag_it.main.controller.fragment.TrackGameFragment;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcHandler;
+import com.karhades.tag_it.main.model.NfcTag;
 import com.karhades.tag_it.utils.TransitionHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Created by Karhades on 20-Aug-15.
+ * Main Controller Activity class that hosts 3 fragments (TrackGameFragment, ShareGameFragment,
+ * CreateGameFragment) that each corresponds to a tab. Manages the Android Beam operation.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TrackGameFragment.Callbacks, CreateGameFragment.Callbacks {
+
+    /**
+     * Extras constants.
+     */
+    private static final String EXTRA_CURRENT_TAG_POSITION = "com.karhades.tag_it.current_tag_position";
+    private static final String EXTRA_OLD_TAG_POSITION = "com.karhades.tag_it.old_tag_position";
+
+    /**
+     * Transition variables.
+     */
+    private Bundle mBundle;
 
     /**
      * Widget references.
      */
-    private DrawerLayout drawerLayout;
-    private CoordinatorLayout coordinatorLayout;
-    private NavigationView navigationView;
-    private Toolbar toolbar;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private FloatingActionButton floatingActionButton;
+    private DrawerLayout mDrawerLayout;
+    private CoordinatorLayout mCoordinatorLayout;
+    private NavigationView mNavigationView;
+    private Toolbar mToolbar;
+    private AppBarLayout mAppBarLayout;
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
+    private FloatingActionButton mFloatingActionButton;
+    private ProgressBar mProgressBar;
 
     /**
      * Instance variables.
      */
-    private TabsAdapter adapter;
-    private ActionMode actionMode;
-    private ActionMode.Callback actionModeCallback;
+    private ActionMode mActionMode;
+    private ActionMode.Callback mActionModeCallback;
+    private boolean mIsSelectAllItemVisible;
+    private TrackGameFragment mTrackGameFragment;
+    private CreateGameFragment mCreateGameFragment;
+    private AsyncTaskLoader mAsyncTaskLoader;
 
     /**
      * NFC adapter.
      */
-    private NfcHandler nfcHandler;
+    private NfcHandler mNfcHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,25 +107,43 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setupNFC();
+        setupProgressBar();
         setupFloatingActionButton();
         setupCoordinatorLayout();
         setupNavigationDrawer();
+        setupAppBarLayout();
         setupToolbar();
         setupViewPager();
         setupTabLayout();
         setupContextualActionBar();
+
+        if (TransitionHelper.isTransitionSupportedAndEnabled()) {
+            enableTransitions();
+        }
+
+        loadTags();
+    }
+
+    /**
+     * Saves the tags asynchronously to external storage.
+     */
+    private void saveTags() {
+        new AsyncTaskSaver().execute();
+    }
+
+    /**
+     * Loads the tags asynchronously from the external storage.
+     */
+    private void loadTags() {
+        mAsyncTaskLoader = new AsyncTaskLoader();
+        mAsyncTaskLoader.execute();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        // Disable the interception of any intent.
-        nfcHandler.disableForegroundDispatch();
-
-        // Save the tags to a file before leaving.
-        MyTags.get(this).saveTags();
-
+        saveTags();
         disableContextualActionBar();
     }
 
@@ -102,43 +151,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        nfcHandler.handleAndroidBeamReceivedFiles(intent);
-
-        // Tab 1.
-        if (tabLayout.getSelectedTabPosition() == 0) {
-            // Get the ID of the discovered tag.
-            String tagId = nfcHandler.handleNfcReadTag(intent);
-            // If there was no error.
-            if (tagId != null) {
-                startTrackingTagPagerActivity(tagId);
-            }
-        }
-        // Tab 2.
-        else if (tabLayout.getSelectedTabPosition() == 1) {
-            Snackbar.make(coordinatorLayout, "Approach devices to share game.", Snackbar.LENGTH_LONG).show();
-        }
-        // Tab 3.
-        else if (tabLayout.getSelectedTabPosition() == 2) {
-            Snackbar.make(coordinatorLayout, "Click + to create a new one.", Snackbar.LENGTH_LONG).show();
-        }
-    }
-
-    private void startTrackingTagPagerActivity(String tagId) {
-        // Create an Intent and send the extra discovered NfcTag ID and
-        // another extra to indicate that it's from the NFC discovery.
-        Intent tagIntent = new Intent(this, TrackingTagPagerActivity.class);
-        tagIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        tagIntent.putExtra(TrackingTagFragment.EXTRA_TAG_ID, tagId);
-        tagIntent.putExtra(TrackingTagFragment.EXTRA_TAG_DISCOVERED, true);
-        this.startActivity(tagIntent);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Intercept any intent that is associated with a Tag discovery.
-        nfcHandler.enableForegroundDispatch();
+        mNfcHandler.handleAndroidBeamReceivedFiles(intent);
     }
 
     @Override
@@ -147,8 +160,8 @@ public class MainActivity extends AppCompatActivity {
         disableContextualActionBar();
 
         // Close NavigationView.
-        if (drawerLayout.isDrawerOpen(navigationView)) {
-            drawerLayout.closeDrawer(navigationView);
+        if (mDrawerLayout.isDrawerOpen(mNavigationView)) {
+            mDrawerLayout.closeDrawer(mNavigationView);
         }
         // Close Activity.
         else {
@@ -161,53 +174,60 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Navigation Icon.
             case android.R.id.home:
-                drawerLayout.openDrawer(navigationView);
+                mDrawerLayout.openDrawer(mNavigationView);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void setupNFC() {
-        nfcHandler = new NfcHandler();
-        nfcHandler.setupNfcHandler(this);
-        nfcHandler.registerAndroidBeamShareFiles();
-        nfcHandler.handleAndroidBeamReceivedFiles(getIntent());
+        mNfcHandler = new NfcHandler();
+        mNfcHandler.setupNfcHandler(this);
+        mNfcHandler.registerAndroidBeamShareFiles();
+        mNfcHandler.handleAndroidBeamReceivedFiles(getIntent());
+    }
+
+    private void setupProgressBar() {
+        mProgressBar = (ProgressBar) findViewById(R.id.main_progress_bar);
     }
 
     private void setupFloatingActionButton() {
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_action_button);
+        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.main_floating_action_button);
     }
 
     private void setupCoordinatorLayout() {
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_layout);
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_layout);
     }
 
     @SuppressWarnings("ConstantConditions")
     private void setupNavigationDrawer() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.main_navigation_drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
+        mNavigationView = (NavigationView) findViewById(R.id.main_navigation_view);
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                navigationView.setCheckedItem(item.getItemId());
-                drawerLayout.closeDrawer(navigationView);
+                mDrawerLayout.closeDrawer(mNavigationView);
+
+                if (item.getGroupId() == R.id.group_primary) {
+                    mNavigationView.setCheckedItem(item.getItemId());
+                }
 
                 switch (item.getItemId()) {
                     case R.id.navigation_tracking:
-                        tabLayout.getTabAt(0).select();
+                        mTabLayout.getTabAt(0).select();
                         return true;
 
                     case R.id.navigation_share:
-                        tabLayout.getTabAt(1).select();
+                        mTabLayout.getTabAt(1).select();
                         return true;
 
                     case R.id.navigation_create:
-                        tabLayout.getTabAt(2).select();
+                        mTabLayout.getTabAt(2).select();
                         return true;
 
                     case R.id.navigation_settings:
-                        // DO NOTHING.
-                        return true;
+                        startSettingsActivity();
+                        return false;
 
                     default:
                         return false;
@@ -216,11 +236,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void startSettingsActivity() {
+        Intent intent = SettingsActivity.newIntent(MainActivity.this);
+        startActivity(intent);
+    }
+
     @SuppressWarnings("deprecation")
     private void setupToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.main_tool_bar);
+        mToolbar = (Toolbar) findViewById(R.id.main_tool_bar);
         // Substitute the action bar for this toolbar.
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(getResources().getDrawable(R.drawable.icon_hamburger_menu));
@@ -228,24 +253,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setupAppBarLayout() {
+        mAppBarLayout = (AppBarLayout) findViewById(R.id.main_app_bar_layout);
+    }
+
     @SuppressWarnings("deprecation, ConstantConditions")
     private void setupTabLayout() {
-        tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
-        tabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_normal));
-        tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
-        tabLayout.setupWithViewPager(viewPager);
+        mTabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
+        mTabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_normal));
+        mTabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
+        mTabLayout.setupWithViewPager(mViewPager);
         // Set tab names.
         String[] tabNames = getResources().getStringArray(R.array.tab_names);
         for (int i = 0; i < tabNames.length; i++) {
-            tabLayout.getTabAt(i).setText(tabNames[i]);
+            mTabLayout.getTabAt(i).setText(tabNames[i]);
         }
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
+                mViewPager.setCurrentItem(tab.getPosition());
 
-                Menu menu = navigationView.getMenu();
-                navigationView.setCheckedItem(menu.getItem(tab.getPosition()).getItemId());
+                Menu menu = mNavigationView.getMenu();
+                mNavigationView.setCheckedItem(menu.getItem(tab.getPosition()).getItemId());
+
+                mAppBarLayout.setExpanded(true, true);
             }
 
             @Override
@@ -261,33 +292,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupViewPager() {
-        adapter = new TabsAdapter(getSupportFragmentManager());
-        adapter.addFragment(new TrackingGameFragment());
-        adapter.addFragment(new ShareGameFragment());
-        adapter.addFragment(new CreateGameFragment());
+        TabsAdapter adapter = new TabsAdapter(getSupportFragmentManager());
+        adapter.addFragment(TrackGameFragment.newInstance());
+        adapter.addFragment(ShareGameFragment.newInstance());
+        adapter.addFragment(CreateGameFragment.newInstance());
 
-        viewPager = (ViewPager) findViewById(R.id.main_view_pager);
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager = (ViewPager) findViewById(R.id.main_view_pager);
+        mViewPager.setAdapter(adapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 // If Tab 1.
                 if (position == 0) {
-                    floatingActionButton.hide();
+                    mFloatingActionButton.hide();
                 }
                 // If Tab 2.
                 else if (position == 1) {
-                    floatingActionButton.hide();
+                    mFloatingActionButton.hide();
                 }
                 // If Tab 3.
                 else if (position == 2) {
                     // If idle.
                     if (positionOffset == 0) {
-                        floatingActionButton.show();
+                        mFloatingActionButton.show();
                     }
                     // If dragging.
                     else if (positionOffset > 0) {
-                        floatingActionButton.hide();
+                        mFloatingActionButton.hide();
                     }
                 }
             }
@@ -305,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupContextualActionBar() {
-        actionModeCallback = new ActionMode.Callback() {
+        mActionModeCallback = new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 changeBarsColor(false);
@@ -318,31 +349,43 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
+                MenuItem selectAllItem = menu.findItem(R.id.context_bar_select_all_item);
+                MenuItem clearSelectionItem = menu.findItem(R.id.context_bar_clear_selection_item);
+
+                if (mIsSelectAllItemVisible) {
+                    selectAllItem.setVisible(false);
+                    clearSelectionItem.setVisible(true);
+                } else {
+                    selectAllItem.setVisible(true);
+                    clearSelectionItem.setVisible(false);
+                }
+
+                return true;
             }
 
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 // If Tab 2 is selected.
-                if (tabLayout.getSelectedTabPosition() == 2) {
-                    CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(tabLayout.getSelectedTabPosition());
-
-                    MenuItem selectAllItem = mode.getMenu().findItem(R.id.context_bar_select_all_item);
-                    MenuItem clearSelectionItem = mode.getMenu().findItem(R.id.context_bar_clear_selection_item);
-
+                if (mCreateGameFragment != null) {
                     switch (item.getItemId()) {
                         case R.id.context_bar_delete_item:
-                            new DeleteDialogFragment().show(getSupportFragmentManager(), "delete");
+                            int size = mCreateGameFragment.contextGetSelectionSize();
+                            DeleteDialogFragment.newInstance(size).show(getSupportFragmentManager(), "delete");
                             return true;
                         case R.id.context_bar_select_all_item:
-                            clearSelectionItem.setVisible(true);
-                            selectAllItem.setVisible(false);
-                            fragment.contextSelectAll();
+                            mCreateGameFragment.contextSelectAll();
+
+                            // Invalidate menu item.
+                            mIsSelectAllItemVisible = true;
+                            mode.invalidate();
                             return true;
                         case R.id.context_bar_clear_selection_item:
-                            clearSelectionItem.setVisible(false);
-                            selectAllItem.setVisible(true);
-                            fragment.contextClearSelection();
+                            mCreateGameFragment.contextClearSelection();
+
+                            // Invalidate menu item.
+                            mIsSelectAllItemVisible = false;
+
+                            mode.invalidate();
                             return true;
                         default:
                             return false;
@@ -354,78 +397,105 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDestroyActionMode(ActionMode mode) {
                 // If Tab 2 is selected.
-                if (tabLayout.getSelectedTabPosition() == 2) {
-                    changeBarsColor(true);
-
-                    CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(tabLayout.getSelectedTabPosition());
-                    fragment.contextFinish();
-
-                    actionMode = null;
+                if (mCreateGameFragment == null) {
+                    return;
                 }
+
+                changeBarsColor(true);
+
+                mCreateGameFragment.contextFinish();
+
+                // Invalidate menu item.
+                mIsSelectAllItemVisible = false;
+                mode.invalidate();
+
+                mActionMode = null;
             }
         };
     }
 
     private void doPositiveClick() {
-        CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(tabLayout.getSelectedTabPosition());
+        int size = mCreateGameFragment.contextGetSelectionSize();
 
-        fragment.contextDeleteSelectedItems();
+        mCreateGameFragment.contextDeleteSelectedItems();
         disableContextualActionBar();
 
+        String deletionSize = getResources().getQuantityString(R.plurals.snackbar_deleted_plural, size);
         // Inform user.
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "Tags deleted", Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(mCoordinatorLayout, deletionSize, Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 
     private void disableContextualActionBar() {
-        if (actionMode != null) {
-            actionMode.finish();
+        if (mActionMode != null) {
+            mActionMode.finish();
         }
     }
 
-    private void setupAddActionButton() {
-        CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(2);
-        fragment.setupFloatingActionButton(floatingActionButton);
-
-        if (TransitionHelper.isTransitionSupported()) {
-            ViewGroup sceneRoot = drawerLayout;
-            ViewGroup revealContent = (ViewGroup) findViewById(R.id.main_reveal_content);
-            fragment.setupTransitionViews(sceneRoot, revealContent);
+    /*
+     * CreateGameFragment callbacks.
+     */
+    @Override
+    public void onItemLongClicked() {
+        if (mActionMode == null) {
+            // Start contextual action mode.
+            mActionMode = mToolbar.startActionMode(mActionModeCallback);
         }
     }
 
-    private void registerCreateGameFragmentListener() {
-        // Listen for CreateGameFragment's events.
-        CreateGameFragment fragment = (CreateGameFragment) adapter.getFragment(2);
-        fragment.setOnContextualActionBarEnterListener(new CreateGameFragment.OnContextualActionBarEnterListener() {
-            @Override
-            public void onItemLongClicked() {
-                if (actionMode == null) {
-                    // Start contextual action mode.
-                    actionMode = toolbar.startActionMode(actionModeCallback);
-                }
-            }
+    @Override
+    public void onItemClicked(int tagsSelected) {
+        mActionMode.setTitle(tagsSelected + " selected");
 
-            @Override
-            public void onItemClicked(int tagsSelected) {
-                actionMode.setTitle(tagsSelected + " selected");
+        MenuItem deleteItem = mActionMode.getMenu().findItem(R.id.context_bar_delete_item);
+        // If there are no selected tags.
+        if (tagsSelected == 0) {
+            deleteItem.setVisible(false);
+        } else {
+            deleteItem.setVisible(true);
+        }
+    }
 
-                MenuItem deleteItem = actionMode.getMenu().findItem(R.id.context_bar_delete_item);
-                // If there are no selected tags.
-                if (tagsSelected == 0) {
-                    deleteItem.setVisible(false);
-                } else {
-                    deleteItem.setVisible(true);
-                }
-            }
-        });
+    @Override
+    public void onFragmentAttached(CreateGameFragment fragment) {
+        mCreateGameFragment = fragment;
+        mCreateGameFragment.setupFloatingActionButton(mFloatingActionButton);
+
+        ViewGroup sceneRoot = mDrawerLayout;
+        ViewGroup revealContent = (ViewGroup) findViewById(R.id.main_reveal_content);
+        mCreateGameFragment.setupTransitionViews(sceneRoot, revealContent);
+    }
+
+    @Override
+    public void onItemDeleted(String title) {
+        // Inform user.
+        Snackbar snackbar = Snackbar.make(mCoordinatorLayout, title + " deleted", Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
+    /*
+     * TrackGameFragment callbacks.
+     */
+    @Override
+    public void onFragmentResumed(TrackGameFragment fragment) {
+        mTrackGameFragment = fragment;
+
+        // If fragment is created before the AsyncTask finishes, the UI update should be done on the
+        // onPostExecute method to avoid duplicate updates.
+        if (mAsyncTaskLoader.getStatus() == AsyncTask.Status.RUNNING) {
+            return;
+        }
+
+        mProgressBar.setVisibility(View.GONE);
+        mTrackGameFragment.updateUi();
     }
 
     @SuppressWarnings("deprecation")
+    @TargetApi(21)
     private void changeBarsColor(boolean isContextualActionBarVisible) {
         if (isContextualActionBarVisible) {
-            tabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_normal));
-            tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
+            mTabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_normal));
+            mTabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.accent));
 
             animateStatusBar(getResources().getColor(R.color.accent_dark), getResources().getColor(R.color.primary_dark));
             animateTabLayout(getResources().getColor(R.color.accent), getResources().getColor(R.color.primary));
@@ -438,14 +508,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }, 400);
         } else {
-            tabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_activated));
-            tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.primary));
+            mTabLayout.setTabTextColors(getResources().getColorStateList(R.color.selector_tab_activated));
+            mTabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.primary));
 
             animateStatusBar(getResources().getColor(R.color.primary_dark), getResources().getColor(R.color.accent_dark));
             animateTabLayout(getResources().getColor(R.color.primary), getResources().getColor(R.color.accent));
         }
     }
 
+    @TargetApi(21)
     private void animateStatusBar(int colorFrom, int colorTo) {
         final ValueAnimator valueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -458,8 +529,9 @@ public class MainActivity extends AppCompatActivity {
         valueAnimator.start();
     }
 
+    @TargetApi(21)
     private void animateTabLayout(int colorFrom, int colorTo) {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofArgb(tabLayout, "backgroundColor", colorFrom, colorTo);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofArgb(mTabLayout, "backgroundColor", colorFrom, colorTo);
         objectAnimator.setDuration(300);
         objectAnimator.setStartDelay(20);
         objectAnimator.start();
@@ -467,16 +539,37 @@ public class MainActivity extends AppCompatActivity {
 
     // Used for transitions.
     @Override
+    @TargetApi(21)
     public void onActivityReenter(int resultCode, Intent data) {
         super.onActivityReenter(resultCode, data);
 
-        if (!TransitionHelper.isTransitionEnabled)
+        if (!TransitionHelper.isTransitionSupportedAndEnabled())
             return;
 
         // If Tab 1.
-        if (tabLayout.getSelectedTabPosition() == 0) {
-            TrackingGameFragment fragment = (TrackingGameFragment) adapter.getFragment(0);
-            fragment.prepareReenterTransition(data);
+        if (mTrackGameFragment != null) {
+            final RecyclerView recyclerView = mTrackGameFragment.getRecyclerView();
+
+            mBundle = new Bundle(data.getExtras());
+
+            int oldTagPosition = data.getIntExtra(EXTRA_OLD_TAG_POSITION, -1);
+            int currentTagPosition = data.getIntExtra(EXTRA_CURRENT_TAG_POSITION, -1);
+
+            // If user swiped to another tag.
+            if (oldTagPosition != currentTagPosition) {
+                recyclerView.scrollToPosition(currentTagPosition);
+            }
+
+            // Wait for RecyclerView to load it's layout.
+            supportPostponeEnterTransition();
+            recyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                    supportStartPostponedEnterTransition();
+                    return true;
+                }
+            });
         }
     }
 
@@ -498,36 +591,36 @@ public class MainActivity extends AppCompatActivity {
             return fragments.size();
         }
 
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            Fragment fragment = (Fragment) super.instantiateItem(container, position);
-
-            // Register listeners for each fragment.
-            if (fragment instanceof CreateGameFragment) {
-                registerCreateGameFragmentListener();
-                setupAddActionButton();
-            }
-
-            return fragment;
-        }
-
         public void addFragment(Fragment fragment) {
             fragments.add(fragment);
-        }
-
-        public Fragment getFragment(int position) {
-            return fragments.get(position);
         }
     }
 
     public static class DeleteDialogFragment extends DialogFragment {
+
+        private static final String EXTRA_SIZE = "com.karhades.tag_it.selectionSize";
+        private int selectionSize;
+
+        public static DeleteDialogFragment newInstance(int size) {
+            DeleteDialogFragment fragment = new DeleteDialogFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt(EXTRA_SIZE, size);
+            fragment.setArguments(bundle);
+            return fragment;
+        }
+
+        @Override
+        public void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            selectionSize = getArguments().getInt(EXTRA_SIZE);
+        }
+
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return new AlertDialog.Builder(getActivity())
-                    .setIcon(R.drawable.icon_warning)
-                    .setTitle("Delete tags?")
-                    .setMessage("You are going to delete the selected tags.")
+                    .setMessage(getResources().getQuantityString(R.plurals.dialog_deleted_plural, selectionSize))
                     .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -541,6 +634,106 @@ public class MainActivity extends AppCompatActivity {
                         }
                     })
                     .create();
+        }
+    }
+
+    @TargetApi(21)
+    private void enableTransitions() {
+        setExitSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                final RecyclerView recyclerView = mTrackGameFragment.getRecyclerView();
+
+                // If TrackTagPagerActivity returns to MainActivity.
+                if (mBundle != null) {
+                    int oldTagPosition = mBundle.getInt(EXTRA_OLD_TAG_POSITION);
+                    int currentTagPosition = mBundle.getInt(EXTRA_CURRENT_TAG_POSITION);
+
+                    // If currentPosition != oldPosition the user must have swiped to a different
+                    // page in the ViewPager. We must update the shared element so that the
+                    // correct one falls into place.
+                    if (currentTagPosition != oldTagPosition) {
+
+                        // Get the transition name of the current tag.
+                        NfcTag nfcTag = MyTags.get(MainActivity.this).getNfcTags().get(currentTagPosition);
+                        String currentTransitionName = "image" + nfcTag.getTagId();
+
+                        // Get the ImageView from the RecyclerView.
+                        View currentSharedImageView = recyclerView.findViewWithTag(currentTransitionName);
+                        // If it exists.
+                        if (currentSharedImageView != null) {
+                            // Clear the previous (original) ImageView registrations.
+                            names.clear();
+                            sharedElements.clear();
+
+                            // Add the current ImageView.
+                            names.add(currentTransitionName);
+                            sharedElements.put(currentTransitionName, currentSharedImageView);
+                        }
+                    }
+                    // Delete the previous positions.
+                    mBundle = null;
+                } else {
+                    //TODO: When status bar is transparent, it is null and imageView overlaps it.
+                    // If bundle is null, then the activity is exiting.
+                    View statusBar = findViewById(android.R.id.statusBarBackground);
+                    // Add the NavigationBar to shared elements to avoid blinking.
+                    View navigationBar = findViewById(android.R.id.navigationBarBackground);
+
+                    if (statusBar != null) {
+                        names.add(statusBar.getTransitionName());
+                        sharedElements.put(statusBar.getTransitionName(), statusBar);
+                    }
+                    if (navigationBar != null) {
+                        names.add(navigationBar.getTransitionName());
+                        sharedElements.put(navigationBar.getTransitionName(), navigationBar);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * AsyncTask class that saves the json file in a background thread.
+     */
+    private class AsyncTaskSaver extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            MyTags.get(MainActivity.this).saveTags();
+
+            return null;
+        }
+    }
+
+    /**
+     * AsyncTask class that loads the json file in a background thread.
+     */
+    private class AsyncTaskLoader extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            MyTags.get(MainActivity.this).loadTags();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            // If fragment isn't created yet, it cannot update it's UI and should be done on the
+            // onResume method instead.
+            if (mTrackGameFragment == null) {
+                return;
+            }
+
+            mProgressBar.setVisibility(View.GONE);
+            mTrackGameFragment.updateUi();
         }
     }
 }

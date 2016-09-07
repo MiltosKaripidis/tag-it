@@ -1,10 +1,14 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by Karhades - PC on 4/11/2015.
+ * Model class that represents an NFC tag.
  */
 public class NfcTag {
 
@@ -15,18 +19,18 @@ public class NfcTag {
     private static final String JSON_TAG_ID = "tag_id";
     private static final String JSON_TITLE = "title";
     private static final String JSON_PICTURE_FILE_PATH = "picture_file_path";
-    private static final String JSON_SOLVED = "solved";
-    private static final String JSON_DATE_SOLVED = "date_solved";
+    private static final String JSON_DISCOVERED = "discovered";
+    private static final String DATE_DISCOVERED = "date_discovered";
 
     /**
      * Instance fields.
      */
-    private String tagId;
-    private String title;
-    private String pictureFilePath;
-    private String difficulty;
-    private boolean solved;
-    private String dateSolved;
+    private String mTagId;
+    private String mTitle;
+    private String mPictureFilePath;
+    private String mDifficulty;
+    private boolean mDiscovered;
+    private String mDateDiscovered;
 
     /**
      * Simple constructor of NfcTag.
@@ -36,9 +40,9 @@ public class NfcTag {
      * @param tagId A String indicating the id of the tag.
      */
     public NfcTag(String title, String difficulty, String tagId) {
-        this.title = title;
-        this.difficulty = difficulty;
-        this.tagId = tagId;
+        mTitle = title;
+        mDifficulty = difficulty;
+        mTagId = tagId;
     }
 
     /**
@@ -49,82 +53,82 @@ public class NfcTag {
      * @throws JSONException
      */
     public NfcTag(JSONObject jsonObject) throws JSONException {
-        difficulty = jsonObject.getString(JSON_DIFFICULTY);
-        tagId = jsonObject.getString(JSON_TAG_ID);
-        title = jsonObject.getString(JSON_TITLE);
-        pictureFilePath = jsonObject.getString(JSON_PICTURE_FILE_PATH);
-        solved = jsonObject.getBoolean(JSON_SOLVED);
-        if (jsonObject.has(JSON_DATE_SOLVED)) {
-            dateSolved = jsonObject.getString(JSON_DATE_SOLVED);
+        mDifficulty = jsonObject.getString(JSON_DIFFICULTY);
+        mTagId = jsonObject.getString(JSON_TAG_ID);
+        mTitle = jsonObject.getString(JSON_TITLE);
+        mPictureFilePath = jsonObject.getString(JSON_PICTURE_FILE_PATH);
+        mDiscovered = jsonObject.getBoolean(JSON_DISCOVERED);
+        if (jsonObject.has(DATE_DISCOVERED)) {
+            mDateDiscovered = jsonObject.getString(DATE_DISCOVERED);
         }
     }
 
     /**
-     * Return a JSONObject that contains all the
+     * Returns a JSONObject that contains all the
      * NFcTag fields.
      *
      * @return The JSONObject with the contained data.
      * @throws JSONException
      */
-    public JSONObject toJSON() throws JSONException {
+    public JSONObject toJson() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(JSON_DIFFICULTY, difficulty);
-        jsonObject.put(JSON_TAG_ID, tagId);
-        jsonObject.put(JSON_TITLE, title);
-        jsonObject.put(JSON_PICTURE_FILE_PATH, pictureFilePath);
-        jsonObject.put(JSON_SOLVED, solved);
-        if (dateSolved != null) {
-            jsonObject.put(JSON_DATE_SOLVED, dateSolved);
+        jsonObject.put(JSON_DIFFICULTY, mDifficulty);
+        jsonObject.put(JSON_TAG_ID, mTagId);
+        jsonObject.put(JSON_TITLE, mTitle);
+        jsonObject.put(JSON_PICTURE_FILE_PATH, mPictureFilePath);
+        jsonObject.put(JSON_DISCOVERED, mDiscovered);
+        if (mDateDiscovered != null) {
+            jsonObject.put(DATE_DISCOVERED, mDateDiscovered);
         }
 
         return jsonObject;
     }
 
     public String getPictureFilePath() {
-        return pictureFilePath;
+        return mPictureFilePath;
     }
 
     public void setPictureFilePath(String pictureFilePath) {
-        this.pictureFilePath = pictureFilePath;
+        mPictureFilePath = pictureFilePath;
     }
 
     public String getTitle() {
-        return title;
+        return mTitle;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        mTitle = title;
     }
 
     public String getDifficulty() {
-        return difficulty;
+        return mDifficulty;
     }
 
     public void setDifficulty(String difficulty) {
-        this.difficulty = difficulty;
+        mDifficulty = difficulty;
     }
 
-    public boolean isSolved() {
-        return solved;
+    public boolean isDiscovered() {
+        return mDiscovered;
     }
 
-    public void setSolved(boolean solved) {
-        this.solved = solved;
+    public void setDiscovered(boolean discovered) {
+        mDiscovered = discovered;
     }
 
     public String getTagId() {
-        return tagId;
+        return mTagId;
     }
 
     public void setTagId(String tagId) {
-        this.tagId = tagId;
+        mTagId = tagId;
     }
 
-    public String getDateSolved() {
-        return dateSolved;
+    public String getDateDiscovered() {
+        return mDateDiscovered;
     }
 
-    public void setDateSolved(String dateSolved) {
-        this.dateSolved = dateSolved;
+    public void setDateDiscovered(String dateDiscovered) {
+        mDateDiscovered = dateDiscovered;
     }
 }

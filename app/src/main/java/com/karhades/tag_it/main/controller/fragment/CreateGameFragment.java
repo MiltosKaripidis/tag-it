@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.controller.fragment;
 
 import android.animation.Animator;
@@ -5,17 +9,18 @@ import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
@@ -42,17 +47,16 @@ import android.widget.TextView;
 
 import com.karhades.tag_it.R;
 import com.karhades.tag_it.main.controller.activity.CreateTagActivity;
-import com.karhades.tag_it.main.controller.activity.CreateTagPagerActivity;
+import com.karhades.tag_it.main.controller.activity.EditTagPagerActivity;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcTag;
-import com.karhades.tag_it.utils.FontCache;
 import com.karhades.tag_it.utils.PictureLoader;
 import com.karhades.tag_it.utils.TransitionHelper;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by Karhades - PC on 4/15/2015.
+ * Controller Fragment class that binds the create tab with the data set.
  */
 public class CreateGameFragment extends Fragment {
 
@@ -66,69 +70,87 @@ public class CreateGameFragment extends Fragment {
     /**
      * Extra key, used for the position value returned from startActivityForResult().
      */
-    public static final String EXTRA_POSITION = "com.karhades.tag_it.position";
+    private static final String EXTRA_POSITION = "com.karhades.tag_it.position";
 
     /**
      * Widget variables.
      */
-    private RecyclerView recyclerView;
-    private NfcTagAdapter adapter;
-    private FloatingActionButton addActionButton;
-    private LinearLayout emptyLinearLayout;
+    private RecyclerView mRecyclerView;
+    private NfcTagAdapter mNfcTagAdapter;
+    private FloatingActionButton mAddActionButton;
+    private LinearLayout mEmptyLinearLayout;
 
     /**
      * Instance variables.
      */
-    private ArrayList<NfcTag> nfcTags;
+    private List<NfcTag> mNfcTags;
 
     /**
      * Transition variables.
      */
-    private ViewGroup sceneRoot;
-    private ViewGroup revealContent;
-    private ViewGroup.LayoutParams originalLayoutParams;
+    private ViewGroup mSceneRoot;
+    private View mRevealContent;
+    private ViewGroup.LayoutParams mOriginalLayoutParams;
 
     /**
      * Interface variable.
      */
-    private OnContextualActionBarEnterListener onContextualActionBarEnterListener;
+    private Callbacks mCallbacks;
 
     /**
      * Interface definition for a callback to be invoked when
      * the fragment enters contextual mode.
      */
-    public interface OnContextualActionBarEnterListener {
+    public interface Callbacks {
         void onItemLongClicked();
 
         void onItemClicked(int tagsSelected);
+
+        void onFragmentAttached(CreateGameFragment fragment);
+
+        void onItemDeleted(String title);
     }
 
-    /**
-     * Register a callback to be invoked when the fragment
-     * enters contextual mode.
-     *
-     * @param onContextualActionBarEnterListener The callback that will run.
-     */
-    public void setOnContextualActionBarEnterListener(OnContextualActionBarEnterListener onContextualActionBarEnterListener) {
-        this.onContextualActionBarEnterListener = onContextualActionBarEnterListener;
+    public static CreateGameFragment newInstance() {
+        return new CreateGameFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        nfcTags = MyTags.get(getActivity()).getNfcTags();
+        mNfcTags = MyTags.get(getActivity()).getNfcTags();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            mCallbacks = (Callbacks) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement CreateGameFragment.Callbacks interface.");
+        }
+        mCallbacks.onFragmentAttached(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        mCallbacks = null;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO: Doesn't get called.
         if (requestCode == REQUEST_INSERT) {
             if (resultCode == Activity.RESULT_OK) {
-                adapter.notifyItemInserted(nfcTags.size());
+                mNfcTagAdapter.notifyItemInserted(mNfcTags.size());
             }
         } else if (requestCode == REQUEST_EDIT) {
             if (resultCode == Activity.RESULT_OK) {
-                adapter.notifyItemChanged(data.getIntExtra(EXTRA_POSITION, -1));
+                mNfcTagAdapter.notifyItemChanged(data.getIntExtra(EXTRA_POSITION, -1));
             }
         } else if (requestCode == REQUEST_DELETE) {
             if (resultCode == Activity.RESULT_OK) {
@@ -140,7 +162,10 @@ public class CreateGameFragment extends Fragment {
                 int adapterPosition = (int) data.getSerializableExtra(DeleteDialogFragment.EXTRA_ADAPTER_POSITION);
 
                 // Deletes the selected NFC tag.
-                adapter.deleteSelectedItem(nfcTag, adapterPosition);
+                mNfcTagAdapter.deleteSelectedItem(nfcTag, adapterPosition);
+
+                // Invokes MainActivity's callback method.
+                mCallbacks.onItemDeleted(nfcTag.getTitle());
             }
         }
     }
@@ -156,11 +181,13 @@ public class CreateGameFragment extends Fragment {
     }
 
     private void setupRecyclerView(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.create_recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter = new NfcTagAdapter();
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.create_game_recycler_view);
+        // Forces the recycling of items (Default=2).
+        mRecyclerView.setItemViewCacheSize(0);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mNfcTagAdapter = new NfcTagAdapter();
+        mNfcTagAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
@@ -175,36 +202,36 @@ public class CreateGameFragment extends Fragment {
                 hideRecyclerViewIfEmpty();
             }
         });
-        recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.setAdapter(mNfcTagAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 // If scrolling down (dy > 0).
                 // The faster the scrolling the bigger the dy.
                 if (dy > 0) {
-                    addActionButton.hide();
+                    mAddActionButton.hide();
                 }
                 // If scrolling up.
                 else if (dy < 0) {
-                    addActionButton.show();
+                    mAddActionButton.show();
                 }
             }
         });
     }
 
     private void setupEmptyView(View view) {
-        emptyLinearLayout = (LinearLayout) view.findViewById(R.id.create_empty_linear_layout);
+        mEmptyLinearLayout = (LinearLayout) view.findViewById(R.id.create_game_empty_linear_layout);
         hideRecyclerViewIfEmpty();
     }
 
     private void hideRecyclerViewIfEmpty() {
-        if (nfcTags.size() == 0) {
-            recyclerView.setVisibility(View.INVISIBLE);
-            emptyLinearLayout.setVisibility(View.VISIBLE);
+        if (mNfcTags == null || mNfcTags.size() == 0) {
+            mRecyclerView.setVisibility(View.INVISIBLE);
+            mEmptyLinearLayout.setVisibility(View.VISIBLE);
         } else {
-            recyclerView.setVisibility(View.VISIBLE);
-            emptyLinearLayout.setVisibility(View.INVISIBLE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mEmptyLinearLayout.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -212,29 +239,34 @@ public class CreateGameFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (addActionButton != null) {
-            showActionButton();
-            restoreLayoutAfterTransition();
-        }
+        restoreLayoutAfterTransition();
+
+        // Updates UI.
+        mNfcTagAdapter.notifyDataSetChanged();
+        hideRecyclerViewIfEmpty();
+    }
+
+    public int contextGetSelectionSize() {
+        return mNfcTagAdapter.getSelectionSize();
     }
 
     public void contextDeleteSelectedItems() {
-        adapter.deleteSelectedItems();
+        mNfcTagAdapter.deleteSelectedItems();
 
         reorderNfcTags();
     }
 
     public void contextSelectAll() {
-        adapter.selectAll();
+        mNfcTagAdapter.selectAll();
     }
 
     public void contextClearSelection() {
-        adapter.clearSelection();
+        mNfcTagAdapter.clearSelection();
     }
 
     public void contextFinish() {
-        adapter.setSelectionMode(false);
-        adapter.clearSelection();
+        mNfcTagAdapter.setSelectionMode(false);
+        mNfcTagAdapter.clearSelection();
     }
 
     /**
@@ -261,7 +293,7 @@ public class CreateGameFragment extends Fragment {
         // Replace the contents of a view (invoked by the layout manager).
         @Override
         public void onBindViewHolder(NfcTagHolder nfcTagHolder, int position) {
-            NfcTag nfcTag = nfcTags.get(position);
+            NfcTag nfcTag = mNfcTags.get(position);
 
             // Fix the recycling of the holders.
             if (isSelected(position)) {
@@ -275,7 +307,7 @@ public class CreateGameFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return nfcTags.size();
+            return (mNfcTags == null) ? 0 : mNfcTags.size();
         }
 
         public void setSelectionMode(boolean isSelectableMode) {
@@ -299,26 +331,26 @@ public class CreateGameFragment extends Fragment {
         }
 
         public void selectAll() {
-            for (int i = 0; i < nfcTags.size(); i++) {
-                View view = recyclerView.getChildAt(i);
+            for (int i = 0; i < mNfcTags.size(); i++) {
+                View view = mRecyclerView.getChildAt(i);
                 if (view instanceof CardView) {
-                    selectedItems.put(i, true);
                     view.setActivated(true);
                 }
+                selectedItems.put(i, true);
             }
-            onContextualActionBarEnterListener.onItemClicked(getSelectionSize());
+            mCallbacks.onItemClicked(getSelectionSize());
         }
 
         public void clearSelection() {
             selectedItems.clear();
 
-            for (int i = 0; i < nfcTags.size(); i++) {
-                View view = recyclerView.getChildAt(i);
+            for (int i = 0; i < mNfcTags.size(); i++) {
+                View view = mRecyclerView.getChildAt(i);
                 if (view instanceof CardView) {
                     view.setActivated(false);
                 }
             }
-            onContextualActionBarEnterListener.onItemClicked(getSelectionSize());
+            mCallbacks.onItemClicked(getSelectionSize());
         }
 
         public int getSelectionSize() {
@@ -326,10 +358,10 @@ public class CreateGameFragment extends Fragment {
         }
 
         public void deleteSelectedItems() {
-            for (int i = nfcTags.size(); i >= 0; i--) {
+            for (int i = mNfcTags.size(); i >= 0; i--) {
                 if (isSelected(i)) {
                     // Gets the selected NFC tag.
-                    NfcTag nfcTag = nfcTags.get(i);
+                    NfcTag nfcTag = mNfcTags.get(i);
 
                     // Deletes the selected NFC tag.
                     MyTags.get(getActivity()).deleteNfcTag(nfcTag);
@@ -362,29 +394,23 @@ public class CreateGameFragment extends Fragment {
         private ImageButton moreImageButton;
 
         private NfcTag nfcTag;
-        private NfcTagAdapter adapter;
+        private NfcTagAdapter nfcTagAdapter;
 
         @SuppressWarnings("deprecation")
         public NfcTagHolder(View view) {
             super(view);
 
-            adapter = (NfcTagAdapter) recyclerView.getAdapter();
+            nfcTagAdapter = (NfcTagAdapter) mRecyclerView.getAdapter();
 
             setupTouchListener(view);
             setupClickListener(view);
             setupLongClickListener(view);
 
-            // Custom Fonts.
-            Typeface typefaceBold = FontCache.get("fonts/capture_it.ttf", getActivity());
-            Typeface typefaceNormal = FontCache.get("fonts/amatic_bold.ttf", getActivity());
-
             imageView = (ImageView) view.findViewById(R.id.row_create_image_view);
 
             titleTextView = (TextView) view.findViewById(R.id.row_create_title_text_view);
-            titleTextView.setTypeface(typefaceBold);
 
             difficultyTextView = (TextView) view.findViewById(R.id.row_create_difficulty_text_view);
-            difficultyTextView.setTypeface(typefaceNormal);
             difficultyTextView.setTextColor(getResources().getColor(R.color.accent));
 
             moreImageButton = (ImageButton) view.findViewById(R.id.row_create_more_image_button);
@@ -398,14 +424,14 @@ public class CreateGameFragment extends Fragment {
 
         private void selectItem(View view) {
             // Highlight selected view.
-            if (adapter.isSelected(getAdapterPosition())) {
+            if (nfcTagAdapter.isSelected(getAdapterPosition())) {
                 view.setActivated(false);
             } else {
                 view.setActivated(true);
             }
 
-            adapter.toggleSelection(getAdapterPosition());
-            onContextualActionBarEnterListener.onItemClicked(adapter.getSelectionSize());
+            nfcTagAdapter.toggleSelection(getAdapterPosition());
+            mCallbacks.onItemClicked(nfcTagAdapter.getSelectionSize());
         }
 
         @SuppressLint("InflateParams")
@@ -446,8 +472,8 @@ public class CreateGameFragment extends Fragment {
          */
         private void setupTouchListener(View view) {
             view.setOnTouchListener(new View.OnTouchListener() {
-                Animator startAnimator = AnimatorInflater.loadAnimator(getActivity(), R.animator.start);
-                Animator endAnimator = AnimatorInflater.loadAnimator(getActivity(), R.animator.end);
+                Animator startAnimator = AnimatorInflater.loadAnimator(getActivity(), R.animator.card_view_elevate);
+                Animator endAnimator = AnimatorInflater.loadAnimator(getActivity(), R.animator.card_view_rest);
 
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -473,10 +499,9 @@ public class CreateGameFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     // If Contextual Action Bar is disabled.
-                    if (!adapter.isSelectionMode()) {
-                        // Start CreateTagPagerActivity.
-                        Intent intent = new Intent(getActivity(), CreateTagPagerActivity.class);
-                        intent.putExtra(CreateTagFragment.EXTRA_TAG_ID, nfcTag.getTagId());
+                    if (!nfcTagAdapter.isSelectionMode()) {
+                        // Starts EditTagPagerActivity.
+                        Intent intent = EditTagPagerActivity.newIntent(getActivity(), nfcTag.getTagId());
                         startActivityForResult(intent, REQUEST_EDIT);
                     }
                     // If Contextual Action Bar is enabled.
@@ -492,10 +517,10 @@ public class CreateGameFragment extends Fragment {
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    onContextualActionBarEnterListener.onItemLongClicked();
+                    mCallbacks.onItemLongClicked();
 
                     // Enable selection mode.
-                    adapter.setSelectionMode(true);
+                    nfcTagAdapter.setSelectionMode(true);
 
                     // Toggle selected view.
                     selectItem(view);
@@ -520,22 +545,22 @@ public class CreateGameFragment extends Fragment {
             @Override
             public void run() {
                 MyTags.get(getActivity()).reorderNfcTags();
-                adapter.notifyItemRangeChanged(0, MyTags.get(getActivity()).getNfcTags().size());
+                mNfcTagAdapter.notifyItemRangeChanged(0, MyTags.get(getActivity()).getNfcTags().size());
             }
         }, 1000);
     }
 
     public void setupFloatingActionButton(View view) {
-        addActionButton = (FloatingActionButton) view;
-        addActionButton.setOnClickListener(new View.OnClickListener() {
+        mAddActionButton = (FloatingActionButton) view;
+        mAddActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TransitionHelper.isTransitionSupported()) {
-                    startActivityWithTransition();
+                if (TransitionHelper.isTransitionSupportedAndEnabled()) {
+                    startCreateTagActivityWithTransition();
                 }
                 // No transitions.
                 else {
-                    startActivity();
+                    startCreateTagActivity();
                 }
             }
         });
@@ -543,16 +568,16 @@ public class CreateGameFragment extends Fragment {
 
     public static class DeleteDialogFragment extends DialogFragment {
 
-        public static final String EXTRA_TAG_ID = "com.karhades.tag_it.tag_id";
-        public static final String EXTRA_ADAPTER_POSITION = "com.karhades.tag_it.adapter_position";
+        private static final String EXTRA_TAG_ID = "com.karhades.tag_it.tag_id";
+        private static final String EXTRA_ADAPTER_POSITION = "com.karhades.tag_it.adapter_position";
 
         private String tagId;
         private int adapterPosition;
 
         public static DeleteDialogFragment newInstance(String tagId, int adapterPosition) {
             Bundle bundle = new Bundle();
-            bundle.putSerializable(EXTRA_TAG_ID, tagId);
-            bundle.putSerializable(EXTRA_ADAPTER_POSITION, adapterPosition);
+            bundle.putString(EXTRA_TAG_ID, tagId);
+            bundle.putInt(EXTRA_ADAPTER_POSITION, adapterPosition);
 
             DeleteDialogFragment fragment = new DeleteDialogFragment();
             fragment.setArguments(bundle);
@@ -560,13 +585,19 @@ public class CreateGameFragment extends Fragment {
             return fragment;
         }
 
+        @Override
+        public void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            tagId = getArguments().getString(EXTRA_TAG_ID);
+            adapterPosition = getArguments().getInt(EXTRA_ADAPTER_POSITION);
+        }
+
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return new AlertDialog.Builder(getActivity())
-                    .setIcon(R.drawable.icon_warning)
-                    .setTitle("Delete tag?")
-                    .setMessage("You are going to delete the selected tag.")
+                    .setMessage(getResources().getQuantityString(R.plurals.dialog_deleted_plural, 1))
                     .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -591,13 +622,14 @@ public class CreateGameFragment extends Fragment {
     }
 
     public void setupTransitionViews(ViewGroup sceneRoot, ViewGroup revealContent) {
-        this.sceneRoot = sceneRoot;
-        this.revealContent = revealContent;
-        originalLayoutParams = addActionButton.getLayoutParams();
+        mSceneRoot = sceneRoot;
+        mRevealContent = revealContent;
+        mOriginalLayoutParams = mAddActionButton.getLayoutParams();
     }
 
     @TargetApi(21)
-    private void startActivityWithTransition() {
+    private void startCreateTagActivityWithTransition() {
+        // Gets the transition from the XML file.
         Transition transition = TransitionInflater.from(getActivity()).inflateTransition(R.transition.changebounds_with_arcmotion);
         transition.addListener(new Transition.TransitionListener() {
             @Override
@@ -607,12 +639,12 @@ public class CreateGameFragment extends Fragment {
 
             @Override
             public void onTransitionEnd(Transition transition) {
-                hideActionButton();
-
-                TransitionHelper.circularShow(addActionButton, revealContent, new Runnable() {
+                TransitionHelper.circularShow(mAddActionButton, mRevealContent, new Runnable() {
                     @Override
                     public void run() {
-                        startActivity();
+                        Intent intent = new Intent(getActivity(), CreateTagActivity.class);
+                        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle();
+                        getActivity().startActivityForResult(intent, REQUEST_INSERT, bundle);
                     }
                 });
             }
@@ -633,44 +665,42 @@ public class CreateGameFragment extends Fragment {
             }
         });
 
-        // View transition.
-        TransitionManager.beginDelayedTransition(sceneRoot, transition);
+        // Curved motion transition.
+        TransitionManager.beginDelayedTransition(mSceneRoot, transition);
 
-        // Change the action button's gravity from bottom|right to center.
+        // Changes the action button's gravity from bottom|right to center.
         CoordinatorLayout.LayoutParams newLayoutParams = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.WRAP_CONTENT, CoordinatorLayout.LayoutParams.WRAP_CONTENT);
         newLayoutParams.gravity = Gravity.CENTER;
-        addActionButton.setLayoutParams(newLayoutParams);
+        mAddActionButton.setLayoutParams(newLayoutParams);
     }
 
-    private void startActivity() {
+    private void startCreateTagActivity() {
         Intent intent = new Intent(getActivity(), CreateTagActivity.class);
-        startActivityForResult(intent, 0);
+        startActivityForResult(intent, REQUEST_INSERT);
     }
 
-    private void showActionButton() {
-        if (addActionButton.getScaleX() == 0 && addActionButton.getScaleY() == 0) {
-            // Using handler because the setStartDelay method glitches with
-            // the show/hide of the action button.
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    addActionButton.animate()
-                            .scaleX(1)
-                            .scaleY(1);
-                }
-            }, 700);
-        }
-    }
-
-    private void hideActionButton() {
-        addActionButton.setScaleX(0);
-        addActionButton.setScaleY(0);
-    }
-
+    @TargetApi(21)
     private void restoreLayoutAfterTransition() {
-        if (revealContent != null && revealContent.getVisibility() == View.VISIBLE) {
-            revealContent.setVisibility(View.INVISIBLE);
-            addActionButton.setLayoutParams(originalLayoutParams);
+        if (!TransitionHelper.isTransitionSupportedAndEnabled()) {
+            return;
         }
+
+        if (mRevealContent == null || mRevealContent.getVisibility() == View.INVISIBLE) {
+            return;
+        }
+
+        TransitionHelper.circularHide(mAddActionButton, mRevealContent, new Runnable() {
+            @Override
+            public void run() {
+                // Gets the transition from the XML file.
+                Transition transition = TransitionInflater.from(getActivity()).inflateTransition(R.transition.changebounds_with_arcmotion);
+
+                // Curved motion transition.
+                TransitionManager.beginDelayedTransition(mSceneRoot, transition);
+
+                // Revert action button to it's original position.
+                mAddActionButton.setLayoutParams(mOriginalLayoutParams);
+            }
+        });
     }
 }

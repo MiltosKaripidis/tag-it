@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2016 Karipidis Miltiadis
+ */
+
 package com.karhades.tag_it.main.model;
 
 import android.support.test.espresso.intent.rule.IntentsTestRule;
@@ -30,7 +34,7 @@ public class CreateTagActivityTest {
     @Test
     public void spinner_VerifyDifficulties() {
         // Trigger the spinner's pop up window.
-        onView(withId(R.id.spinner)).perform(click());
+        onView(withId(R.id.create_tag_spinner)).perform(click());
 
         // Should be displayed.
         onView(withText("Easy"))
@@ -56,12 +60,12 @@ public class CreateTagActivityTest {
     @Test
     public void spinner_clickAndCheck() {
         // Trigger the spinner's pop up window.
-        onView(withId(R.id.spinner)).perform(click());
+        onView(withId(R.id.create_tag_spinner)).perform(click());
 
         // Select Hard difficulty.
         onView(withText("Hard")).perform(click());
 
         // Verify selection.
-        onView(withId(R.id.spinner)).check(matches(withSpinnerText("Hard")));
+        onView(withId(R.id.create_tag_spinner)).check(matches(withSpinnerText("Hard")));
     }
 }
