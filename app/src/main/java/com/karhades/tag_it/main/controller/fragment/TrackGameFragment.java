@@ -58,11 +58,6 @@ public class TrackGameFragment extends Fragment {
         return new TrackGameFragment();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     public void updateUi() {
         // Updates the UI.
         mNfcTags = MyTags.get(getActivity()).getNfcTags();

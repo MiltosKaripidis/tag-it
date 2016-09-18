@@ -169,14 +169,14 @@ public class DiscoverTagFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        saveTags();
+        saveTag();
     }
 
     /**
-     * Saves the tags to the external storage.
+     * Saves the tag to the external storage.
      */
-    private void saveTags() {
-        MyTags.get(getActivity()).saveTags();
+    private void saveTag() {
+        MyTags.get(getActivity()).updateNfcTag(mNfcTag);
     }
 
     @Override

@@ -5,16 +5,21 @@
 package com.karhades.tag_it.main.model;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
 import com.karhades.tag_it.main.controller.fragment.SettingsFragment;
+import com.karhades.tag_it.main.database.TagItDataBaseHelper;
+import com.karhades.tag_it.main.database.NfcTagCursorWrapper;
+import com.karhades.tag_it.main.database.TagItDatabaseSchema;
 import com.karhades.tag_it.utils.PictureLoader;
 import com.karhades.tag_it.utils.TagJsonSerializer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,9 +54,9 @@ public class MyTags {
     private Context mContext;
 
     /**
-     * List of NfcTag objects.
+     * Application database.
      */
-    private List<NfcTag> mNfcTags;
+    private SQLiteDatabase mDatabase;
 
     /**
      * Helper class for saving and loading NfcTag objects in JSON format.
@@ -82,29 +87,10 @@ public class MyTags {
     }
 
     /**
-     * Saves the tags to external storage.
-     */
-    public void saveTags() {
-        try {
-            mSerializer.saveTagsExternal(mNfcTags);
-        } catch (Exception e) {
-            Log.e(TAG, "Error saving tags: " + e.getMessage());
-        }
-    }
-
-    /**
      * Loads the tags from the external storage.
      */
     public void loadTags() {
-        try {
-            mNfcTags = mSerializer.loadTagsExternal();
-        } catch (FileNotFoundException e) {
-            mNfcTags = new ArrayList<>();
-            Log.e(TAG, "File tags.txt not found.", e);
-        } catch (Exception e) {
-            mNfcTags = new ArrayList<>();
-            Log.e(TAG, "Error loading tags: " + e.getMessage(), e);
-        }
+        mDatabase = new TagItDataBaseHelper(mContext).getWritableDatabase();
     }
 
     /**
@@ -121,41 +107,133 @@ public class MyTags {
     }
 
     /**
-     * Gets all the nfcTags.
+     * Gets all the nfcTags from the database.
      *
      * @return The List containing the tags.
      */
     public List<NfcTag> getNfcTags() {
-        return mNfcTags;
+        List<NfcTag> nfcTags = new ArrayList<>();
+
+        NfcTagCursorWrapper cursor = queryTags(null, null);
+        cursor.moveToFirst();
+
+        do {
+            nfcTags.add(cursor.getNfcTag());
+        } while (cursor.moveToNext());
+        cursor.close();
+
+        return nfcTags;
     }
 
     /**
-     * Gets a NfcTag through it's tagId.
+     * Gets an NfcTag through it's tagId.
      *
      * @param tagId The tag id needed for search.
      * @return The NfcTag with this tag id.
      */
     public NfcTag getNfcTag(String tagId) {
-        for (NfcTag nfcTag : mNfcTags) {
-            if (nfcTag.getTagId().equals(tagId)) {
-                return nfcTag;
-            }
+        NfcTagCursorWrapper cursor = queryTags(
+                TagItDatabaseSchema.TagTable.Columns.TAG_ID + " = ?",
+                new String[]{tagId});
+
+        if (cursor.getCount() == 0) {
+            return null;
         }
-        return null;
+
+        cursor.moveToFirst();
+        return cursor.getNfcTag();
     }
 
     /**
-     * Adds a new Nfc Tag to the list.
+     * Gets the NfcTag position in the list from the given tag ID.
+     *
+     * @param tagId The tag ID needed for the search.
+     * @return An int representing the position in the list or -1 if it doesn't exist.
+     */
+    public int getNfcTagPosition(String tagId) {
+        List<NfcTag> nfcTags = getNfcTags();
+
+        for (NfcTag nfcTag : nfcTags) {
+            if (nfcTag.getTagId().equals(tagId)) {
+                return nfcTags.indexOf(nfcTag);
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Returns a table row that contains all the given NfcTag fields inside each
+     * corresponding table column.
+     *
+     * @param nfcTag The NfcTag object to get the values.
+     * @return A ContentValues object that contains all the NfcTag fields.
+     */
+    private static ContentValues getContentValues(NfcTag nfcTag) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TagItDatabaseSchema.TagTable.Columns.TAG_ID, nfcTag.getTagId());
+        contentValues.put(TagItDatabaseSchema.TagTable.Columns.TITLE, nfcTag.getTitle());
+        contentValues.put(TagItDatabaseSchema.TagTable.Columns.FILE_PATH, nfcTag.getPictureFilePath());
+        contentValues.put(TagItDatabaseSchema.TagTable.Columns.DIFFICULTY, nfcTag.getDifficulty());
+        contentValues.put(TagItDatabaseSchema.TagTable.Columns.DISCOVERED, nfcTag.isDiscovered() ? 1 : 0);
+        contentValues.put(TagItDatabaseSchema.TagTable.Columns.DATE_DISCOVERED, nfcTag.getDateDiscovered());
+
+        return contentValues;
+    }
+
+    /**
+     * SQL select statement that returns data for the given WHERE clause.
+     *
+     * @param whereClause A String representing the WHERE clause. Can be null (SELECT *).
+     * @param whereArgs   A String representing the arguments for the WHERE clause. Can be null.
+     * @return An NfcTagCursorWrapper object that contains the row(s).
+     */
+    private NfcTagCursorWrapper queryTags(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                TagItDatabaseSchema.TagTable.NAME,
+                null, // select all columns
+                whereClause,
+                whereArgs,
+                null, // groupBy
+                null, // having
+                null  // orderBy
+        );
+
+        return new NfcTagCursorWrapper(cursor);
+    }
+
+    /**
+     * Adds a new NFC tag to the database.
      *
      * @param nfcTag The NfcTag to add.
      */
     public void addNfcTag(NfcTag nfcTag) {
-        // Add to list.
-        mNfcTags.add(nfcTag);
+        ContentValues contentValues = getContentValues(nfcTag);
+
+        mDatabase.insert(
+                TagItDatabaseSchema.TagTable.NAME,
+                null,
+                contentValues);
     }
 
     /**
-     * Removes the specified NfcTag from the list.
+     * Updates the database for the given NFC tag.
+     *
+     * @param nfcTag The NfcTag to update.
+     */
+    public void updateNfcTag(NfcTag nfcTag) {
+        String tagId = nfcTag.getTagId();
+        ContentValues contentValues = getContentValues(nfcTag);
+
+        mDatabase.update(
+                TagItDatabaseSchema.TagTable.NAME,
+                contentValues,
+                TagItDatabaseSchema.TagTable.Columns.TAG_ID + " = ?",
+                new String[]{tagId});
+    }
+
+    /**
+     * Removes the specified NFC tag from the database along with it's image.
      *
      * @param nfcTag The NfcTag to remove.
      */
@@ -171,21 +249,15 @@ public class MyTags {
             }
         }
 
-        // Remove from list.
-        mNfcTags.remove(nfcTag);
+        String tagId = nfcTag.getTagId();
+
+        mDatabase.delete(
+                TagItDatabaseSchema.TagTable.NAME,
+                TagItDatabaseSchema.TagTable.Columns.TAG_ID + " = ?",
+                new String[]{tagId});
     }
 
-    /**
-     * Reorders the whole list starting from 1 to length list.
-     */
-    public void reorderNfcTags() {
-        int title = 1;
-
-        for (NfcTag nfcTag : mNfcTags) {
-            nfcTag.setTitle("Tag " + title);
-            title++;
-        }
-    }
+    // TODO: Test the Android Beam operation.
 
     /**
      * Creates a URI array with the URIs of the tags.txt and the pictures
@@ -195,26 +267,35 @@ public class MyTags {
      * the images.
      */
     public Uri[] createFileUrisArray() {
-        // First, save any changes of the tags into the model.
-        saveTags();
+        List<NfcTag> nfcTags = getNfcTags();
 
-        // Create a URI array with a size of [NFC tag picture URIs + tags.txt file URI].
-        Uri[] fileUris = new Uri[mNfcTags.size() + 1];
+        prepareJsonFile(nfcTags);
 
-        // Create the tags.txt file URI.
+        // Creates a URI array with a size of [NFC tag picture URIs + tags.txt file URI].
+        Uri[] fileUris = new Uri[nfcTags.size() + 1];
+
+        // Creates the tags.txt file URI.
         File tagsFile = new File(mContext.getExternalFilesDir(null) + File.separator + "tags.txt");
         setWorldReadable(tagsFile);
         fileUris[0] = Uri.fromFile(tagsFile);
 
-        // Create the NFC tag picture file URIs.
-        for (int i = 0; i < mNfcTags.size(); i++) {
-            File file = new File(mNfcTags.get(i).getPictureFilePath());
+        // Creates the NFC tag picture file URIs.
+        for (int i = 0; i < nfcTags.size(); i++) {
+            File file = new File(nfcTags.get(i).getPictureFilePath());
             setWorldReadable(file);
             Uri uri = Uri.fromFile(file);
             fileUris[i + 1] = uri;
         }
 
         return fileUris;
+    }
+
+    private void prepareJsonFile(List<NfcTag> nfcTags) {
+        try {
+            mSerializer.saveTagsExternal(nfcTags);
+        } catch (Exception e) {
+            Log.e(TAG, "Error saving tags: " + e.getMessage());
+        }
     }
 
     @SuppressLint("SetWorldReadable")

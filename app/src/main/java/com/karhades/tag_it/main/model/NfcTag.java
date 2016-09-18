@@ -13,16 +13,6 @@ import org.json.JSONObject;
 public class NfcTag {
 
     /**
-     * JSON map keys constants.
-     */
-    private static final String JSON_DIFFICULTY = "difficulty";
-    private static final String JSON_TAG_ID = "tag_id";
-    private static final String JSON_TITLE = "title";
-    private static final String JSON_PICTURE_FILE_PATH = "picture_file_path";
-    private static final String JSON_DISCOVERED = "discovered";
-    private static final String DATE_DISCOVERED = "date_discovered";
-
-    /**
      * Instance fields.
      */
     private String mTagId;
@@ -35,14 +25,33 @@ public class NfcTag {
     /**
      * Simple constructor of NfcTag.
      *
-     * @param title A String indicating the title of the tag.
+     * @param title      A String indicating the title of the tag.
      * @param difficulty A String indicating the difficulty of the tag.
-     * @param tagId A String indicating the id of the tag.
+     * @param tagId      A String indicating the ID of the tag.
      */
     public NfcTag(String title, String difficulty, String tagId) {
         mTitle = title;
         mDifficulty = difficulty;
         mTagId = tagId;
+    }
+
+    /**
+     * Full constructor of NfcTag.
+     *
+     * @param tagId           A String indicating the ID of the tag.
+     * @param title           A String indicating the title of the tag.
+     * @param pictureFilePath A String indicating the picture file path.
+     * @param difficulty      A String indicating the difficulty of the tag.
+     * @param discovered      A boolean indicating whether the tag is discovered.
+     * @param dateDiscovered  A String indicating the discovered date.
+     */
+    public NfcTag(String tagId, String title, String pictureFilePath, String difficulty, boolean discovered, String dateDiscovered) {
+        mTagId = tagId;
+        mTitle = title;
+        mPictureFilePath = pictureFilePath;
+        mDifficulty = difficulty;
+        mDiscovered = discovered;
+        mDateDiscovered = dateDiscovered;
     }
 
     /**
@@ -53,13 +62,13 @@ public class NfcTag {
      * @throws JSONException
      */
     public NfcTag(JSONObject jsonObject) throws JSONException {
-        mDifficulty = jsonObject.getString(JSON_DIFFICULTY);
-        mTagId = jsonObject.getString(JSON_TAG_ID);
-        mTitle = jsonObject.getString(JSON_TITLE);
-        mPictureFilePath = jsonObject.getString(JSON_PICTURE_FILE_PATH);
-        mDiscovered = jsonObject.getBoolean(JSON_DISCOVERED);
-        if (jsonObject.has(DATE_DISCOVERED)) {
-            mDateDiscovered = jsonObject.getString(DATE_DISCOVERED);
+        mDifficulty = jsonObject.getString(JsonAttributes.DIFFICULTY);
+        mTagId = jsonObject.getString(JsonAttributes.TAG_ID);
+        mTitle = jsonObject.getString(JsonAttributes.TITLE);
+        mPictureFilePath = jsonObject.getString(JsonAttributes.PICTURE_FILE_PATH);
+        mDiscovered = jsonObject.getBoolean(JsonAttributes.DISCOVERED);
+        if (jsonObject.has(JsonAttributes.DATE_DISCOVERED)) {
+            mDateDiscovered = jsonObject.getString(JsonAttributes.DATE_DISCOVERED);
         }
     }
 
@@ -72,13 +81,13 @@ public class NfcTag {
      */
     public JSONObject toJson() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(JSON_DIFFICULTY, mDifficulty);
-        jsonObject.put(JSON_TAG_ID, mTagId);
-        jsonObject.put(JSON_TITLE, mTitle);
-        jsonObject.put(JSON_PICTURE_FILE_PATH, mPictureFilePath);
-        jsonObject.put(JSON_DISCOVERED, mDiscovered);
+        jsonObject.put(JsonAttributes.DIFFICULTY, mDifficulty);
+        jsonObject.put(JsonAttributes.TAG_ID, mTagId);
+        jsonObject.put(JsonAttributes.TITLE, mTitle);
+        jsonObject.put(JsonAttributes.PICTURE_FILE_PATH, mPictureFilePath);
+        jsonObject.put(JsonAttributes.DISCOVERED, mDiscovered);
         if (mDateDiscovered != null) {
-            jsonObject.put(DATE_DISCOVERED, mDateDiscovered);
+            jsonObject.put(JsonAttributes.DATE_DISCOVERED, mDateDiscovered);
         }
 
         return jsonObject;

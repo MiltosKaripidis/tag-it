@@ -125,13 +125,6 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     }
 
     /**
-     * Saves the tags asynchronously to external storage.
-     */
-    private void saveTags() {
-        new AsyncTaskSaver().execute();
-    }
-
-    /**
      * Loads the tags asynchronously from the external storage.
      */
     private void loadTags() {
@@ -143,8 +136,18 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     protected void onPause() {
         super.onPause();
 
-        saveTags();
         disableContextualActionBar();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (mCreateGameFragment == null) {
+            return;
+        }
+
+        mCreateGameFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -691,19 +694,6 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
                 }
             }
         });
-    }
-
-    /**
-     * AsyncTask class that saves the json file in a background thread.
-     */
-    private class AsyncTaskSaver extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            MyTags.get(MainActivity.this).saveTags();
-
-            return null;
-        }
     }
 
     /**

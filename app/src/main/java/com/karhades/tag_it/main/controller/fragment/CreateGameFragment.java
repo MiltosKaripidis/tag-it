@@ -18,7 +18,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -116,13 +115,6 @@ public class CreateGameFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mNfcTags = MyTags.get(getActivity()).getNfcTags();
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
@@ -143,14 +135,15 @@ public class CreateGameFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO: Doesn't get called.
+        super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == REQUEST_INSERT) {
             if (resultCode == Activity.RESULT_OK) {
                 mNfcTagAdapter.notifyItemInserted(mNfcTags.size());
             }
         } else if (requestCode == REQUEST_EDIT) {
             if (resultCode == Activity.RESULT_OK) {
-                mNfcTagAdapter.notifyItemChanged(data.getIntExtra(EXTRA_POSITION, -1));
+                mNfcTagAdapter.notifyItemChanged(data.getExtras().getInt(EXTRA_POSITION));
             }
         } else if (requestCode == REQUEST_DELETE) {
             if (resultCode == Activity.RESULT_OK) {
@@ -186,20 +179,27 @@ public class CreateGameFragment extends Fragment {
         mRecyclerView.setItemViewCacheSize(0);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mNfcTagAdapter = new NfcTagAdapter();
+        mNfcTagAdapter = new NfcTagAdapter(mNfcTags);
         mNfcTagAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
 
-                hideRecyclerViewIfEmpty();
+                updateUI();
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                super.onItemRangeChanged(positionStart, itemCount);
+
+                updateUI();
             }
 
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 super.onItemRangeRemoved(positionStart, itemCount);
 
-                hideRecyclerViewIfEmpty();
+                updateUI();
             }
         });
         mRecyclerView.setAdapter(mNfcTagAdapter);
@@ -222,7 +222,6 @@ public class CreateGameFragment extends Fragment {
 
     private void setupEmptyView(View view) {
         mEmptyLinearLayout = (LinearLayout) view.findViewById(R.id.create_game_empty_linear_layout);
-        hideRecyclerViewIfEmpty();
     }
 
     private void hideRecyclerViewIfEmpty() {
@@ -241,8 +240,12 @@ public class CreateGameFragment extends Fragment {
 
         restoreLayoutAfterTransition();
 
-        // Updates UI.
-        mNfcTagAdapter.notifyDataSetChanged();
+        updateUI();
+    }
+
+    private void updateUI() {
+        mNfcTags = MyTags.get(getActivity()).getNfcTags();
+        mNfcTagAdapter.setNfcTags(mNfcTags);
         hideRecyclerViewIfEmpty();
     }
 
@@ -252,8 +255,6 @@ public class CreateGameFragment extends Fragment {
 
     public void contextDeleteSelectedItems() {
         mNfcTagAdapter.deleteSelectedItems();
-
-        reorderNfcTags();
     }
 
     public void contextSelectAll() {
@@ -275,11 +276,17 @@ public class CreateGameFragment extends Fragment {
      */
     private class NfcTagAdapter extends RecyclerView.Adapter<NfcTagHolder> {
 
+        private List<NfcTag> nfcTags;
         private SparseBooleanArray selectedItems;
         private boolean isSelectionMode = false;
 
-        public NfcTagAdapter() {
+        public NfcTagAdapter(List<NfcTag> nfcTags) {
+            this.nfcTags = nfcTags;
             selectedItems = new SparseBooleanArray();
+        }
+
+        public void setNfcTags(List<NfcTag> nfcTags) {
+            this.nfcTags = nfcTags;
         }
 
         // Create new views (invoked by the layout manager).
@@ -293,7 +300,7 @@ public class CreateGameFragment extends Fragment {
         // Replace the contents of a view (invoked by the layout manager).
         @Override
         public void onBindViewHolder(NfcTagHolder nfcTagHolder, int position) {
-            NfcTag nfcTag = mNfcTags.get(position);
+            NfcTag nfcTag = nfcTags.get(position);
 
             // Fix the recycling of the holders.
             if (isSelected(position)) {
@@ -307,7 +314,7 @@ public class CreateGameFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return (mNfcTags == null) ? 0 : mNfcTags.size();
+            return (nfcTags == null) ? 0 : nfcTags.size();
         }
 
         public void setSelectionMode(boolean isSelectableMode) {
@@ -331,7 +338,7 @@ public class CreateGameFragment extends Fragment {
         }
 
         public void selectAll() {
-            for (int i = 0; i < mNfcTags.size(); i++) {
+            for (int i = 0; i < nfcTags.size(); i++) {
                 View view = mRecyclerView.getChildAt(i);
                 if (view instanceof CardView) {
                     view.setActivated(true);
@@ -344,7 +351,7 @@ public class CreateGameFragment extends Fragment {
         public void clearSelection() {
             selectedItems.clear();
 
-            for (int i = 0; i < mNfcTags.size(); i++) {
+            for (int i = 0; i < nfcTags.size(); i++) {
                 View view = mRecyclerView.getChildAt(i);
                 if (view instanceof CardView) {
                     view.setActivated(false);
@@ -358,10 +365,10 @@ public class CreateGameFragment extends Fragment {
         }
 
         public void deleteSelectedItems() {
-            for (int i = mNfcTags.size(); i >= 0; i--) {
+            for (int i = nfcTags.size(); i >= 0; i--) {
                 if (isSelected(i)) {
                     // Gets the selected NFC tag.
-                    NfcTag nfcTag = mNfcTags.get(i);
+                    NfcTag nfcTag = nfcTags.get(i);
 
                     // Deletes the selected NFC tag.
                     MyTags.get(getActivity()).deleteNfcTag(nfcTag);
@@ -378,8 +385,6 @@ public class CreateGameFragment extends Fragment {
 
             // Notifies the adapter.
             notifyItemRemoved(adapterPosition);
-
-            reorderNfcTags();
         }
     }
 
@@ -538,16 +543,6 @@ public class CreateGameFragment extends Fragment {
             titleTextView.setText(nfcTag.getTitle());
             difficultyTextView.setText(nfcTag.getDifficulty());
         }
-    }
-
-    private void reorderNfcTags() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                MyTags.get(getActivity()).reorderNfcTags();
-                mNfcTagAdapter.notifyItemRangeChanged(0, MyTags.get(getActivity()).getNfcTags().size());
-            }
-        }, 1000);
     }
 
     public void setupFloatingActionButton(View view) {

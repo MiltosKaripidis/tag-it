@@ -91,9 +91,6 @@ public class CreateTagFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Makes content appear behind status bar.
-        getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
         // Tells the FragmentManager that this fragment should receive
         // a call to onCreateOptionsMenu.
         setHasOptionsMenu(true);
@@ -330,6 +327,8 @@ public class CreateTagFragment extends Fragment {
                     // Renames temp_tag.jpg to new file path.
                     renameTempFile();
 
+                    saveTag();
+
                     // Informs user.
                     Toast.makeText(getActivity(), "NFC tag written!", Toast.LENGTH_SHORT).show();
 
@@ -351,13 +350,7 @@ public class CreateTagFragment extends Fragment {
                 : mTitleEditText.getText().toString();
 
         // Creates new tag with the following fields.
-        NfcTag newNfcTag = new NfcTag(mTemporaryTitle, mTemporaryDifficulty, tagId);
-
-        // Adds new tag to NfcTags list.
-        MyTags.get(getActivity()).addNfcTag(newNfcTag);
-
-        // Sets new tag as current instance member.
-        mCurrentNfcTag = newNfcTag;
+        mCurrentNfcTag = new NfcTag(mTemporaryTitle, mTemporaryDifficulty, tagId);
 
         // Sets result for REQUEST_INSERT.
         getActivity().setResult(Activity.RESULT_OK);
@@ -374,6 +367,13 @@ public class CreateTagFragment extends Fragment {
         } else {
             Log.e("CreateTagFragment", "Error while renaming: " + renamedFile.getAbsolutePath());
         }
+    }
+
+    /**
+     * Saves the tag to the external storage.
+     */
+    private void saveTag() {
+        MyTags.get(getActivity()).addNfcTag(mCurrentNfcTag);
     }
 
     public static class TagItDialogFragment extends DialogFragment {

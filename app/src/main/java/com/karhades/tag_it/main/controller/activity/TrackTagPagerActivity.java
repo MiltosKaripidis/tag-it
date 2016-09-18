@@ -122,7 +122,7 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
 
     private void setCurrentTagPage() {
         NfcTag nfcTag = MyTags.get(this).getNfcTag(mTagId);
-        int position = MyTags.get(this).getNfcTags().indexOf(nfcTag);
+        int position = MyTags.get(this).getNfcTagPosition(nfcTag.getTagId());
 
         if (position != -1) {
             mViewPager.setCurrentItem(position);

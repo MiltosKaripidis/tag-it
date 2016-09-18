@@ -396,6 +396,8 @@ public class EditTagFragment extends Fragment {
                     // Renames temp_tag.jpg to new file path.
                     renameTempFile();
 
+                    saveTag();
+
                     // Informs user.
                     Toast.makeText(getActivity(), "NFC tag written!", Toast.LENGTH_SHORT).show();
 
@@ -427,7 +429,7 @@ public class EditTagFragment extends Fragment {
         PictureLoader.invalidateWithPicasso(getActivity(), mCurrentNfcTag.getPictureFilePath());
 
         // Get Nfc Tag's position to inform RecyclerView.Adapter.
-        int position = MyTags.get(getActivity()).getNfcTags().indexOf(mCurrentNfcTag);
+        int position = MyTags.get(getActivity()).getNfcTagPosition(mCurrentNfcTag.getTagId());
         // Set result for REQUEST_EDIT and set position as an intent extra.
         Intent intent = new Intent();
         intent.putExtra(EXTRA_POSITION, position);
@@ -449,6 +451,13 @@ public class EditTagFragment extends Fragment {
                 Log.e("EditTagFragment", "Error while renaming: " + renamedFile.getAbsolutePath());
             }
         }
+    }
+
+    /**
+     * Saves the tag to the external storage.
+     */
+    private void saveTag() {
+        MyTags.get(getActivity()).updateNfcTag(mCurrentNfcTag);
     }
 
     public static class TagItDialogFragment extends DialogFragment {
