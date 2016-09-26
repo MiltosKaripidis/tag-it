@@ -8,4 +8,6 @@
     <color name="primary_text">#DD000000</color>
     <color name="secondary_text">#91000000</color>
     <color name="background">#EEEEEE</color>
+    <color name="white_secondary_text">#CCFFFFFF</color>
+    <color name="red">#F44336</color>
 </resources>

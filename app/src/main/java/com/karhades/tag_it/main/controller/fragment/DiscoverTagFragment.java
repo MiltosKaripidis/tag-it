@@ -176,6 +176,10 @@ public class DiscoverTagFragment extends Fragment {
      * Saves the tag to the external storage.
      */
     private void saveTag() {
+        if (mNfcTag == null) {
+            return;
+        }
+
         MyTags.get(getActivity()).updateNfcTag(mNfcTag);
     }
 

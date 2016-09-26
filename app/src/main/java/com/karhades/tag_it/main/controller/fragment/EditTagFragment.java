@@ -418,7 +418,7 @@ public class EditTagFragment extends Fragment {
         mTemporaryTitle = mTitleEditText.getText().toString().equals("") ? mCurrentNfcTag.getTitle()
                 : mTitleEditText.getText().toString();
 
-        // Overwrites current nfc tag fields.
+        // Overwrites current image_tag_read tag fields.
         mCurrentNfcTag.setTitle(mTemporaryTitle);
         mCurrentNfcTag.setDifficulty(mTemporaryDifficulty);
         mCurrentNfcTag.setTagId(tagId);

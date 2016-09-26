@@ -132,6 +132,10 @@ public class MyTags {
      * @return The NfcTag with this tag id.
      */
     public NfcTag getNfcTag(String tagId) {
+        if (tagId == null) {
+            return null;
+        }
+
         NfcTagCursorWrapper cursor = queryTags(
                 TagItDatabaseSchema.TagTable.Columns.TAG_ID + " = ?",
                 new String[]{tagId});

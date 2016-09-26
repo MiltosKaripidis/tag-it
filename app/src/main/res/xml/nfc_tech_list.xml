@@ -12,14 +12,14 @@
     <!-- All the nfcTag technologies. The tech-list must have
      a subset of the tech-list set.-->
     <!--<tech_list>-->
-        <!--<tech>android.nfc.tech.IsoDep</tech>-->
-        <!--<tech>android.nfc.tech.NfcA</tech>-->
-        <!--<tech>android.nfc.tech.NfcB</tech>-->
-        <!--<tech>android.nfc.tech.NfcF</tech>-->
-        <!--<tech>android.nfc.tech.NfcV</tech>-->
-        <!--<tech>android.nfc.tech.Ndef</tech>-->
-        <!--<tech>android.nfc.tech.NdefFormatable</tech>-->
-        <!--<tech>android.nfc.tech.MifareClassic</tech>-->
-        <!--<tech>android.nfc.tech.MifareUltralight</tech>-->
+        <!--<tech>android.image_tag_read.tech.IsoDep</tech>-->
+        <!--<tech>android.image_tag_read.tech.NfcA</tech>-->
+        <!--<tech>android.image_tag_read.tech.NfcB</tech>-->
+        <!--<tech>android.image_tag_read.tech.NfcF</tech>-->
+        <!--<tech>android.image_tag_read.tech.NfcV</tech>-->
+        <!--<tech>android.image_tag_read.tech.Ndef</tech>-->
+        <!--<tech>android.image_tag_read.tech.NdefFormatable</tech>-->
+        <!--<tech>android.image_tag_read.tech.MifareClassic</tech>-->
+        <!--<tech>android.image_tag_read.tech.MifareUltralight</tech>-->
     <!--</tech_list>-->
 </resources>

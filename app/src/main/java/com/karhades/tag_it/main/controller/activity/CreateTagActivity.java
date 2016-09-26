@@ -4,34 +4,54 @@
 
 package com.karhades.tag_it.main.controller.activity;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.os.Bundle;
 
 import com.karhades.tag_it.R;
-import com.karhades.tag_it.main.controller.fragment.CreateTagFragment;
+import com.karhades.tag_it.main.controller.fragment.DetailsStepFragment;
+import com.karhades.tag_it.main.controller.fragment.PictureStepFragment;
+import com.karhades.tag_it.main.controller.fragment.WriteStepFragment;
+import com.karhades.tag_it.utils.stepper.AbstractStep;
+import com.karhades.tag_it.utils.stepper.adapter.PageAdapter;
+import com.karhades.tag_it.utils.stepper.style.TabStepper;
 
 /**
  * Controller Activity class that hosts a CreateTagFragment.
  */
-public class CreateTagActivity extends SingleFragmentActivity {
+public class CreateTagActivity extends TabStepper {
 
     @Override
-    protected Fragment createFragment() {
-        return CreateTagFragment.newInstance();
+    protected void onCreate(Bundle savedInstanceState) {
+
+        setTitle("Create Tag");
+        setPrimaryColor(getResources().getColor(R.color.primary));
+        setDisabledTouch();
+        setPreviousVisible();
+
+        addStep(PictureStepFragment.newInstance("Take a picture"));
+        addStep(DetailsStepFragment.newInstance("Fill out the details"));
+        addStep(WriteStepFragment.newInstance("Write to tag"));
+
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        // Gets FragmentManager.
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        // Delivers the NFC intent to the last step.
+        AbstractStep abstractStep = ((PageAdapter) mPagerAdapter).getItem(2);
+        if (abstractStep instanceof WriteStepFragment) {
+            ((WriteStepFragment) abstractStep).onNewIntent(intent);
+        }
+    }
 
-        // Gets CreateTagFragment through it's ID.
-        CreateTagFragment createTagFragment = (CreateTagFragment) fragmentManager.findFragmentById(R.id.fragment_container);
+    @Override
+    public void onComplete() {
+        // Sets result for REQUEST_INSERT.
+        setResult(Activity.RESULT_OK);
 
-        // Calls fragment's onNewIntent.
-        createTagFragment.onNewIntent(intent);
+        finish();
     }
 }

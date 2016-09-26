@@ -652,7 +652,7 @@ public class NfcHandler {
     /**
      * Thrown when an NFC tag is not registered in the application.
      */
-    public class TagNotRegisteredException extends RuntimeException {
+    private class TagNotRegisteredException extends RuntimeException {
         TagNotRegisteredException(String message) {
             super(message);
         }
@@ -661,7 +661,7 @@ public class NfcHandler {
     /**
      * Thrown when an NFC tag already exists within the application.
      */
-    public class TagExistsException extends RuntimeException {
+    private class TagExistsException extends RuntimeException {
         TagExistsException(String message) {
             super(message);
         }

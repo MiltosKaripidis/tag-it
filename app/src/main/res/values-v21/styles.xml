@@ -49,7 +49,25 @@
 
     <!-- Status bar theme-->
     <style name="AppTheme.StatusBar">
-        <item name="android:statusBarColor">@color/primary_dark</item>
+        <item name="android:statusBarColor">@color/accent_dark</item>
+        <item name="android:colorControlNormal">@android:color/white</item>
+
+        <!-- TextInputEditText edit hint text color-->
+        <item name="android:editTextColor">@color/white_secondary_text</item>
+
+        <!-- Custom spinner-->
+        <item name="android:spinnerItemStyle">@style/AppTheme.StatusBar.Spinner</item>
+    </style>
+
+    <!-- Custom style for the TextInputEditText-->
+    <style name="AppTheme.StatusBar.TextInputEditText" parent="@android:style/TextAppearance">
+        <!-- Label color-->
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <!-- Custom style for the spinner-->
+    <style name="AppTheme.StatusBar.Spinner" parent="@android:style/Widget.Material.TextView.SpinnerItem">
+        <item name="android:textColor">@color/white_secondary_text</item>
     </style>
 
     <!-- Custom style for the ActionMode's popup menu-->
