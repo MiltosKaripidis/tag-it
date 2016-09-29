@@ -497,6 +497,10 @@ public class NfcHandler {
      * the devices are in proximity.
      */
     public void registerAndroidBeamShareFiles() {
+        if (mNfcAdapter == null) {
+            return;
+        }
+
         mNfcAdapter.setBeamPushUrisCallback(new NfcAdapter.CreateBeamUrisCallback() {
             @Override
             public Uri[] createBeamUris(NfcEvent event) {

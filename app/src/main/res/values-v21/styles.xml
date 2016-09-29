@@ -34,7 +34,7 @@
         <item name="android:windowEnterTransition">@transition/fade</item>
 
         <!-- Custom back navigation icon-->
-        <item name="navigationIcon">@drawable/icon_back_arrow</item>
+        <item name="navigationIcon">@drawable/vector_back</item>
     </style>
 
     <!-- TrackTagPagerActivity theme-->
@@ -47,8 +47,13 @@
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
-    <!-- Status bar theme-->
-    <style name="AppTheme.StatusBar">
+    <!-- SettingsActivity theme-->
+    <style name="AppTheme.SettingsActivity">
+        <item name="android:statusBarColor">@color/primary_dark</item>
+    </style>
+
+    <!-- CreateTagActivity theme-->
+    <style name="AppTheme.CreateTagActivity">
         <item name="android:statusBarColor">@color/accent_dark</item>
         <item name="android:colorControlNormal">@android:color/white</item>
 

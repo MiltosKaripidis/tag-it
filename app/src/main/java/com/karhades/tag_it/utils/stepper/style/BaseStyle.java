@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -115,7 +116,7 @@ public class BaseStyle extends AppCompatActivity implements Stepable {
     protected void init() {
         toolbar = (Toolbar) findViewById(R.id.stepper_toolbar);
 //        toolbar.setBackgroundColor(primaryColor);
-        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.icon_cross));
+        toolbar.setNavigationIcon(VectorDrawableCompat.create(getResources(), R.drawable.vector_cross, null));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -44,9 +44,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
-            android:visibility="gone"
-            android:src="@drawable/icon_add"
-            app:backgroundTint="@color/accent" />
+            android:tint="@android:color/white"
+            android:visibility="invisible"
+            app:backgroundTint="@color/accent"
+            app:srcCompat="@drawable/vector_add" />
 
         <ProgressBar
             android:id="@+id/main_progress_bar"

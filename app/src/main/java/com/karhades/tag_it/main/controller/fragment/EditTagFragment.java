@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
@@ -470,7 +471,7 @@ public class EditTagFragment extends Fragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return new AlertDialog.Builder(getActivity())
-                    .setIcon(R.drawable.icon_info)
+                    .setIcon(VectorDrawableCompat.create(getActivity().getResources(), R.drawable.vector_info, null))
                     .setTitle("NFC Write Mode")
                     .setMessage("Tap the NFC tag to write the inserted information.")
                     .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {

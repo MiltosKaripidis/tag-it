@@ -6,15 +6,15 @@
         <item
             android:id="@+id/navigation_tracking"
             android:checked="true"
-            android:icon="@drawable/icon_tracking"
+            android:icon="@drawable/vector_location"
             android:title="@string/navigation_track" />
         <item
             android:id="@+id/navigation_share"
-            android:icon="@drawable/icon_share"
+            android:icon="@drawable/vector_share"
             android:title="@string/navigation_share" />
         <item
             android:id="@+id/navigation_create"
-            android:icon="@drawable/icon_add"
+            android:icon="@drawable/vector_add"
             android:title="@string/navigation_create" />
     </group>
 
@@ -23,7 +23,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/navigation_settings"
-            android:icon="@drawable/icon_settings"
+            android:icon="@drawable/vector_settings"
             android:title="@string/navigation_settings" />
     </group>
 </menu>

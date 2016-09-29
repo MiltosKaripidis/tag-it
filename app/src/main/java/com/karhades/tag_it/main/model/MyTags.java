@@ -117,9 +117,11 @@ public class MyTags {
         NfcTagCursorWrapper cursor = queryTags(null, null);
         cursor.moveToFirst();
 
-        do {
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
             nfcTags.add(cursor.getNfcTag());
-        } while (cursor.moveToNext());
+            cursor.moveToNext();
+        }
         cursor.close();
 
         return nfcTags;

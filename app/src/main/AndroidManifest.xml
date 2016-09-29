@@ -72,7 +72,7 @@
             android:name=".main.controller.activity.CreateTagActivity"
             android:parentActivityName=".main.controller.activity.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.StatusBar">
+            android:theme="@style/AppTheme.CreateTagActivity">
 
             <!--TECH_DISCOVERED-->
             <intent-filter>
@@ -99,6 +99,6 @@
             android:name=".main.controller.activity.SettingsActivity"
             android:parentActivityName=".main.controller.activity.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.StatusBar" />
+            android:theme="@style/AppTheme.SettingsActivity" />
     </application>
 </manifest>

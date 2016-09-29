@@ -51,10 +51,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:src="@drawable/icon_camera"
             app:backgroundTint="@color/accent"
             app:layout_anchor="@id/edit_tag_app_bar_layout"
-            app:layout_anchorGravity="bottom|end" />
+            app:layout_anchorGravity="bottom|end"
+            app:srcCompat="@drawable/vector_camera" />
 
         <!-- Main content-->
         <android.support.v4.widget.NestedScrollView
