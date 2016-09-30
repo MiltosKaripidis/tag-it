@@ -48,7 +48,13 @@ public class CreateTagActivity extends TabStepper {
         super.onCreate(savedInstanceState);
 
         initializeWidgets();
-        revealShow();
+
+        if (TransitionHelper.isTransitionSupportedAndEnabled()) {
+            revealShow();
+        } else {
+            revealRoot.setVisibility(View.VISIBLE);
+        }
+
     }
 
     private void initializeWidgets() {
@@ -58,7 +64,11 @@ public class CreateTagActivity extends TabStepper {
 
     @Override
     public void onBackPressed() {
-        revealHide();
+        if (TransitionHelper.isTransitionSupportedAndEnabled()) {
+            revealHide();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
