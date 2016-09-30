@@ -45,8 +45,10 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
             android:tint="@android:color/white"
+            android:transitionName="transition_add_floating_action_button"
             android:visibility="invisible"
             app:backgroundTint="@color/accent"
+            app:fabSize="normal"
             app:srcCompat="@drawable/vector_add" />
 
         <ProgressBar
@@ -57,14 +59,6 @@
             android:layout_gravity="center_horizontal"
             android:visibility="gone" />
     </android.support.design.widget.CoordinatorLayout>
-
-    <!-- Circular reveal content-->
-    <FrameLayout
-        android:id="@+id/main_reveal_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/accent"
-        android:visibility="invisible" />
 
     <!-- Navigation drawer-->
     <android.support.design.widget.NavigationView

@@ -20,7 +20,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -29,11 +28,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
-import android.transition.TransitionManager;
 import android.util.SparseBooleanArray;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -83,13 +78,6 @@ public class CreateGameFragment extends Fragment {
      * Instance variables.
      */
     private List<NfcTag> mNfcTags;
-
-    /**
-     * Transition variables.
-     */
-    private ViewGroup mSceneRoot;
-    private View mRevealContent;
-    private ViewGroup.LayoutParams mOriginalLayoutParams;
 
     /**
      * Interface variable.
@@ -237,8 +225,6 @@ public class CreateGameFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        restoreLayoutAfterTransition();
 
         updateUI();
     }
@@ -616,86 +602,15 @@ public class CreateGameFragment extends Fragment {
         }
     }
 
-    public void setupTransitionViews(ViewGroup sceneRoot, ViewGroup revealContent) {
-        mSceneRoot = sceneRoot;
-        mRevealContent = revealContent;
-        mOriginalLayoutParams = mAddActionButton.getLayoutParams();
-    }
-
     @TargetApi(21)
     private void startCreateTagActivityWithTransition() {
-        // Gets the transition from the XML file.
-        Transition transition = TransitionInflater.from(getActivity()).inflateTransition(R.transition.changebounds_with_arcmotion);
-        transition.addListener(new Transition.TransitionListener() {
-            @Override
-            public void onTransitionStart(Transition transition) {
-                // DO NOTHING.
-            }
-
-            @Override
-            public void onTransitionEnd(Transition transition) {
-                TransitionHelper.circularShow(mAddActionButton, mRevealContent, new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(getActivity(), CreateTagActivity.class);
-                        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle();
-                        getActivity().startActivityForResult(intent, REQUEST_INSERT, bundle);
-                    }
-                });
-            }
-
-            @Override
-            public void onTransitionCancel(Transition transition) {
-                // DO NOTHING.
-            }
-
-            @Override
-            public void onTransitionPause(Transition transition) {
-                // DO NOTHING.
-            }
-
-            @Override
-            public void onTransitionResume(Transition transition) {
-                // DO NOTHING.
-            }
-        });
-
-        // Curved motion transition.
-        TransitionManager.beginDelayedTransition(mSceneRoot, transition);
-
-        // Changes the action button's gravity from bottom|right to center.
-        CoordinatorLayout.LayoutParams newLayoutParams = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.WRAP_CONTENT, CoordinatorLayout.LayoutParams.WRAP_CONTENT);
-        newLayoutParams.gravity = Gravity.CENTER;
-        mAddActionButton.setLayoutParams(newLayoutParams);
+        Intent intent = new Intent(getActivity(), CreateTagActivity.class);
+        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), mAddActionButton, mAddActionButton.getTransitionName()).toBundle();
+        getActivity().startActivityForResult(intent, REQUEST_INSERT, bundle);
     }
 
     private void startCreateTagActivity() {
         Intent intent = new Intent(getActivity(), CreateTagActivity.class);
         startActivityForResult(intent, REQUEST_INSERT);
-    }
-
-    @TargetApi(21)
-    private void restoreLayoutAfterTransition() {
-        if (!TransitionHelper.isTransitionSupportedAndEnabled()) {
-            return;
-        }
-
-        if (mRevealContent == null || mRevealContent.getVisibility() == View.INVISIBLE) {
-            return;
-        }
-
-        TransitionHelper.circularHide(mAddActionButton, mRevealContent, new Runnable() {
-            @Override
-            public void run() {
-                // Gets the transition from the XML file.
-                Transition transition = TransitionInflater.from(getActivity()).inflateTransition(R.transition.changebounds_with_arcmotion);
-
-                // Curved motion transition.
-                TransitionManager.beginDelayedTransition(mSceneRoot, transition);
-
-                // Revert action button to it's original position.
-                mAddActionButton.setLayoutParams(mOriginalLayoutParams);
-            }
-        });
     }
 }

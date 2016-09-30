@@ -10,4 +10,5 @@
     <color name="background">#EEEEEE</color>
     <color name="white_secondary_text">#CCFFFFFF</color>
     <color name="red">#F44336</color>
+    <color name="grey">#424242</color>
 </resources>

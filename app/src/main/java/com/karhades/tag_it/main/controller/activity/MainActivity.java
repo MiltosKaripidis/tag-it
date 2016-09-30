@@ -40,7 +40,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
 
@@ -465,10 +464,6 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     public void onFragmentAttached(CreateGameFragment fragment) {
         mCreateGameFragment = fragment;
         mCreateGameFragment.setupFloatingActionButton(mFloatingActionButton);
-
-        ViewGroup sceneRoot = mDrawerLayout;
-        ViewGroup revealContent = (ViewGroup) findViewById(R.id.main_reveal_content);
-        mCreateGameFragment.setupTransitionViews(sceneRoot, revealContent);
     }
 
     @Override
@@ -550,6 +545,10 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
 
         if (!TransitionHelper.isTransitionSupportedAndEnabled())
             return;
+
+        if (data == null) {
+            return;
+        }
 
         // If Tab 1.
         if (mTrackGameFragment != null) {
