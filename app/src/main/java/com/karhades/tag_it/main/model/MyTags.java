@@ -245,7 +245,7 @@ public class MyTags {
      */
     public void deleteNfcTag(NfcTag nfcTag) {
         // Clear memory cache for previous image to refresh ImageView.
-        PictureLoader.invalidateWithPicasso(mContext, nfcTag.getPictureFilePath());
+        PictureLoader.invalidateBitmap(mContext, nfcTag.getPictureFilePath());
 
         if (nfcTag.getPictureFilePath() != null) {
             // Delete file from disk.

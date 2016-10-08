@@ -254,11 +254,11 @@ public class EditTagFragment extends Fragment {
 
         // Loads newly picture taken.
         if (mTemporaryPictureFilename != null) {
-            PictureLoader.loadBitmapWithPicassoNoCache(getActivity(), mTemporaryPictureFilename, mPictureImageView);
+            PictureLoader.loadBitmapWithNoCache(getActivity(), mTemporaryPictureFilename, mPictureImageView);
         }
         // Loads saved picture.
         else if (mCurrentNfcTag != null) {
-            PictureLoader.loadBitmapWithPicasso(getActivity(), mCurrentNfcTag.getPictureFilePath(), mPictureImageView);
+            PictureLoader.loadBitmap(getActivity(), mCurrentNfcTag.getPictureFilePath(), mPictureImageView);
         }
     }
 
@@ -427,7 +427,7 @@ public class EditTagFragment extends Fragment {
         mCurrentNfcTag.setDateDiscovered(null);
 
         // Clear memory cache for previous image to refresh ImageView.
-        PictureLoader.invalidateWithPicasso(getActivity(), mCurrentNfcTag.getPictureFilePath());
+        PictureLoader.invalidateBitmap(getActivity(), mCurrentNfcTag.getPictureFilePath());
 
         // Get Nfc Tag's position to inform RecyclerView.Adapter.
         int position = MyTags.get(getActivity()).getNfcTagPosition(mCurrentNfcTag.getTagId());

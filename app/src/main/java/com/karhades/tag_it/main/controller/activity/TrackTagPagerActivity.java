@@ -9,15 +9,13 @@ import android.app.SharedElementCallback;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.karhades.tag_it.R;
+import com.karhades.tag_it.main.adapter.TrackTagPagerAdapter;
 import com.karhades.tag_it.main.controller.fragment.TrackTagFragment;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcTag;
@@ -52,7 +50,7 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
      * Instance variables.
      */
     private List<NfcTag> mNfcTags;
-    private FragmentAdapter mFragmentAdapter;
+    private TrackTagPagerAdapter mTrackTagPagerAdapter;
     private String mTagId;
 
     /**
@@ -95,9 +93,9 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
         mViewPager = (ViewPager) findViewById(R.id.track_tag_pager_view_pager);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        mFragmentAdapter = new FragmentAdapter(fragmentManager);
+        mTrackTagPagerAdapter = new TrackTagPagerAdapter(fragmentManager, mNfcTags);
 
-        mViewPager.setAdapter(mFragmentAdapter);
+        mViewPager.setAdapter(mTrackTagPagerAdapter);
         mViewPager.setPageTransformer(true, this);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -169,38 +167,6 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
         }
     }
 
-    private class FragmentAdapter extends FragmentStatePagerAdapter {
-
-        private TrackTagFragment fragment;
-
-        public FragmentAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            NfcTag nfcTag = mNfcTags.get(position);
-
-            return TrackTagFragment.newInstance(nfcTag.getTagId());
-        }
-
-        @Override
-        public int getCount() {
-            return (mNfcTags == null) ? 0 : mNfcTags.size();
-        }
-
-        @Override
-        public void setPrimaryItem(ViewGroup container, int position, Object object) {
-            super.setPrimaryItem(container, position, object);
-
-            fragment = (TrackTagFragment) object;
-        }
-
-        public TrackTagFragment getCurrentFragment() {
-            return fragment;
-        }
-    }
-
     // Used for transitions.
     @Override
     @TargetApi(21)
@@ -210,7 +176,7 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
             return;
         }
 
-        TrackTagFragment fragment = mFragmentAdapter.getCurrentFragment();
+        TrackTagFragment fragment = mTrackTagPagerAdapter.getCurrentFragment();
         if (fragment != null) {
             mIsReturning = true;
             // Hide the fragment's action button and pass a runnable to run after
@@ -242,7 +208,7 @@ public class TrackTagPagerActivity extends AppCompatActivity implements ViewPage
                 // If it's returning to MainActivity (TrackGameFragment).
                 if (mIsReturning) {
                     // Get shared view.
-                    View sharedView = mFragmentAdapter.getCurrentFragment().getSharedElement();
+                    View sharedView = mTrackTagPagerAdapter.getCurrentFragment().getSharedElement();
 
                     // If shared view was recycled.
                     if (sharedView == null) {

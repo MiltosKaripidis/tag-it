@@ -26,8 +26,6 @@ import android.support.design.widget.TabLayout;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -44,6 +42,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
 
 import com.karhades.tag_it.R;
+import com.karhades.tag_it.main.adapter.MainAdapter;
 import com.karhades.tag_it.main.controller.fragment.CreateGameFragment;
 import com.karhades.tag_it.main.controller.fragment.ShareGameFragment;
 import com.karhades.tag_it.main.controller.fragment.TrackGameFragment;
@@ -296,10 +295,13 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
     }
 
     private void setupViewPager() {
-        TabsAdapter adapter = new TabsAdapter(getSupportFragmentManager());
-        adapter.addFragment(TrackGameFragment.newInstance());
-        adapter.addFragment(ShareGameFragment.newInstance());
-        adapter.addFragment(CreateGameFragment.newInstance());
+        // Creates an ArrayList with the fragments.
+        List<Fragment> fragments = new ArrayList<>();
+        fragments.add(TrackGameFragment.newInstance());
+        fragments.add(ShareGameFragment.newInstance());
+        fragments.add(CreateGameFragment.newInstance());
+
+        MainAdapter adapter = new MainAdapter(getSupportFragmentManager(), fragments);
 
         mViewPager = (ViewPager) findViewById(R.id.main_view_pager);
         mViewPager.setAdapter(adapter);
@@ -574,29 +576,6 @@ public class MainActivity extends AppCompatActivity implements TrackGameFragment
                     return true;
                 }
             });
-        }
-    }
-
-    private class TabsAdapter extends FragmentPagerAdapter {
-
-        private List<Fragment> fragments = new ArrayList<>();
-
-        public TabsAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return fragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return fragments.size();
-        }
-
-        public void addFragment(Fragment fragment) {
-            fragments.add(fragment);
         }
     }
 

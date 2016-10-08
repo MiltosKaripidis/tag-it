@@ -19,13 +19,13 @@ import java.io.File;
  */
 public class PictureLoader {
 
-    public static void invalidateWithPicasso(Context context, String filePath) {
+    public static void invalidateBitmap(Context context, String filePath) {
         if (filePath != null) {
             Picasso.with(context).invalidate(new File(filePath));
         }
     }
 
-    public static void loadBitmapWithPicasso(Context context, String filePath, ImageView imageView) {
+    public static void loadBitmap(Context context, String filePath, ImageView imageView) {
         if (filePath != null) {
             Picasso.with(context).load(new File(filePath)).fit().centerInside().into(imageView);
         } else {
@@ -33,7 +33,7 @@ public class PictureLoader {
         }
     }
 
-    public static void loadBitmapWithPicasso(Context context, String filePath, ImageView imageView, Callback callback) {
+    public static void loadBitmap(Context context, String filePath, ImageView imageView, Callback callback) {
         if (filePath != null) {
             Picasso.with(context).load(new File(filePath)).fit().centerInside().into(imageView, callback);
         } else {
@@ -41,7 +41,7 @@ public class PictureLoader {
         }
     }
 
-    public static void loadBitmapWithPicassoNoCache(Context context, String filePath, ImageView imageView) {
+    public static void loadBitmapWithNoCache(Context context, String filePath, ImageView imageView) {
         Picasso.with(context).load(new File(filePath))
                 .fit()
                 .centerInside()

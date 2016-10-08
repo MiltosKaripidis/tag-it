@@ -630,7 +630,7 @@ public class NfcHandler {
             NfcTag nfcTag = MyTags.get(mActivity).getNfcTags().get(i);
 
             // Delete memory cache for the old image.
-            PictureLoader.invalidateWithPicasso(mActivity, nfcTag.getPictureFilePath());
+            PictureLoader.invalidateBitmap(mActivity, nfcTag.getPictureFilePath());
 
             // Get the Beam picture file path.
             File beamPictureFile = new File(parentFilePath + File.separator + "Tag" + nfcTag.getTagId() + ".jpg");

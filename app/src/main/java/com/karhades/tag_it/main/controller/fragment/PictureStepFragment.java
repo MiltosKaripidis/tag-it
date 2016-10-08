@@ -68,7 +68,7 @@ public class PictureStepFragment extends AbstractStep {
 
         // Loads newly picture taken.
         if (mTemporaryPictureFilename != null) {
-            PictureLoader.loadBitmapWithPicassoNoCache(getActivity(), mTemporaryPictureFilename, mPictureImageView);
+            PictureLoader.loadBitmapWithNoCache(getActivity(), mTemporaryPictureFilename, mPictureImageView);
 
             // Swaps views.
             mCardView.setVisibility(View.VISIBLE);

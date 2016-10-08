@@ -45,7 +45,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="?attr/actionBarSize"
-                    app:cardElevation="0dp"
+                    card_view:cardElevation="0dp"
                     card_view:cardBackgroundColor="@color/accent"
                     card_view:cardCornerRadius="0dp">
 

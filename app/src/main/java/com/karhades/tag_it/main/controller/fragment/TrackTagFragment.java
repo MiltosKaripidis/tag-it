@@ -126,11 +126,11 @@ public class TrackTagFragment extends Fragment {
                     Log.e("TrackTagFragment", "There was an error loading image with Picasso");
                 }
             };
-            PictureLoader.loadBitmapWithPicasso(getActivity(), mNfcTag.getPictureFilePath(), mPictureImageView, picassoCallback);
+            PictureLoader.loadBitmap(getActivity(), mNfcTag.getPictureFilePath(), mPictureImageView, picassoCallback);
         }
         // No transitions.
         else {
-            PictureLoader.loadBitmapWithPicasso(getActivity(), mNfcTag.getPictureFilePath(), mPictureImageView);
+            PictureLoader.loadBitmap(getActivity(), mNfcTag.getPictureFilePath(), mPictureImageView);
         }
     }
 

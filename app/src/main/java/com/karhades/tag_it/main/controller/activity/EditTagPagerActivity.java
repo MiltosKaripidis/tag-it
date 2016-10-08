@@ -7,15 +7,13 @@ package com.karhades.tag_it.main.controller.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.karhades.tag_it.R;
+import com.karhades.tag_it.main.adapter.EditTagPagerAdapter;
 import com.karhades.tag_it.main.controller.fragment.EditTagFragment;
 import com.karhades.tag_it.main.model.MyTags;
 import com.karhades.tag_it.main.model.NfcTag;
@@ -40,7 +38,7 @@ public class EditTagPagerActivity extends AppCompatActivity implements ViewPager
     /**
      * Instance variables.
      */
-    private FragmentAdapter mFragmentAdapter;
+    private EditTagPagerAdapter mEditTagPagerAdapter;
     private List<NfcTag> mNfcTags;
     private String mTagId;
 
@@ -69,7 +67,7 @@ public class EditTagPagerActivity extends AppCompatActivity implements ViewPager
         super.onNewIntent(intent);
 
         // Gets current EditTagFragment instance.
-        EditTagFragment editTagFragment = mFragmentAdapter.getCurrentFragment();
+        EditTagFragment editTagFragment = mEditTagPagerAdapter.getCurrentFragment();
 
         // Calls fragment's onNewIntent.
         editTagFragment.onNewIntent(intent);
@@ -80,9 +78,9 @@ public class EditTagPagerActivity extends AppCompatActivity implements ViewPager
         ViewPager viewPager = (ViewPager) findViewById(R.id.edit_tag_pager_view_pager);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        mFragmentAdapter = new FragmentAdapter(fragmentManager);
+        mEditTagPagerAdapter = new EditTagPagerAdapter(fragmentManager, mNfcTags);
 
-        viewPager.setAdapter(mFragmentAdapter);
+        viewPager.setAdapter(mEditTagPagerAdapter);
         viewPager.setPageTransformer(true, this);
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -148,38 +146,6 @@ public class EditTagPagerActivity extends AppCompatActivity implements ViewPager
         else {
             // This page is way off-screen to the right.
             page.setAlpha(0);
-        }
-    }
-
-    private class FragmentAdapter extends FragmentStatePagerAdapter {
-
-        private EditTagFragment currentFragment;
-
-        public FragmentAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            NfcTag nfcTag = mNfcTags.get(position);
-
-            return EditTagFragment.newInstance(nfcTag.getTagId());
-        }
-
-        @Override
-        public int getCount() {
-            return mNfcTags.size();
-        }
-
-        @Override
-        public void setPrimaryItem(ViewGroup container, int position, Object object) {
-            super.setPrimaryItem(container, position, object);
-
-            currentFragment = (EditTagFragment) object;
-        }
-
-        public EditTagFragment getCurrentFragment() {
-            return currentFragment;
         }
     }
 }

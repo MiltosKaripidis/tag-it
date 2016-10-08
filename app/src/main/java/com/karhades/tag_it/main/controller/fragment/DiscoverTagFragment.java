@@ -162,7 +162,7 @@ public class DiscoverTagFragment extends Fragment {
             return;
         }
 
-        PictureLoader.loadBitmapWithPicasso(getActivity(), mNfcTag.getPictureFilePath(), mPictureImageView);
+        PictureLoader.loadBitmap(getActivity(), mNfcTag.getPictureFilePath(), mPictureImageView);
     }
 
     @Override
