@@ -21,28 +21,46 @@ public class PictureLoader {
 
     public static void invalidateBitmap(Context context, String filePath) {
         if (filePath != null) {
-            Picasso.with(context).invalidate(new File(filePath));
+            Picasso.with(context)
+                    .invalidate(new File(filePath));
         }
     }
 
     public static void loadBitmap(Context context, String filePath, ImageView imageView) {
         if (filePath != null) {
-            Picasso.with(context).load(new File(filePath)).fit().centerInside().into(imageView);
+            Picasso.with(context)
+                    .load(new File(filePath))
+                    .fit()
+                    .centerInside()
+                    .into(imageView);
         } else {
-            Picasso.with(context).load(R.drawable.image_no_image).fit().centerCrop().into(imageView);
+            Picasso.with(context)
+                    .load(R.drawable.image_no_image)
+                    .fit()
+                    .centerCrop()
+                    .into(imageView);
         }
     }
 
-    public static void loadBitmap(Context context, String filePath, ImageView imageView, Callback callback) {
+    public static void loadBitmap(Context context, String filePath, ImageView imageView, final Callback callback) {
         if (filePath != null) {
-            Picasso.with(context).load(new File(filePath)).fit().centerInside().into(imageView, callback);
+            Picasso.with(context)
+                    .load(new File(filePath))
+                    .fit()
+                    .centerInside()
+                    .into(imageView, callback);
         } else {
-            Picasso.with(context).load(R.drawable.image_no_image).fit().centerCrop().into(imageView);
+            Picasso.with(context)
+                    .load(R.drawable.image_no_image)
+                    .fit()
+                    .centerCrop()
+                    .into(imageView);
         }
     }
 
     public static void loadBitmapWithNoCache(Context context, String filePath, ImageView imageView) {
-        Picasso.with(context).load(new File(filePath))
+        Picasso.with(context)
+                .load(new File(filePath))
                 .fit()
                 .centerInside()
                 .memoryPolicy(MemoryPolicy.NO_CACHE)

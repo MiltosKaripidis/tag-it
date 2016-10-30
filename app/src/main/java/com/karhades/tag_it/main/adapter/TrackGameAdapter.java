@@ -79,7 +79,7 @@ public class TrackGameAdapter extends RecyclerView.Adapter<TrackGameAdapter.NfcT
     @Override
     public void onBindViewHolder(NfcTagHolder nfcTagHolder, int position) {
         setupTouchListener(nfcTagHolder.itemView);
-        setupClickListener(nfcTagHolder.imageView, position);
+        setupClickListener(nfcTagHolder.itemView, position);
 
         bindNfcTag(nfcTagHolder);
     }
@@ -124,11 +124,11 @@ public class TrackGameAdapter extends RecyclerView.Adapter<TrackGameAdapter.NfcT
         });
     }
 
-    private void setupClickListener(final View view, final int position) {
+    private void setupClickListener(View view, final int position) {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnItemClickListener.onClick(view, position);
+                mOnItemClickListener.onClick(v, position);
             }
         });
     }

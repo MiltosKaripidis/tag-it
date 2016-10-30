@@ -3,10 +3,12 @@ package com.karhades.tag_it.main.controller.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.karhades.tag_it.BuildConfig;
 import com.karhades.tag_it.R;
 import com.karhades.tag_it.utils.PictureLoader;
 import com.karhades.tag_it.utils.stepper.AbstractStep;
@@ -130,7 +133,18 @@ public class PictureStepFragment extends AbstractStep {
     private void takePicture() {
         File file = createExternalStoragePrivateFile();
 
-        Uri fileUri = Uri.fromFile(file);
+        Uri fileUri;
+
+        if (Build.VERSION.SDK_INT >= 24) {
+            // As of API 24, you cannot share a file with URI file:// scheme. Instead you must create a
+            // content:// URI scheme and share the file through a FileProvider.
+            fileUri = FileProvider.getUriForFile(getActivity(),
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    file);
+        } else {
+            fileUri = Uri.fromFile(file);
+        }
+
 
         // Camera Intent.
         Intent intent = new Intent();

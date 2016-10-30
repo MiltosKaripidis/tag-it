@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.karhades.tag_it.R;
@@ -149,8 +150,11 @@ public class TrackGameFragment extends Fragment {
     private void startTrackingTagPagerActivityWithTransition(View view, int position) {
         NfcTag nfcTag = mTrackGameAdapter.getNfcTag(position);
 
+        // Gets the shared element.
+        ImageView imageView = (ImageView) view.findViewById(R.id.row_track_image_view);
+
         Intent intent = TrackTagPagerActivity.newIntent(getActivity(), nfcTag.getTagId(), position);
-        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, view.getTransitionName()).toBundle();
+        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), imageView, imageView.getTransitionName()).toBundle();
         getActivity().startActivity(intent, bundle);
     }
 
