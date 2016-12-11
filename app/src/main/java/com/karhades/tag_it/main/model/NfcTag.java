@@ -4,6 +4,8 @@
 
 package com.karhades.tag_it.main.model;
 
+import android.support.annotation.VisibleForTesting;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,6 +13,11 @@ import org.json.JSONObject;
  * Model class that represents an NFC tag.
  */
 public class NfcTag {
+
+    /**
+     * Factory instance.
+     */
+    private Factory mFactory;
 
     /**
      * Instance fields.
@@ -21,6 +28,13 @@ public class NfcTag {
     private String mDifficulty;
     private boolean mDiscovered;
     private String mDateDiscovered;
+
+    /**
+     * Default constructor of NfcTag.
+     */
+    public NfcTag() {
+        // Empty constructor.
+    }
 
     /**
      * Simple constructor of NfcTag.
@@ -80,7 +94,7 @@ public class NfcTag {
      * @throws JSONException
      */
     public JSONObject toJson() throws JSONException {
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject = mFactory.getJsonObject();
         jsonObject.put(JsonAttributes.DIFFICULTY, mDifficulty);
         jsonObject.put(JsonAttributes.TAG_ID, mTagId);
         jsonObject.put(JsonAttributes.TITLE, mTitle);
@@ -139,5 +153,26 @@ public class NfcTag {
 
     public void setDateDiscovered(String dateDiscovered) {
         mDateDiscovered = dateDiscovered;
+    }
+
+    /**
+     * Factory class which facilitates the testing of the NfcTag#toJson() method.
+     */
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static class Factory {
+
+        public JSONObject getJsonObject() {
+            return new JSONObject();
+        }
+    }
+
+    /**
+     * Setter method for the factory class injection.
+     *
+     * @param factory The Factory object that will be injected.
+     */
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public void setFactory(Factory factory) {
+        mFactory = factory;
     }
 }

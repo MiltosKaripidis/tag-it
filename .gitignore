@@ -8,3 +8,6 @@
 /captures
 *.apk
 app/libs/
+.idea/misc.xml
+/app/app.iml
+.idea/codeStyleSettings.xml
