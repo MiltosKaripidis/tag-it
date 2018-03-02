@@ -54,7 +54,6 @@
 
     <!-- CreateTagActivity theme-->
     <style name="AppTheme.CreateTagActivity">
-        <item name="android:statusBarColor">@color/primary_dark</item>
         <item name="android:colorControlNormal">@android:color/white</item>
 
         <!-- TextInputEditText edit hint text color-->

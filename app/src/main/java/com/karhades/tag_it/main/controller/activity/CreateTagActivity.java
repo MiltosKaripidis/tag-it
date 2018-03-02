@@ -35,7 +35,6 @@ public class CreateTagActivity extends TabStepper {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         setTitle("Create Tag");
         setPrimaryColor(getResources().getColor(R.color.primary));
         setDisabledTouch();
@@ -45,6 +44,7 @@ public class CreateTagActivity extends TabStepper {
         addStep(DetailsStepFragment.newInstance("Fill out the details"));
         addStep(WriteStepFragment.newInstance("Write to tag"));
 
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         super.onCreate(savedInstanceState);
 
         initializeWidgets();

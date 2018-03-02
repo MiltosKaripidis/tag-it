@@ -1,6 +1,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/stepper_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,12 +25,20 @@
             android:id="@+id/stepper_reveal_root"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible">
+            android:visibility="invisible"
+            tools:visibility="visible">
+
+            <FrameLayout
+                android:id="@+id/status_bar"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:background="@color/accent_dark" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/stepper_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
+                android:layout_below="@id/status_bar"
                 android:background="@color/accent"
                 app:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar" />
 
@@ -45,9 +54,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="?attr/actionBarSize"
-                    card_view:cardElevation="0dp"
                     card_view:cardBackgroundColor="@color/accent"
-                    card_view:cardCornerRadius="0dp">
+                    card_view:cardCornerRadius="0dp"
+                    card_view:cardElevation="0dp">
 
                     <HorizontalScrollView
                         android:id="@+id/stepper_steps"

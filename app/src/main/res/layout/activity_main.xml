@@ -2,63 +2,73 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
-    <!-- Main content-->
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/main_coordinator_layout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/main_app_bar_layout"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="24dp"
+            android:background="@color/primary_dark" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/main_tool_bar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/primary"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark"
-                app:layout_scrollFlags="scroll|enterAlways|snap" />
+        <!-- Main content-->
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/main_coordinator_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/main_tab_layout"
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/main_app_bar_layout"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/main_tool_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/primary"
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                    app:layout_scrollFlags="scroll|enterAlways|snap" />
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/main_tab_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/primary" />
+            </android.support.design.widget.AppBarLayout>
+
+            <!-- Fragment container-->
+            <android.support.v4.view.ViewPager
+                android:id="@+id/main_view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/main_floating_action_button"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/primary" />
-        </android.support.design.widget.AppBarLayout>
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                android:tint="@android:color/white"
+                android:transitionName="transition_add_floating_action_button"
+                android:visibility="invisible"
+                app:backgroundTint="@color/accent"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/vector_add" />
 
-        <!-- Fragment container-->
-        <android.support.v4.view.ViewPager
-            android:id="@+id/main_view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/main_floating_action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
-            android:tint="@android:color/white"
-            android:transitionName="transition_add_floating_action_button"
-            android:visibility="invisible"
-            app:backgroundTint="@color/accent"
-            app:fabSize="normal"
-            app:srcCompat="@drawable/vector_add" />
-
-        <ProgressBar
-            android:id="@+id/main_progress_bar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:visibility="gone" />
-    </android.support.design.widget.CoordinatorLayout>
+            <ProgressBar
+                android:id="@+id/main_progress_bar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone" />
+        </android.support.design.widget.CoordinatorLayout>
+    </LinearLayout>
 
     <!-- Navigation drawer-->
     <android.support.design.widget.NavigationView
